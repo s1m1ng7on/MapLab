@@ -1,22 +1,88 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+    box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
 }
+
+.btn-rounded {
+    border-radius: 50px;
+}
+
+.header-class {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 0;
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+    color: white !important;
+}
+
+.navbar .navbar-nav {
+    display: flex;
+    justify-content: center;
+    flex: 1;
+}
+
+.navbar .nav-item {
+    margin-left: 5px;
+}
+
+.ml-auto {
+    margin-left: auto !important;
+}
+
+.navbar .btn {
+    color: white !important;
+    border-color: white;
+}
+
+.btn-custom {
+    background-color: #007bff;
+    color: white;
+    border: 2px solid transparent;
+    border-radius: 20px;
+    transition: all 0.3s ease;
+    padding: 5px 10px;
+}
+
+    .btn-custom:hover {
+        background-color: #0056b3;
+        color: #ffffff;
+        border: 2px solid #ffffff;
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+footer {
+    background-color: #000000;
+    color: #000000;
+    padding: 20px 0;
+    text-align: center;
+}
+
+    footer a {
+        color: #000000;
+        text-decoration: none;
+    }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
