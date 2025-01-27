@@ -1,0 +1,16 @@
+﻿@using MapLab.Web.Models.Shared
+
+@{
+    ViewData["Title"] = "Dashboard";
+
+    var modalViewModel = new ModalViewModel()
+    {
+        Title = "Choose Template"
+    };
+}
+
+<button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalViewModel.Id">
+    <i class="bi bi-plus-lg"></i>
+</button>
+
+<partial name="_CreateMapPartial" model="@modalViewModel" />

@@ -1,0 +1,7 @@
+﻿@model MapLab.Web.Models.Shared.ModalViewModel
+@inject MapLab.Services.Contracts.IMapService _mapService
+@{
+    Layout = "_ModalPartial.cshtml";
+}
+
+<component type="typeof(ChooseTemplate)" render-mode="ServerPrerendered" />

@@ -1,0 +1,35 @@
+﻿@model MapLab.Web.Models.Templates.UploadViewModel
+@{
+    ViewData["Title"] = "Upload Template";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>Upload Map Template</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label for="mapName" class="form-label">Map Name</label>
+                            <input type="text" class="form-control" id="mapName" name="name" placeholder="Enter map name" value="@Model.Name" required>
+                            <span class="text-danger" asp-validation-for="@Model.Name"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="mapFile" class="form-label">Upload Map File</label>
+                            <input type="file" class="form-control" id="mapFile" name="file" accept=".geojson,.json" required>
+                            <span class="text-danger" asp-validation-for="@Model.File"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

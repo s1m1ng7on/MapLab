@@ -1,11 +1,18 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
   html {
     font-size: 16px;
   }
+}
+
+@font-face {
+    font-family: 'Exo 2';
+    src: url('../fonts/Exo2-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
@@ -18,5 +25,47 @@ html {
 }
 
 body {
+  font-family: "Exo 2", sans-serif;
   margin-bottom: 60px;
 }
+
+.floating-button {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    font-size: 24px;
+    box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.3);
+    z-index: 1000;
+}
+
+.nav-link::before {
+    backface-visibility: hidden;
+    border: 1.5px solid transparent;
+    bottom: 0px;
+    content: " ";
+    display: block;
+    margin: 0px auto;
+    position: relative;
+    transition: 0.4s ease-in-out;
+    width: 0px;
+}
+
+.nav-link:hover::before {
+    backface-visibility: hidden;
+    transition: width 0.5s ease-in-out;
+    width: 70%;
+    bottom: auto;
+    top: 0px;
+    width: 70%;
+}
+
+.nav-link {
+    color: rgb(254, 174, 0);
+}
+
+.nav-link:hover::before {
+    border-color: rgb(254, 174, 0);
+} 

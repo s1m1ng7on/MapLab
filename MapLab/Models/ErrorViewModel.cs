@@ -1,4 +1,4 @@
-namespace MapLab.Models
+namespace MapLab.Web.Models
 {
     public class ErrorViewModel
     {

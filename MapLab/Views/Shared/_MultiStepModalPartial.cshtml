@@ -1,0 +1,6 @@
+﻿@model MapLab.Web.Models.Shared.MultiStepModalViewModel
+
+@foreach (var modalViewModel in Model)
+{
+    <partial name="_ModalPartial" model="modalViewModel" />
+}

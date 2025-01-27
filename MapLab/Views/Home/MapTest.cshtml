@@ -1,0 +1,14 @@
+﻿@model string
+@{
+    Layout = "_LayoutShared";
+    ViewData["Title"] = "Map Test";
+}
+
+<head>
+    <link rel="stylesheet" href="~/css/map.css" asp-append-version="true" />
+</head>
+<body>
+    <input type="hidden" id="mapTemplateId" value="@Model" />
+    <script src="~/lib/d3/d3.js" asp-append-version="true"></script>
+    <script src="~/js/d3/map.js" asp-append-version="true"></script>
+</body>
