@@ -24,7 +24,8 @@ namespace MapLab
         private static void ConfigureServices(this WebApplicationBuilder builder)
         {
             // Add services to the container.
-            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+                ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
@@ -46,8 +47,8 @@ namespace MapLab
                     options.SignIn.RequireConfirmedAccount = true;
                 }
             })
-                .AddRoles<IdentityRole>()
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddRoles<IdentityRole>()
+            .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
@@ -55,15 +56,22 @@ namespace MapLab
 
             builder.Services.AddSingleton(builder.Configuration);
 
-            //Enforce lowercase routes
+            // Enforce lowercase routes
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
-            //Data repositories
+            // Modify Identity route to use "/Auth" instead of "/Identity/Account"
+            builder.Services.AddRazorPages()
+                .AddRazorPagesOptions(options =>
+                {
+                    //SETUP IDENTITY CUSTOM ROUTES
+                });
+
+            // Data repositories
             builder.Services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(DeletableEntityRepository<>));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
-            //TODO: Move configuration and make different configurations
-            //Register AutoMapper
+            // TODO: Move configuration and make different configurations
+            // Register AutoMapper
             builder.Services.AddAutoMapper(c =>
             {
                 c.CreateMap<UploadViewModel, MapTemplate>()
@@ -72,7 +80,7 @@ namespace MapLab
                     .ForMember(dest => dest.File, opt => opt.MapFrom(src => src.File));
             });
 
-            //Application services
+            // Application services
             builder.Services.AddTransient<IFileStorageService, LocalFileStorageService>();
             builder.Services.AddTransient<IMapService, MapService>();
         }
@@ -109,6 +117,7 @@ namespace MapLab
             app.MapControllerRoute(
                 name: "default",
                 pattern: "{controller=Home}/{action=Index}/{id?}");
+
             app.MapRazorPages();
             app.MapBlazorHub();
         }

@@ -7,7 +7,7 @@ namespace MapLab.Services
     {
         private readonly string _storagePath = "wwwroot/uploads";
 
-        public async Task<byte[]> GetFileAsync(string filePath, IFormFile file)
+        public async Task<byte[]> GetFileAsync(string filePath)
         {
             if (!File.Exists(filePath))
                 return null;
