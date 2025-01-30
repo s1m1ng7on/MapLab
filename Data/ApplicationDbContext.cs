@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace MapLab.Data
 {
-    public class ApplicationDbContext : IdentityDbContext
+    public class ApplicationDbContext : IdentityDbContext<Profile>
     {
         public DbSet<Map> Maps { get; set; }
         public DbSet<MapTemplate> MapTemplates { get; set; }

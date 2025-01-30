@@ -1,4 +1,5 @@
-﻿using MapLab.Data.Models;
+﻿using MapLab.Data.Managers.Contracts;
+using MapLab.Data.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,12 +9,14 @@ namespace MapLab.Data.Repositories
     {
         private readonly ApplicationDbContext _context;
         private readonly DbSet<TEntity> _dbSet;
+        private readonly IFileStorageManager _fileStorageManager;
         private readonly IHttpContextAccessor _httpContextAccessor;
 
-        public Repository(ApplicationDbContext context, IHttpContextAccessor httpContextAccessor)
+        public Repository(ApplicationDbContext context, IFileStorageManager fileStorageManager, IHttpContextAccessor httpContextAccessor)
         {
             _context = context ?? throw new ArgumentNullException(nameof(context));
             _dbSet = _context.Set<TEntity>();
+            _fileStorageManager = fileStorageManager;
             _httpContextAccessor = httpContextAccessor;
         }
 
@@ -65,5 +68,17 @@ namespace MapLab.Data.Repositories
         {
             return _httpContextAccessor.HttpContext?.User?.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
         }
+
+        /*private List<(string, string, string)> GetFileProperties(TEntity entity)
+        {
+            var result = new List<(string, string, string)>();
+
+            var entityName = typeof(TEntity).Name;
+
+            var entityIdProperty = typeof(TEntity).GetProperty("Id");
+            var entityId = entityIdProperty?.GetValue(entity) ?? string.Empty;
+
+            
+        }*/
     }
 }

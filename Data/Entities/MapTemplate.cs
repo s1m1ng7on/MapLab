@@ -1,7 +1,5 @@
-﻿using MapLab.Common.Models;
-using MapLab.Data.Models;
+﻿using MapLab.Data.Models;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -16,9 +14,9 @@ namespace MapLab.Data.Entities
         [NotMapped]
         public IFormFile? File { get; set; }
 
-        [ForeignKey(nameof(IdentityUser))]
+        [ForeignKey(nameof(Profile))]
         public string? CreatedByUserId { get; set; }
 
-        public virtual IdentityUser? CreatedByUser { get; set; }
+        public virtual Profile? CreatedByUser { get; set; }
     }
 }

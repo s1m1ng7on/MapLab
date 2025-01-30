@@ -8,12 +8,10 @@ namespace MapLab.Services
     public class MapService : IMapService
     {
         private readonly IDeletableEntityRepository<MapTemplate> _mapTemplateRepository;
-        private readonly IFileStorageService _fileStorageService;
 
-        public MapService(IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IFileStorageService fileStorageService)
+        public MapService(IDeletableEntityRepository<MapTemplate> mapTemplateRepository)
         {
             _mapTemplateRepository = mapTemplateRepository;
-            _fileStorageService = fileStorageService;
         }
 
         public IQueryable<MapTemplate> GetAllMapTemplates() => _mapTemplateRepository.AllAsNoTracking();
@@ -24,8 +22,6 @@ namespace MapLab.Services
         {
             await _mapTemplateRepository.AddAsync(mapTemplate);
             await _mapTemplateRepository.SaveChangesAsync();
-
-            await _fileStorageService.SaveFileAsync(mapTemplate.File, typeof(MapTemplate).Name + "s", mapTemplate.Id, nameof(mapTemplate.File));
         }
     }
 }

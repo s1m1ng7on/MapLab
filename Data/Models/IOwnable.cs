@@ -1,10 +1,10 @@
-﻿using Microsoft.AspNetCore.Identity;
+﻿using MapLab.Data.Entities;
 
 namespace MapLab.Data.Models
 {
     public interface IOwnable
     {
         public string? CreatedByUserId { get; set; }
-        public IdentityUser? CreatedByUser { get; set; }
+        public Profile? CreatedByUser { get; set; }
     }
 }

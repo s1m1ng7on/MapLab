@@ -1,9 +1,9 @@
-﻿using MapLab.Services.Contracts;
+﻿using MapLab.Data.Managers.Contracts;
 using Microsoft.AspNetCore.Http;
 
-namespace MapLab.Services
+namespace MapLab.Data.Managers
 {
-    public class LocalFileStorageService : IFileStorageService
+    public class LocalFileStorageManager : IFileStorageManager
     {
         private readonly string _storagePath = "wwwroot/uploads";
 

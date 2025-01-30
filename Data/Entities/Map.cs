@@ -14,11 +14,11 @@ namespace MapLab.Data.Entities
         [Required]
         public string? TemplateId { get; set; }
 
-        [ForeignKey(nameof(IdentityUser))]
+        [ForeignKey(nameof(Profile))]
         public string? CreatedByUserId { get; set; }
 
         public virtual MapTemplate? Template { get; set; }
 
-        public virtual IdentityUser? CreatedByUser { get; set; }
+        public virtual Profile? CreatedByUser { get; set; }
     }
 }

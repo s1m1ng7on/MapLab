@@ -4,15 +4,16 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace MapLab.Common.Models
 {
+    [NotMapped]
     public class SingleFile
     {
         [Required]
-        public string? FilePath { get; set; }
+        public string? Path { get; set; }
 
         [NotMapped]
         [Required]
-        public IFormFile File { get; set; }
+        public IFormFile? File { get; set; }
 
-        public override string ToString() => FilePath ?? string.Empty;
+        public override string ToString() => Path ?? string.Empty;
     }
 }

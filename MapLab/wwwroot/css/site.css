@@ -30,9 +30,49 @@ body {
   overflow-x: hidden;
 }
 
+img {
+    user-drag: none;
+    -webkit-user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
+}
+
+.navbar {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
 .navbar-logo {
     max-height: 48px;
     width: auto;
+}
+
+.sidebar {
+    min-width: 250px;
+    max-width: 250px;
+    background-color: #343a40;
+    color: white;
+    height: 100vh;
+}
+
+.sidebar .nav-link {
+    color: white;
+}
+
+.sidebar .nav-link.active {
+    background-color: #007bff;
+}
+
+a img.profile-picture,
+button img.profile-picture {
+    transition: all 0.2s ease-in-out;
+}
+
+a img.profile-picture:hover,
+button img.profile-picture:hover {
+    filter: brightness(50%);
 }
 
 .floating-button {
@@ -74,4 +114,11 @@ body {
 
 .nav-link:hover::before {
     border-color: rgb(254, 174, 0);
-} 
+}
+
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    background-color: #6c757d;
+}

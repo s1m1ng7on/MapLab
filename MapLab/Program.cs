@@ -1,5 +1,7 @@
 using MapLab.Data;
 using MapLab.Data.Entities;
+using MapLab.Data.Managers.Contracts;
+using MapLab.Data.Managers;
 using MapLab.Data.Repositories;
 using MapLab.Data.Seeding;
 using MapLab.Services;
@@ -30,7 +32,9 @@ namespace MapLab
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            builder.Services.AddScoped<ProfileManager<Profile>>();
+
+            builder.Services.AddDefaultIdentity<Profile>(options =>
             {
                 if (builder.Environment.IsDevelopment())
                 {
@@ -63,12 +67,30 @@ namespace MapLab
             builder.Services.AddRazorPages()
                 .AddRazorPagesOptions(options =>
                 {
-                    //SETUP IDENTITY CUSTOM ROUTES
+                    /*options.Conventions.AuthorizeAreaFolder("Identity", "/Account");
+                    options.Conventions.AddAreaFolderRouteModelConvention("Identity", "/Account", model =>
+                    {
+                        foreach (var selector in model.Selectors)
+                        {
+                            selector.AttributeRouteModel.Template = selector.AttributeRouteModel.Template
+                                .Replace("Identity/Account/", string.Empty);
+                        }
+                    });*/
                 });
 
             // Data repositories
             builder.Services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(DeletableEntityRepository<>));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+
+            // File storage manager
+            if (builder.Environment.IsDevelopment())
+            {
+                builder.Services.AddTransient<IFileStorageManager, LocalFileStorageManager>();
+            }
+            else
+            {
+                builder.Services.AddTransient<IFileStorageManager, AzureBlobFileStorageManager>();
+            }
 
             // TODO: Move configuration and make different configurations
             // Register AutoMapper
@@ -81,7 +103,6 @@ namespace MapLab
             });
 
             // Application services
-            builder.Services.AddTransient<IFileStorageService, LocalFileStorageService>();
             builder.Services.AddTransient<IMapService, MapService>();
         }
 

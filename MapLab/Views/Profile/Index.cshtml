@@ -1,0 +1,38 @@
+﻿@using MapLab.Data.Entities
+@using MapLab.Data.Managers
+@using Microsoft.AspNetCore.Identity
+@inject ProfileManager<Profile> _profileManager
+@model Profile
+@{
+    ViewData["Title"] = Model.UserName;
+
+    var user = await _profileManager.GetUserAsync(User);
+    var isAdmin = await _profileManager.IsInRoleAsync(user, "Admin");
+}
+
+<div class="container">
+    <div class="row">
+        <div class="col-12 hero-section text-center">
+            <img src="https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/364e52dc-32da-493c-a45a-e121ef3fe06c/de9vyhn-ebc4dc68-44bc-4d86-ae2f-e39740471e8f.png/v1/fill/w_894,h_894,q_70,strp/dream_pfp_by_shirsis_de9vyhn-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI4MCIsInBhdGgiOiJcL2ZcLzM2NGU1MmRjLTMyZGEtNDkzYy1hNDVhLWUxMjFlZjNmZTA2Y1wvZGU5dnlobi1lYmM0ZGM2OC00NGJjLTRkODYtYWUyZi1lMzk3NDA0NzFlOGYucG5nIiwid2lkdGgiOiI8PTEyODAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.gob7sMM_ugBRqqk7i6EIxO5092qHJTWmxGyamv0MtrE" class="profile-picture mx-auto" />
+            <h1>
+                @if (isAdmin)
+                {
+                    <i class="bi bi-star-fill" title="Admin"></i>
+                }
+                @Model.UserName
+            </h1>
+            <p>Mapping since @Model.CreatedOn.ToString("MMM dd, yyyy")</p>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12 text-center">
+            <button class="btn btn-primary">Recent</button>
+            <button class="btn btn-secondary">Filter</button>
+        </div>
+    </div>
+    <div class="row mt-4">
+        <div class="col-12">
+            <!-- Additional content sections go here -->
+        </div>
+    </div>
+</div>
