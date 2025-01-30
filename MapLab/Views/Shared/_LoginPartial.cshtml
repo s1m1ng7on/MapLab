@@ -3,13 +3,11 @@
 @using Microsoft.AspNetCore.Identity
 @inject SignInManager<Profile> SignInManager
 @inject ProfileManager<Profile> ProfileManager
-@{
-    var user = await ProfileManager.GetUserAsync(User);
-    var isAdmin = await ProfileManager.IsInRoleAsync(user, "Admin");
-}
 
 @if (SignInManager.IsSignedIn(User))
 {
+    var profile = await ProfileManager.GetUserAsync(User);
+    var isAdmin = profile != null && await ProfileManager.IsInRoleAsync(profile, "Admin");
     <div class="dropdown position-relative">
         <button class="btn btn-outline-primary rounded-circle"
                 id="profile-dropdown"
