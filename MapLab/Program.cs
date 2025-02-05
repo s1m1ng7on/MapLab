@@ -9,6 +9,10 @@ using MapLab.Services.Contracts;
 using MapLab.Web.Models.Templates;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using MapLab.Web.Models.Profile;
+using MapLab.Web.Models;
+using System.Reflection;
+using MapLab.Services.Mapping;
 
 namespace MapLab
 {
@@ -92,14 +96,13 @@ namespace MapLab
                 builder.Services.AddTransient<IFileStorageManager, AzureBlobFileStorageManager>();
             }
 
-            // TODO: Move configuration and make different configurations
-            // Register AutoMapper
-            builder.Services.AddAutoMapper(c =>
+            builder.Services.AddAutoMapper(typeof(AutoMapperConfiguration).Assembly);
+
+            // You can also explicitly register your AutoMapper configuration class like so:
+            builder.Services.AddSingleton(provider =>
             {
-                c.CreateMap<UploadViewModel, MapTemplate>()
-                    .ForMember(dest => dest.Id, opt => opt.MapFrom(src => Guid.NewGuid().ToString()))
-                    .ForMember(dest => dest.Name, opt => opt.MapFrom(src => src.Name))
-                    .ForMember(dest => dest.File, opt => opt.MapFrom(src => src.File));
+                AutoMapperConfiguration.RegisterMappings(AppDomain.CurrentDomain.GetAssemblies()); // Register mappings from all assemblies
+                return AutoMapperConfiguration.MapperInstance;
             });
 
             // Application services

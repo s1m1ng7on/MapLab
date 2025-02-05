@@ -28,7 +28,7 @@ namespace MapLab.Data.Repositories
         {
             if (entity is IOwnable auditInfo)
             {
-                auditInfo.CreatedByUserId = GetCurrentUserId();
+                auditInfo.ProfileId = GetCurrentUserId();
             }
 
             return _dbSet.AddAsync(entity).AsTask();

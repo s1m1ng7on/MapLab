@@ -10,6 +10,8 @@ namespace MapLab.Data.Entities
         [Required]
         public SingleFile? ProfilePicture { get; set; }
 
+        public virtual ICollection<Map>? Maps { get; set; }
+
         [Required]
         public DateTime CreatedOn { get; set; }
 

@@ -1,5 +1,4 @@
 ﻿using MapLab.Data.Models;
-using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -14,11 +13,11 @@ namespace MapLab.Data.Entities
         [Required]
         public string? TemplateId { get; set; }
 
-        [ForeignKey(nameof(Profile))]
-        public string? CreatedByUserId { get; set; }
+        [ForeignKey(nameof(Entities.Profile))]
+        public string? ProfileId { get; set; }
 
         public virtual MapTemplate? Template { get; set; }
 
-        public virtual Profile? CreatedByUser { get; set; }
+        public virtual Profile? Profile { get; set; }
     }
 }

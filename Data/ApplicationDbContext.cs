@@ -19,9 +19,9 @@ namespace MapLab.Data
             base.OnModelCreating(builder);
 
             builder.Entity<Map>()
-                .HasOne(m => m.CreatedByUser)
+                .HasOne(m => m.Profile)
                 .WithMany()
-                .HasForeignKey(m => m.CreatedByUserId)
+                .HasForeignKey(m => m.ProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Map>()

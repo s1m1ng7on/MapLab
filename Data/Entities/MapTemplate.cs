@@ -14,9 +14,9 @@ namespace MapLab.Data.Entities
         [NotMapped]
         public IFormFile? File { get; set; }
 
-        [ForeignKey(nameof(Profile))]
-        public string? CreatedByUserId { get; set; }
+        [ForeignKey(nameof(Entities.Profile))]
+        public string? ProfileId { get; set; }
 
-        public virtual Profile? CreatedByUser { get; set; }
+        public virtual Profile? Profile { get; set; }
     }
 }
