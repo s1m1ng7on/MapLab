@@ -9,11 +9,12 @@ namespace MapLab.Data.Entities
         [Required]
         public string? Name { get; set; }
 
-        [ForeignKey(nameof(MapTemplate))]
+        [ForeignKey(nameof(Template))]
         [Required]
         public string? TemplateId { get; set; }
 
-        [ForeignKey(nameof(Entities.Profile))]
+        [ForeignKey(nameof(Profile))]
+        [Required]
         public string? ProfileId { get; set; }
 
         public virtual MapTemplate? Template { get; set; }

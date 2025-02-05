@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250205070128_Added Collection property for Maps to Profile entity")]
+    [Migration("20250205080338_Added Collection property for Maps to Profile entity")]
     partial class AddedCollectionpropertyforMapstoProfileentity
     {
         /// <inheritdoc />
@@ -44,9 +44,7 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfileId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("ProfileId1")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("TemplateId")
@@ -59,8 +57,6 @@ namespace Data.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("ProfileId");
-
-                    b.HasIndex("ProfileId1");
 
                     b.HasIndex("TemplateId");
 
@@ -309,16 +305,13 @@ namespace Data.Migrations
             modelBuilder.Entity("MapLab.Data.Entities.Map", b =>
                 {
                     b.HasOne("MapLab.Data.Entities.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("MapLab.Data.Entities.Profile", null)
                         .WithMany("Maps")
-                        .HasForeignKey("ProfileId1");
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("MapLab.Data.Entities.MapTemplate", "Template")
-                        .WithMany()
+                        .WithMany("Maps")
                         .HasForeignKey("TemplateId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -331,8 +324,9 @@ namespace Data.Migrations
             modelBuilder.Entity("MapLab.Data.Entities.MapTemplate", b =>
                 {
                     b.HasOne("MapLab.Data.Entities.Profile", "Profile")
-                        .WithMany()
-                        .HasForeignKey("ProfileId");
+                        .WithMany("MapTemplates")
+                        .HasForeignKey("ProfileId")
+                        .OnDelete(DeleteBehavior.SetNull);
 
                     b.Navigation("Profile");
                 });
@@ -388,8 +382,15 @@ namespace Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("MapLab.Data.Entities.MapTemplate", b =>
+                {
+                    b.Navigation("Maps");
+                });
+
             modelBuilder.Entity("MapLab.Data.Entities.Profile", b =>
                 {
+                    b.Navigation("MapTemplates");
+
                     b.Navigation("Maps");
                 });
 #pragma warning restore 612, 618

@@ -18,6 +18,14 @@ namespace Data.Migrations
                 name: "FK_MapTemplates_AspNetUsers_CreatedByUserId",
                 table: "MapTemplates");
 
+            migrationBuilder.DropIndex(
+                name: "IX_Maps_CreatedByUserId",
+                table: "Maps");
+
+            migrationBuilder.DropColumn(
+                name: "CreatedByUserId",
+                table: "Maps");
+
             migrationBuilder.RenameColumn(
                 name: "CreatedByUserId",
                 table: "MapTemplates",
@@ -28,21 +36,12 @@ namespace Data.Migrations
                 table: "MapTemplates",
                 newName: "IX_MapTemplates_ProfileId");
 
-            migrationBuilder.RenameColumn(
-                name: "CreatedByUserId",
-                table: "Maps",
-                newName: "ProfileId1");
-
-            migrationBuilder.RenameIndex(
-                name: "IX_Maps_CreatedByUserId",
-                table: "Maps",
-                newName: "IX_Maps_ProfileId1");
-
             migrationBuilder.AddColumn<string>(
                 name: "ProfileId",
                 table: "Maps",
                 type: "nvarchar(450)",
-                nullable: true);
+                nullable: false,
+                defaultValue: "");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Maps_ProfileId",
@@ -58,18 +57,12 @@ namespace Data.Migrations
                 onDelete: ReferentialAction.Cascade);
 
             migrationBuilder.AddForeignKey(
-                name: "FK_Maps_AspNetUsers_ProfileId1",
-                table: "Maps",
-                column: "ProfileId1",
-                principalTable: "AspNetUsers",
-                principalColumn: "Id");
-
-            migrationBuilder.AddForeignKey(
                 name: "FK_MapTemplates_AspNetUsers_ProfileId",
                 table: "MapTemplates",
                 column: "ProfileId",
                 principalTable: "AspNetUsers",
-                principalColumn: "Id");
+                principalColumn: "Id",
+                onDelete: ReferentialAction.SetNull);
         }
 
         /// <inheritdoc />
@@ -77,10 +70,6 @@ namespace Data.Migrations
         {
             migrationBuilder.DropForeignKey(
                 name: "FK_Maps_AspNetUsers_ProfileId",
-                table: "Maps");
-
-            migrationBuilder.DropForeignKey(
-                name: "FK_Maps_AspNetUsers_ProfileId1",
                 table: "Maps");
 
             migrationBuilder.DropForeignKey(
@@ -105,15 +94,16 @@ namespace Data.Migrations
                 table: "MapTemplates",
                 newName: "IX_MapTemplates_CreatedByUserId");
 
-            migrationBuilder.RenameColumn(
-                name: "ProfileId1",
+            migrationBuilder.AddColumn<string>(
+                name: "CreatedByUserId",
                 table: "Maps",
-                newName: "CreatedByUserId");
+                type: "nvarchar(450)",
+                nullable: true);
 
-            migrationBuilder.RenameIndex(
-                name: "IX_Maps_ProfileId1",
+            migrationBuilder.CreateIndex(
+                name: "IX_Maps_CreatedByUserId",
                 table: "Maps",
-                newName: "IX_Maps_CreatedByUserId");
+                column: "CreatedByUserId");
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Maps_AspNetUsers_CreatedByUserId",

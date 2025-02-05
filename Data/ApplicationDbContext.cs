@@ -20,13 +20,19 @@ namespace MapLab.Data
 
             builder.Entity<Map>()
                 .HasOne(m => m.Profile)
-                .WithMany()
+                .WithMany(p => p.Maps)
                 .HasForeignKey(m => m.ProfileId)
                 .OnDelete(DeleteBehavior.Cascade);
 
+            builder.Entity<MapTemplate>()
+                .HasOne(m => m.Profile)
+                .WithMany(p => p.MapTemplates)
+                .HasForeignKey(m => m.ProfileId)
+                .OnDelete(DeleteBehavior.SetNull);
+
             builder.Entity<Map>()
                 .HasOne(m => m.Template)
-                .WithMany()
+                .WithMany(m => m.Maps)
                 .HasForeignKey(m => m.TemplateId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

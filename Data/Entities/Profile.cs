@@ -12,6 +12,8 @@ namespace MapLab.Data.Entities
 
         public virtual ICollection<Map>? Maps { get; set; }
 
+        public virtual ICollection<MapTemplate>? MapTemplates { get; set; }
+
         [Required]
         public DateTime CreatedOn { get; set; }
 
