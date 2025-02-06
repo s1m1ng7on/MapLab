@@ -106,6 +106,7 @@ namespace MapLab
             });
 
             // Application services
+            builder.Services.AddTransient<IProfileService, ProfileService>();
             builder.Services.AddTransient<IMapService, MapService>();
         }
 

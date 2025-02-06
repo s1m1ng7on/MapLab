@@ -1,5 +1,6 @@
-﻿@using MapLab.Web.Models.Shared
-
+﻿@using MapLab.Web.Models.Maps
+@using MapLab.Web.Models.Shared
+@model IEnumerable<MapViewModel>
 @{
     ViewData["Title"] = "Dashboard";
 
@@ -8,6 +9,16 @@
         Title = "Choose Template"
     };
 }
+
+<h1>My Maps</h1>
+<ul class="list-unstyled d-flex flex-wrap gap-3">
+    @foreach (var map in Model)
+    {
+        <li flex-item>
+            <partial name="_MapCardPartial" model="@map" />
+        </li>
+    }
+</ul>
 
 <button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalViewModel.Id">
     <i class="bi bi-plus-lg"></i>

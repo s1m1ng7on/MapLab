@@ -11,8 +11,7 @@
         <li>@template.Name</li>
     }
 </ul>
-<button @onclick="OnClick">CLICK ME</button>
-<div>@RandomValue</div>
+<button @onclick="TestClick">Test Button</button>
 
 @code {
     private string searchQuery = string.Empty;
@@ -33,10 +32,9 @@
         StateHasChanged();
     }
 
-    private void OnClick()
+    private void TestClick()
     {
-        Console.WriteLine("Button Clicked!");
-        RandomValue = Guid.NewGuid().ToString();
+        Console.WriteLine("Button clicked!");
         StateHasChanged();
     }
 }
