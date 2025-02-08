@@ -9,10 +9,12 @@
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="13.0.1" />
     <PackageReference Include="Azure.Storage.Blobs" Version="12.23.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\MapLab.Data.csproj" />
+    <ProjectReference Include="..\MapLab.Data\MapLab.Data.csproj" />
+    <ProjectReference Include="..\MapLab.Data\MapLab.Data.csproj" />
   </ItemGroup>
 
 </Project>

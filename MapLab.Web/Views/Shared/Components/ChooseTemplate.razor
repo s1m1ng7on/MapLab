@@ -1,0 +1,104 @@
+﻿@using MapLab.Common.Extensions
+@using MapLab.Data.Models.Enums
+@using MapLab.Web.Models.Templates
+@using Microsoft.AspNetCore.Components.Forms
+@inject MapLab.Services.Contracts.IMapService _mapService
+@inject AutoMapper.IMapper _mapper;
+
+<div class="row">
+    <div class="search-bar col-12 col-md-8 position-relative">
+        <input type="text" class="form-control rounded-pill pl-5" @oninput="OnSearch" placeholder="Search" />
+        <span class="position-absolute icon-container">
+            <i class="bi bi-search"></i>
+        </span>
+    </div>
+    <div class="col-6 col-md-4 d-flex align-items-center">
+        <InputSelect class="form-select" @bind-Value="filters.Continent" @onchange="OnContinentSelectChange" TValue="string">
+            <option class="text-muted" selected>Region</option>
+            @foreach (var region in Enum.GetValues<Region>())
+            {
+                <option value="@((int)region)">@region.GetDisplayName()</option>
+            }
+        </InputSelect>
+        <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" @onchange="OnByMapLabSwitchChange" id="byMapLabSwitch">
+            <label class="form-check-label" for="byMapLabSwitch">By MapLab</label>
+        </div>
+    </div>
+</div>
+
+
+@if (string.IsNullOrEmpty(filters.SearchQuery))
+{
+    <h2>Recents</h2>
+    <ul class="list-unstyled d-flex flex-wrap gap-3">
+        @foreach (var template in templates)
+        {
+            <TemplateCard MapTemplate="@template"
+            OnSelected="OnTemplateSelected" />
+        }
+    </ul>
+
+    <h2>By MapLab</h2>
+    <ul class="list-unstyled d-flex flex-wrap gap-3">
+        @foreach (var template in templates)
+        {
+            <TemplateCard MapTemplate="@template"
+            OnSelected="OnTemplateSelected" />
+        }
+    </ul>
+
+    <h2>Featured</h2>
+    <ul class="list-unstyled d-flex flex-wrap gap-3">
+        @foreach (var template in templates)
+        {
+            <TemplateCard MapTemplate="@template"
+            OnSelected="OnTemplateSelected" />
+        }
+    </ul>
+}
+else
+{
+    <h2>Search Results</h2>
+    <ul class="list-unstyled d-flex flex-wrap gap-3">
+        @foreach (var template in templates)
+        {
+            <TemplateCard MapTemplate="@template"
+            OnSelected="OnTemplateSelected" />
+        }
+    </ul>
+}
+
+@code {
+    private MapTemplateFiltersModel filters = new MapTemplateFiltersModel();
+    private List<MapTemplateViewModel> templates = new();
+
+    protected override void OnInitialized()
+    {
+        var templateEntities = _mapService.GetAllMapTemplates();
+        templates = _mapper.Map<List<MapTemplateViewModel>>(templateEntities);
+    }
+
+    private void OnSearch(ChangeEventArgs e)
+    {
+        filters.SearchQuery = e.Value.ToString();
+        var templateEntities = _mapService.GetMapTemplates(filters.SearchQuery);
+        templates = _mapper.Map<List<MapTemplateViewModel>>(templateEntities);
+    }
+
+    private void OnContinentSelectChange(ChangeEventArgs e)
+    {
+        filters.Continent = e.Value.ToString();
+    }
+
+    private void OnByMapLabSwitchChange(ChangeEventArgs e)
+    {
+        filters.ByMapLab = e.Value.ToString() == "on";
+    }
+
+    private async Task OnTemplateSelected(MapTemplateViewModel template)
+    {
+        Console.WriteLine($"Selected template: {template.Name}");
+        // Additional logic
+    }
+}

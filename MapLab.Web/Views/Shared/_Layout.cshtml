@@ -1,0 +1,86 @@
+﻿@{
+    Layout = "_LayoutShared";
+}
+
+<header>
+    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow">
+        <div class="container-fluid position-relative">
+            <!-- Logo (Left) -->
+            <a class="navbar-brand d-flex align-items-baseline" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/images/logo/logo256.png" alt="MapLab Logo" class="navbar-logo" />
+                <span class="fs-1">MapLab</span>
+            </a>
+
+            <!-- Centered Navbar Links -->
+            <div class="position-absolute start-50 translate-middle-x">
+                <ul class="navbar-nav d-flex flex-row gap-3">
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="Community" asp-action="Index">Community</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-controller="News" asp-action="Index">News</a>
+                    </li>
+                </ul>
+            </div>
+
+            <!-- Login (Right) -->
+            <div class="ms-auto">
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
+    </nav>
+</header>
+<div>
+    <main role="main">
+        @RenderBody()
+    </main>
+</div>
+
+<footer class="bg-white py-4 border-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-2">
+                <img src="~/images/logo/logo64.png" alt="MapLab Logo" class="img-fluid">
+            </div>
+            <div class="col-md-2">
+                <h5>Learn More</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#">About Lift</a></li>
+                    <li><a href="#">Press Releases</a></li>
+                    <li><a href="#">Environment</a></li>
+                    <li><a href="#">Jobs</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Contact Us</a></li>
+                </ul>
+            </div>
+            <div class="col-md-2">
+                <h5>Legal</h5>
+                <ul class="list-unstyled">
+                    <li>
+                        <a asp-controller="Legal" asp-action="Privacy">Privacy Policy</a>
+                    </li>
+                    <li>
+                        <a asp-controller="Legal" asp-action="Terms">Terms of Service</a>
+                    </li>
+                </ul>
+            </div>
+            <div class="col-md-3">
+                <h5>Contact Us</h5>
+                <p>Hotel Reservation: <a href="tel:123-456-7890">123-456-7890</a></p>
+                <p>Ticket Office: <a href="tel:123-456-7890">123-456-7890</a></p>
+            </div>
+            <div class="col-md-3">
+                <h5>Social</h5>
+                <a href="https://www.instagram.com/maplabbg"><i class="bi bi-instagram"></i></a>
+            </div>
+        </div>
+        <div class="text-center mt-4">
+            <p>&copy; @DateTime.Now.Year MapLab</p>
+        </div>
+    </div>
+</footer>
+
+@await RenderSectionAsync("Scripts", required: false)
