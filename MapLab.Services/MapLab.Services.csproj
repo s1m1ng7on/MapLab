@@ -15,6 +15,7 @@
   <ItemGroup>
     <ProjectReference Include="..\MapLab.Data\MapLab.Data.csproj" />
     <ProjectReference Include="..\MapLab.Data\MapLab.Data.csproj" />
+    <ProjectReference Include="..\MapLab.Shared\MapLab.Shared.csproj" />
   </ItemGroup>
 
 </Project>

@@ -3,6 +3,7 @@ using MapLab.Data.Managers;
 using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
+using MapLab.Shared.Models.FilterModels;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
 using System.Text;
@@ -73,6 +74,12 @@ namespace MapLab.Services
         );
 
         public IQueryable<MapTemplate> GetMapTemplates(string name) => GetAllMapTemplates().Where(t => EF.Functions.Like(t.Name, $"%{name}%"));
+
+        public IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel filters) =>
+            GetAllMapTemplates()
+                .Where(mt => (string.IsNullOrEmpty(filters.SearchQuery) || EF.Functions.Like(mt.Name, $"%{filters.SearchQuery}%")) &&
+                    (!filters.Region.HasValue || mt.Region == filters.Region) &&
+                    (!filters.ByMapLab || mt.Profile.UserName == "MapLab"));
 
         public async Task UploadMapTemplateAsync(MapTemplate mapTemplate)
         {

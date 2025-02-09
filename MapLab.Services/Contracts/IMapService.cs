@@ -1,4 +1,5 @@
 ﻿using MapLab.Data.Entities;
+using MapLab.Shared.Models.FilterModels;
 
 namespace MapLab.Services.Contracts
 {
@@ -9,5 +10,6 @@ namespace MapLab.Services.Contracts
         IQueryable<MapTemplate> GetAllMapTemplates();
         IQueryable<MapTemplate> GetMapTemplates(string name);
         Task UploadMapTemplateAsync(MapTemplate mapTemplate);
+        IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel filters);
     }
 }
