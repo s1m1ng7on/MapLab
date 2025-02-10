@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapLab.Services", "MapLab.S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapLab.Common", "MapLab.Common\MapLab.Common.csproj", "{C0AF1E4A-AD9D-4752-8C38-DD66E35E8027}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapLab.Shared", "MapLab.Shared\MapLab.Shared.csproj", "{275CD130-7D7C-4AB3-BBAF-CFD59ECE11DB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapLab.Shared", "MapLab.Shared\MapLab.Shared.csproj", "{275CD130-7D7C-4AB3-BBAF-CFD59ECE11DB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

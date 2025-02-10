@@ -1,0 +1,21 @@
+﻿@code {
+    [CascadingParameter] private Modal? ParentModal { get; set; }
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    protected override void OnInitialized()
+    {
+        if (ParentModal != null && ChildContent != null)
+        {
+            ParentModal.RegisterStep(ChildContent);
+        }
+        else
+        {
+            Console.WriteLine("ParentModal or ChildContent is null");
+        }
+    }
+}
+
+<div>
+    @ChildContent
+</div>

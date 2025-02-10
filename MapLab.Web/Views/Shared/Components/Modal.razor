@@ -1,0 +1,57 @@
+﻿@inject IJSRuntime JS
+
+<head>
+    <link rel="stylesheet" href="/css/modal.css" asp-append-version="true" />
+</head>
+
+<div class="modal fade" id="multiStepModal" tabindex="-1" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLongTitle">Title</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                @if (steps.Count > 0)
+                {
+                    @steps[currentStep]
+                }
+            </div>
+            <div class="modal-footer justify-content-center">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" @onclick="PrevStep" disabled="@(currentStep == 0)">Previous</button>
+                <button type="button" class="btn btn-success" @onclick="NextStep" disabled="@(currentStep == steps.Count - 1)">Next</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private int currentStep = 0;
+    private List<RenderFragment> steps = new();
+
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    public void RegisterStep(RenderFragment step)
+    {
+        steps.Add(step);
+        Console.WriteLine(steps.Count);
+    }
+
+    private void NextStep()
+    {
+        if (currentStep < steps.Count - 1)
+            currentStep++;
+    }
+
+    private void PrevStep()
+    {
+        if (currentStep > 0)
+            currentStep--;
+    }
+
+    private async Task ShowModal()
+    {
+        await JS.InvokeVoidAsync("$('#multiStepModal').modal", "show");
+    }
+}
