@@ -1,21 +1,18 @@
 ﻿@code {
+    private int? stepIndex;
+
     [CascadingParameter] private Modal? ParentModal { get; set; }
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
+    [Parameter] public bool IsCurrentStep { get; set; }
+
     protected override void OnInitialized()
     {
-        if (ParentModal != null && ChildContent != null)
-        {
-            ParentModal.RegisterStep(ChildContent);
-        }
-        else
-        {
-            Console.WriteLine("ParentModal or ChildContent is null");
-        }
+        stepIndex = ParentModal?.RegisterStep();
     }
 }
 
-<div>
+<div class="modal-step@(stepIndex == ParentModal?.CurrentStep ? " active" : null)">
     @ChildContent
 </div>

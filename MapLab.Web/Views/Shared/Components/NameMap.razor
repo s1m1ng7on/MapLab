@@ -1,0 +1,10 @@
+﻿<h3>Selected Template: @CreateMapModal.SelectedMapTemplate?.Name</h3>
+
+@if (CreateMapModal.SelectedMapTemplate == null)
+{
+    <h3>IS null</h3>
+}
+
+@code {
+    [CascadingParameter] public CreateMapModal CreateMapModal { get; set; }
+}

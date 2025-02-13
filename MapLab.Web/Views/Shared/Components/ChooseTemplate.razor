@@ -4,7 +4,7 @@
 @using MapLab.Web.Models.Templates
 @using Microsoft.AspNetCore.Components.Forms
 @inject MapLab.Services.Contracts.IMapService _mapService
-@inject AutoMapper.IMapper _mapper;
+@inject AutoMapper.IMapper _mapper
 
 <div class="row">
     <div class="search-bar col-12 col-md-8 position-relative">
@@ -39,7 +39,7 @@
                     <li class="d-inline-block">
                         <div class="position-relative">
                             <TemplateCard MapTemplate="@template"
-                                          IsSelected="@(selectedTemplate?.Id == template.Id)"
+                                          IsSelected="@(CreateMapModal?.SelectedMapTemplate?.Id == template.Id)"
                                           OnSelected="OnTemplateSelected" />
                         </div>
                     </li>
@@ -57,7 +57,7 @@
                     <li class="d-inline-block">
                         <div class="position-relative">
                             <TemplateCard MapTemplate="@template"
-                                          IsSelected="@(selectedTemplate?.Id == template.Id)"
+                                          IsSelected="@(CreateMapModal?.SelectedMapTemplate?.Id == template.Id)"
                                           OnSelected="OnTemplateSelected" />
                         </div>
                     </li>
@@ -75,7 +75,7 @@
                     <li class="d-inline-block">
                         <div class="position-relative">
                             <TemplateCard MapTemplate="@template"
-                                          IsSelected="@(selectedTemplate?.Id == template.Id)"
+                                          IsSelected="@(CreateMapModal?.SelectedMapTemplate?.Id == template.Id)"
                                           OnSelected="OnTemplateSelected" />
                         </div>
                     </li>
@@ -95,7 +95,7 @@ else
                     <li class="d-inline-block">
                         <div class="position-relative">
                             <TemplateCard MapTemplate="@template"
-                                          IsSelected="@(selectedTemplate?.Id == template.Id)"
+                                          IsSelected="@(CreateMapModal?.SelectedMapTemplate?.Id == template.Id)"
                                           OnSelected="OnTemplateSelected" />
                         </div>
                     </li>
@@ -106,6 +106,8 @@ else
 }
 
 @code {
+    [CascadingParameter] CreateMapModal? CreateMapModal { get; set; }
+
     private MapTemplateFiltersModel filters = new MapTemplateFiltersModel();
     private List<MapTemplateViewModel> templates = new();
     private MapTemplateViewModel? selectedTemplate;
@@ -125,6 +127,6 @@ else
 
     private void OnTemplateSelected(MapTemplateViewModel template)
     {
-        selectedTemplate = template;
+        CreateMapModal.SelectedMapTemplate = template;
     }
 }

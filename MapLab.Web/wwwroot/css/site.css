@@ -116,6 +116,14 @@ img {
     flex-grow: 1;
 }
 
+.modal-step {
+    display: none;
+}
+
+.modal-step.active {
+    display: block;
+}
+
 .sidebar {
     min-width: 250px;
     max-width: 250px;
