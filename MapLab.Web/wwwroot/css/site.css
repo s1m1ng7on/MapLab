@@ -125,19 +125,31 @@ img {
 }
 
 .sidebar {
-    min-width: 250px;
-    max-width: 250px;
+    width: 280px;
     background-color: #343a40;
     color: white;
-    height: 100vh;
+    transition: width 0.3s;
 }
 
 .sidebar .nav-link {
-    color: white;
+    color: #adb5bd;
 }
 
-.sidebar .nav-link.active {
-    background-color: #007bff;
+.sidebar .nav-link.active, .sidebar .nav-link:hover {
+    color: white;
+    background-color: #495057;
+}
+
+.sidebar.small {
+    width: 80px;
+}
+
+.sidebar.small .nav-link span {
+    display: none;
+}
+
+.sidebar.small .dropdown strong {
+    display: none;
 }
 
 a img.profile-picture,
