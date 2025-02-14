@@ -5,14 +5,17 @@
 
     [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    [Parameter] public bool IsCurrentStep { get; set; }
+    [Parameter] public string? Title { get; set; }
 
     protected override void OnInitialized()
     {
-        stepIndex = ParentModal?.RegisterStep();
+        if (string.IsNullOrEmpty(Title))
+            Title = $"Step {stepIndex + 1}";
+
+        stepIndex = ParentModal?.RegisterStep(this);
     }
 }
 
-<div class="modal-step@(stepIndex == ParentModal?.CurrentStep ? " active" : null)">
+<div class="@($"modal-step {(stepIndex == ParentModal?.CurrentStep ? "active" : string.Empty)}".Trim())">
     @ChildContent
 </div>

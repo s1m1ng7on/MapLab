@@ -1,10 +1,20 @@
-﻿<h3>Selected Template: @CreateMapModal.SelectedMapTemplate?.Name</h3>
+﻿@using MapLab.Web.Models.Templates
 
-@if (CreateMapModal.SelectedMapTemplate == null)
-{
-    <h3>IS null</h3>
-}
+<div class="d-flex">
+    <input type="text" class="form-control rounded-pill pl-5" @oninput="OnNameChanged" placeholder="Name"/>
+    <h3>Map: @Name</h3>
+    <h3>Selected Map Template: @SelectedMapTemplate?.Name</h3>
+</div>
 
 @code {
-    [CascadingParameter] public CreateMapModal CreateMapModal { get; set; }
+    [Parameter] public MapTemplateViewModel? SelectedMapTemplate { get; set; }
+
+    [Parameter] public string? Name { get; set; }
+
+    [Parameter] public EventCallback<string>? NameChanged { get; set; }
+
+    private async Task OnNameChanged(ChangeEventArgs e)
+    {
+        await NameChanged?.InvokeAsync(e.Value.ToString());
+    }
 }

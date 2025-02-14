@@ -76,6 +76,7 @@ img {
 }
 
 .navbar {
+    background-color: transparent !important;
     padding-top: 0px;
     padding-bottom: 0px;
 }
@@ -102,18 +103,19 @@ img {
 .modal-dialog {
     max-width: 80vw;
     width: auto;
-    height: auto;
+    height: 80vh;
 }
 
 .modal-content {
     display: flex;
     flex-direction: column;
-    max-height: 80vh;
+    height: 100%;
 }
 
 .modal-body {
     overflow-y: auto;
     flex-grow: 1;
+    height: 100vh;
 }
 
 .modal-step {

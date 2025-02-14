@@ -3,11 +3,6 @@
 @model IEnumerable<MapViewModel>
 @{
     ViewData["Title"] = "Dashboard";
-
-    var modalViewModel = new ModalViewModel()
-    {
-        Title = "Choose Template"
-    };
 }
 
 <h1>My Maps</h1>
@@ -19,9 +14,13 @@
         </li>
     }
 </ul>
-
-<button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalViewModel.Id">
+@{
+    string modalId = $"modal-{Guid.NewGuid().ToString()}";
+}
+<button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalId">
     <i class="bi bi-plus-lg"></i>
 </button>
 
-<partial name="_CreateMapPartial" model="@modalViewModel" />
+<component type="typeof(CreateMapModal)" render-mode="ServerPrerendered">
+    <param name="Id" value="@modalId" />
+</component>

@@ -2,17 +2,17 @@
 @using MapLab.Services.Contracts
 @using Microsoft.AspNetCore.Components
 
-<CascadingValue Value="this">
-    <Modal>
-        <ModalStep>
-            <ChooseTemplate />
-        </ModalStep>
-        <ModalStep>
-            <NameMap />
-        </ModalStep>
-    </Modal>
-</CascadingValue>
+<Modal>
+    <ModalStep Title="Choose Template">
+        <ChooseTemplate @bind-SelectedMapTemplate="SelectedMapTemplate" />
+    </ModalStep>
+    <ModalStep Title="Name Your Map">
+        <NameMap SelectedMapTemplate="SelectedMapTemplate" @bind-Name="Name" />
+    </ModalStep>
+</Modal>
 
 @code {
+    public string? Name { get; set; }
+
     public MapTemplateViewModel? SelectedMapTemplate { get; set; }
 }

@@ -1,18 +1,25 @@
 ﻿@inject IJSRuntime JS
 
 @code {
-    private int stepsCount = 0;
+    private List<ModalStep> steps = new();
 
-    public int CurrentStep { get; set; } = 0;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
 
-    public int RegisterStep()
+    [Parameter] public string? Id { get; set; }
+
+    public int CurrentStep { get; private set; } = 0;
+
+    public string? Title { get; set; }
+
+    public int RegisterStep(ModalStep step)
     {
-        return stepsCount++;
+        steps.Add(step);
+        return steps.Count - 1;
     }
 
     private void NextStep()
     {
-        if (CurrentStep < stepsCount - 1)
+        if (CurrentStep < steps.Count - 1)
             CurrentStep++;
     }
 
@@ -21,18 +28,13 @@
         if (CurrentStep > 0)
             CurrentStep--;
     }
-
-    private async Task CloseModal()
-    {
-        await JS.InvokeVoidAsync("$('#multiStepModal').modal", "hide");
-    }
 }
 
-<div class="modal fade" id="multiStepModal" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
+<div class="modal fade" id="@Id" tabindex="-1" aria-labelledby="modalTitle" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">Step @(CurrentStep + 1)</h5>
+                <h5 class="modal-title">@Title</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -50,7 +52,7 @@
                     <button type="button" class="btn btn-secondary" @onclick="PrevStep">Back</button>
                 }
 
-                @if (CurrentStep == stepsCount - 1)
+                @if (CurrentStep == steps.Count - 1)
                 {
                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Finish</button>
                 }
@@ -62,12 +64,3 @@
         </div>
     </div>
 </div>
-
-@code {
-    [Parameter] public RenderFragment ChildContent { get; set; }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-    }
-}
