@@ -1,10 +1,7 @@
 ﻿@using MapLab.Web.Models.Templates
 
-<div class="d-flex">
-    <input type="text" class="form-control rounded-pill pl-5" @oninput="OnNameChanged" placeholder="Name"/>
-    <h3>Map: @Name</h3>
-    <h3>Selected Map Template: @SelectedMapTemplate?.Name</h3>
-</div>
+<input type="text" class="form-control rounded-pill pl-5" @oninput="OnNameChanged" placeholder="Name" />
+<SelectedMapTemplateCard SelectedMapTemplate="SelectedMapTemplate" />
 
 @code {
     [Parameter] public MapTemplateViewModel? SelectedMapTemplate { get; set; }

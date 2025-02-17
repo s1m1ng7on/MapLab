@@ -81,6 +81,19 @@ namespace MapLab.Services
                     (!filters.Region.HasValue || mt.Region == filters.Region) &&
                     (!filters.ByMapLab || mt.Profile.UserName == "MapLab"));
 
+        public async Task CreateMapAsync(string name, string mapTemplateId)
+        {
+            Map newMap = new Map()
+            {
+                Name = name,
+                TemplateId = mapTemplateId,
+                ProfileId = _profileService.GetProfileId()
+            };
+
+            await _mapRepository.AddAsync(newMap);
+            await _mapRepository.SaveChangesAsync();
+        }
+
         public async Task UploadMapTemplateAsync(MapTemplate mapTemplate)
         {
             await _mapTemplateRepository.AddAsync(mapTemplate);

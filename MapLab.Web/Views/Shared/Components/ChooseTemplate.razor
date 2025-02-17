@@ -94,15 +94,15 @@ else
 {
     <h2>Search Results</h2>
     <div class="container-fluid">
-        <div class="row flex-nowrap overflow-auto">
-            <ul class="list-unstyled d-flex gap-3 position-relative">
+        <div class="row">
+            <ul class="list-unstyled d-flex flex-wrap gap-3">
                 @foreach (var template in templates)
                 {
                     <li class="d-inline-block">
                         <div class="position-relative">
                             <TemplateCard MapTemplate="@template"
-                            IsSelected="@(SelectedMapTemplate?.Id == template.Id)"
-                            OnSelected="OnTemplateSelected" />
+                                          IsSelected="@(SelectedMapTemplate?.Id == template.Id)"
+                                          OnSelected="OnTemplateSelected" />
                         </div>
                     </li>
                 }

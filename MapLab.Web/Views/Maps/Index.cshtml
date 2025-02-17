@@ -14,13 +14,11 @@
         </li>
     }
 </ul>
+
 @{
     string modalId = $"modal-{Guid.NewGuid().ToString()}";
 }
 <button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalId">
     <i class="bi bi-plus-lg"></i>
 </button>
-
-<component type="typeof(CreateMapModal)" render-mode="ServerPrerendered">
-    <param name="Id" value="@modalId" />
-</component>
+<component type="typeof(CreateMapModal)" render-mode="ServerPrerendered" param-Id="@modalId" />

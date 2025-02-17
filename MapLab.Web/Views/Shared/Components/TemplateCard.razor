@@ -4,6 +4,13 @@
 <div class="card selectable-card @SelectedClass"
      style="width: 18rem;"
      @onclick="SelectTemplate">
+    @if (MapTemplate.ProfileUserName == "MapLab")
+    {
+        <div class="position-absolute top-0 end-0 m-2">
+            <img src="/images/logo/logo32.png"
+                 alt="By MapLab" />
+        </div>
+    }
     <img class="card-img-top"
          src="https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0="
          alt="@MapTemplate.Name Thumbnail" />
@@ -40,6 +47,6 @@
 
     private async Task SelectTemplate()
     {
-        await OnSelected.InvokeAsync(MapTemplate);
+        await OnSelected.InvokeAsync(!IsSelected ? MapTemplate : null);
     }
 }

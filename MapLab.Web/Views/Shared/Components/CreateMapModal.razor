@@ -1,8 +1,10 @@
 ﻿@using MapLab.Web.Models.Templates
 @using MapLab.Services.Contracts
 @using Microsoft.AspNetCore.Components
+@inject IMapService _mapService
 
-<Modal>
+<Modal Id="@Id"
+       OnFinish="OnFinish">
     <ModalStep Title="Choose Template">
         <ChooseTemplate @bind-SelectedMapTemplate="SelectedMapTemplate" />
     </ModalStep>
@@ -12,7 +14,14 @@
 </Modal>
 
 @code {
+    [Parameter] public string? Id { get; set; }
+
     public string? Name { get; set; }
 
     public MapTemplateViewModel? SelectedMapTemplate { get; set; }
+
+    public async Task OnFinish()
+    {
+        await _mapService.CreateMapAsync(Name!, SelectedMapTemplate!.Id!);
+    }
 }

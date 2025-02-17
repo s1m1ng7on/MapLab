@@ -1,0 +1,7 @@
+﻿@using MapLab.Web.Models.Templates
+
+<h3>Selected Map Template: @SelectedMapTemplate?.Name</h3>
+
+@code {
+    [Parameter] public MapTemplateViewModel? SelectedMapTemplate { get; set; }
+}

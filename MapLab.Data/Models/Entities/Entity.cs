@@ -10,5 +10,13 @@ namespace MapLab.Data.Models.Entities
         public DateTime CreatedOn { get; set; } = DateTime.UtcNow;
 
         public DateTime? UpdatedOn { get; set; }
+
+        protected Entity()
+        {
+            if (typeof(TKey) == typeof(string))
+            {
+                Id = (TKey)(object)Guid.NewGuid().ToString();
+            }
+        }
     }
 }

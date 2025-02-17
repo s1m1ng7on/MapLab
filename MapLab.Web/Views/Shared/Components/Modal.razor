@@ -1,19 +1,41 @@
 ﻿@inject IJSRuntime JS
 
 @code {
-    private List<ModalStep> steps = new();
+    private int _currentStep = 0;
 
-    [Parameter] public RenderFragment? ChildContent { get; set; }
+    private List<ModalStep> steps = new();
 
     [Parameter] public string? Id { get; set; }
 
-    public int CurrentStep { get; private set; } = 0;
+    [Parameter] public RenderFragment? ChildContent { get; set; }
+
+    [Parameter] public EventCallback OnFinish { get; set; }
+
+    public int CurrentStep
+    {
+        get => _currentStep;
+        private set
+        {
+            if (value >= 0 && value < steps.Count)
+            {
+                _currentStep = value;
+                Title = steps[_currentStep].Title;
+            }
+        }
+    }
 
     public string? Title { get; set; }
 
     public int RegisterStep(ModalStep step)
     {
         steps.Add(step);
+
+        if (steps.Count == 1)
+        {
+            Title = step.Title;
+            StateHasChanged();
+        }
+
         return steps.Count - 1;
     }
 
@@ -27,6 +49,11 @@
     {
         if (CurrentStep > 0)
             CurrentStep--;
+    }
+
+    private async Task Finish()
+    {
+        await OnFinish.InvokeAsync();
     }
 }
 
@@ -54,7 +81,7 @@
 
                 @if (CurrentStep == steps.Count - 1)
                 {
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Finish</button>
+                    <button type="button" class="btn btn-primary" @onclick="Finish" data-bs-dismiss="modal">Finish</button>
                 }
                 else
                 {
