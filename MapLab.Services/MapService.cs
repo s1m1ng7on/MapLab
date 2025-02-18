@@ -1,5 +1,4 @@
 ﻿using MapLab.Data.Entities;
-using MapLab.Data.Managers;
 using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
@@ -16,33 +15,25 @@ namespace MapLab.Services
         private readonly IDeletableEntityRepository<MapTemplate> _mapTemplateRepository;
 
         private readonly IFileStorageManager _fileStorageManager;
-        private readonly ProfileManager<Profile> _profileManager;
 
         private readonly IProfileService _profileService;
 
-        public MapService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IFileStorageManager fileStorageManager, ProfileManager<Profile> profileManager, IProfileService profileService)
+        public MapService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IFileStorageManager fileStorageManager, IProfileService profileService)
         {
             _mapRepository = mapRepository;
             _mapTemplateRepository = mapTemplateRepository;
 
             _fileStorageManager = fileStorageManager;
-            _profileManager = profileManager;
 
             _profileService = profileService;
         }
 
-        public async Task<IEnumerable<Map>?> GetMapsForProfile(string profileUserName)
-        {
-            var selectedProfileId = string.IsNullOrEmpty(profileUserName)
-                    ? _profileService.GetProfileId()
-                    : (await _profileManager.FindByNameAsync(profileUserName))?.Id;
-
-            return await _mapRepository.AllWithIncludes(q => q
-                .Where(m => m.ProfileId == selectedProfileId)
+        public async Task<IEnumerable<Map>?> GetMapsForProfile(string profileId)
+            => await _mapRepository.AllWithIncludes(q => q
+                .Where(m => m.ProfileId == profileId)
                 .Include(m => m.Profile)
                 .Include(m => m.Template)
             ).ToListAsync();
-        }
 
         public async Task<string> GetMapAsync(string mapId)
         {

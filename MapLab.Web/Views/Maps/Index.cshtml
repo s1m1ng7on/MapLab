@@ -1,13 +1,13 @@
 ﻿@using MapLab.Web.Models.Maps
 @using MapLab.Web.Models.Shared
-@model IEnumerable<MapViewModel>
+@model MapsIndexViewModel
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = Model.IsCurrentProfile ? "My Maps" : Model.ProfileUserName + "'s Maps";
 }
 
-<h1>My Maps</h1>
+<h1>@ViewData["Title"]</h1>
 <ul class="list-unstyled d-flex flex-wrap gap-3">
-    @foreach (var map in Model)
+    @foreach (var map in Model.Maps!)
     {
         <li flex-item>
             <partial name="_MapCardPartial" model="@map" />
@@ -15,10 +15,11 @@
     }
 </ul>
 
-@{
+@if (Model.IsCurrentProfile) {
     string modalId = $"modal-{Guid.NewGuid().ToString()}";
+
+    <button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalId">
+        <i class="bi bi-plus-lg"></i>
+    </button>
+    <component type="typeof(CreateMapModal)" render-mode="ServerPrerendered" param-Id="@modalId" />
 }
-<button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalId">
-    <i class="bi bi-plus-lg"></i>
-</button>
-<component type="typeof(CreateMapModal)" render-mode="ServerPrerendered" param-Id="@modalId" />
