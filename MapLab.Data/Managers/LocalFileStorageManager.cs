@@ -15,16 +15,16 @@ namespace MapLab.Data.Managers
             return await File.ReadAllBytesAsync(filePath);
         }
 
-        public async Task<string> SaveFileAsync(IFormFile file, string entityName, string entityId, string propertyName)
+        public async Task<string> SaveFileAsync(IFormFile file, string tableName, string propertyName, string entityId)
         {
             if (file == null || file.Length == 0)
-                return null;
+                return null!;
 
-            var folderPath = Path.Combine(_storagePath, entityName, entityId);
+            var folderPath = Path.Combine(_storagePath, tableName, propertyName);
             Directory.CreateDirectory(folderPath);
 
             var fileExtension = Path.GetExtension(file.FileName);
-            var filePath = Path.Combine(folderPath, propertyName + fileExtension);
+            var filePath = Path.Combine(folderPath, entityId + fileExtension);
 
             using var stream = new FileStream(filePath, FileMode.Create);
             await file.CopyToAsync(stream);

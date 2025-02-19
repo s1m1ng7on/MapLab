@@ -83,21 +83,14 @@ namespace MapLab
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
             // File storage manager
-            if (builder.Environment.IsDevelopment())
-            {
-                builder.Services.AddTransient<IFileStorageManager, LocalFileStorageManager>();
-            }
-            else
-            {
-                builder.Services.AddTransient<IFileStorageManager, AzureBlobFileStorageManager>();
-            }
+            builder.Services.AddTransient<IFileStorageManager, LocalFileStorageManager>();
 
             builder.Services.AddAutoMapper(typeof(AutoMapperConfiguration).Assembly);
 
             // You can also explicitly register your AutoMapper configuration class like so:
             builder.Services.AddSingleton(provider =>
             {
-                AutoMapperConfiguration.RegisterMappings(AppDomain.CurrentDomain.GetAssemblies()); // Register mappings from all assemblies
+                AutoMapperConfiguration.RegisterMappings(AppDomain.CurrentDomain.GetAssemblies());
                 return AutoMapperConfiguration.MapperInstance;
             });
 
@@ -126,6 +119,8 @@ namespace MapLab
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            app.UseResponseCaching();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

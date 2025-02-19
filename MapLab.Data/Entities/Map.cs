@@ -1,5 +1,4 @@
-﻿using MapLab.Common.Models;
-using MapLab.Data.Models.Entities;
+﻿using MapLab.Data.Models.Entities;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -10,11 +9,9 @@ namespace MapLab.Data.Entities
         [Required]
         public string? Name { get; set; }
 
-        [Required]
-        public SingleFile? ThumbnailPicture { get; set; }
+        public string? ThumbnailFilePath { get; set; }
 
-        [Required]
-        public SingleFile? File { get; set; }
+        public string? FilePath { get; set; }
 
         [ForeignKey(nameof(Template))]
         [Required]

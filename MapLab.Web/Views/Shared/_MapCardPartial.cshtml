@@ -1,30 +1,36 @@
 ﻿@using MapLab.Web.Models.Maps
 @model MapViewModel
 
-<div class="card selectable-card" style="width: 18rem;">
-    <img class="card-img-top"
-         src="https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0="
-         alt="@Model.Name Thumbnail"
-         onmouseover="console.log('mouse over');"
-         onmouseout="console.log('mouse out');">
-    <div class="card-body d-flex justify-content-between align-items-center">
-        <div>
-            <h5 class="card-title">@Model.Name</h5>
-            <h6 class="card-subtitle mb-2 text-muted">@Model.TemplateName</h6>
+<div class="card selectable-card"
+     style="width: 18rem;">
+    <a asp-controller="Maps"
+       asp-action="View"
+       asp-route-Id="@Model.Id">
+        <img class="card-img-top"
+             src="https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0="
+             alt="@Model.Name Thumbnail"
+             onmouseover="console.log('mouse over');"
+             onmouseout="console.log('mouse out');">
+        <div class="card-body d-flex justify-content-between align-items-center">
+            <div>
+                <h5 class="card-title">@Model.Name</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@Model.TemplateName</h6>
+            </div>
+            <div class="hover gap-1">
+                <a class="btn btn-warning rounded-circle"
+                   asp-controller="Maps"
+                   asp-action="View"
+                   asp-route-Id="@Model.Id">
+                    <i class="bi bi-pencil-fill"></i>
+                </a>
+                <a class="btn btn-primary rounded-circle"
+                   asp-controller="Maps"
+                   asp-action="View"
+                   asp-route-Id="@Model.Id">
+                    <i class="bi bi-eye-fill"></i>
+                </a>
+            </div>
         </div>
-        <div class="hover gap-1">
-            <a class="btn btn-warning rounded-circle"
-               asp-controller="Map"
-               asp-action="Index"
-               asp-route-Id="@Model.Id">
-                <i class="bi bi-pencil-fill"></i>
-            </a>
-            <a class="btn btn-primary rounded-circle"
-               asp-controller="Map"
-               asp-action="Index"
-               asp-route-Id="@Model.Id">
-                <i class="bi bi-eye-fill"></i>
-            </a>
-        </div>
-    </div>
+
+    </a>
 </div>

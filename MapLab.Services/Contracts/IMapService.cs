@@ -1,5 +1,6 @@
 ﻿using MapLab.Data.Entities;
 using MapLab.Shared.Models.FilterModels;
+using Microsoft.AspNetCore.Http;
 
 namespace MapLab.Services.Contracts
 {
@@ -7,10 +8,10 @@ namespace MapLab.Services.Contracts
     {
         Task<string> GetMapAsync(string mapId);
         Task<IEnumerable<Map>?> GetMapsForProfile(string profileId);
-        IQueryable<MapTemplate> GetAllMapTemplates();
-        IQueryable<MapTemplate> GetMapTemplates(string name);
         Task CreateMapAsync(string name, string mapTemplateId);
-        Task UploadMapTemplateAsync(MapTemplate mapTemplate);
-        IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel filters);
+        Task UploadMapTemplateAsync(MapTemplate mapTemplate, IFormFile file);
+        IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel? filters = null);
+        IQueryable<MapTemplate> GetRecentMapTemplates();
+        IQueryable<MapTemplate> GetFeaturedMapTemplates();
     }
 }

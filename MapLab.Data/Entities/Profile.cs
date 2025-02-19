@@ -1,5 +1,4 @@
-﻿using MapLab.Common.Models;
-using MapLab.Data.Models.Entities;
+﻿using MapLab.Data.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using System.ComponentModel.DataAnnotations;
 
@@ -7,8 +6,7 @@ namespace MapLab.Data.Entities
 {
     public class Profile : IdentityUser, IAuditInfo
     {
-        [Required]
-        public SingleFile? ProfilePicture { get; set; }
+        public string? ProfilePictureFilePath { get; set; }
 
         [Required]
         public DateTime CreatedOn { get; set; }

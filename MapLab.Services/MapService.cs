@@ -1,9 +1,12 @@
-﻿using MapLab.Data.Entities;
+﻿using AutoMapper;
+using MapLab.Data.Entities;
 using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
 using MapLab.Shared.Models.FilterModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
 using System.Text;
 
@@ -14,14 +17,20 @@ namespace MapLab.Services
         private readonly IDeletableEntityRepository<Map> _mapRepository;
         private readonly IDeletableEntityRepository<MapTemplate> _mapTemplateRepository;
 
+        private readonly IMemoryCache _memoryCache;
+
         private readonly IFileStorageManager _fileStorageManager;
 
         private readonly IProfileService _profileService;
 
-        public MapService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IFileStorageManager fileStorageManager, IProfileService profileService)
+        private const string FeaturedMapTemplatesCacheKey = "FeaturedMapTemplates";
+
+        public MapService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IMemoryCache memoryCache, IFileStorageManager fileStorageManager, IProfileService profileService)
         {
             _mapRepository = mapRepository;
             _mapTemplateRepository = mapTemplateRepository;
+
+            _memoryCache = memoryCache;
 
             _fileStorageManager = fileStorageManager;
 
@@ -60,17 +69,47 @@ namespace MapLab.Services
             return completeMapJsonObject.ToString();
         }
 
-        public IQueryable<MapTemplate> GetAllMapTemplates() => _mapTemplateRepository.AllWithIncludes(q => q
-            .Include(mt => mt.Profile)
-        );
+        public IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel? filters = null)
+        {
+            var query = _mapTemplateRepository.AllWithIncludes(q => q
+                .Include(mt => mt.Profile));
 
-        public IQueryable<MapTemplate> GetMapTemplates(string name) => GetAllMapTemplates().Where(t => EF.Functions.Like(t.Name, $"%{name}%"));
-
-        public IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel filters) =>
-            GetAllMapTemplates()
-                .Where(mt => (string.IsNullOrEmpty(filters.SearchQuery) || EF.Functions.Like(mt.Name, $"%{filters.SearchQuery}%")) &&
+            if (filters != null)
+            {
+                query = query.Where(mt =>
+                    (string.IsNullOrEmpty(filters.SearchQuery) || EF.Functions.Like(mt.Name, $"%{filters.SearchQuery}%")) &&
                     (!filters.Region.HasValue || mt.Region == filters.Region) &&
-                    (!filters.ByMapLab || mt.Profile.UserName == "MapLab"));
+                    (!filters.ByMapLab || mt.Profile!.UserName == "MapLab")
+                );
+            }
+
+            return query;
+        }
+
+        public IQueryable<MapTemplate> GetRecentMapTemplates()
+            => _mapTemplateRepository.AllWithIncludes(q => q
+                .Include(mt => mt.Maps)
+                .Where(mt => mt.Maps.Any(m => m.ProfileId == _profileService.GetProfileId()))
+                .OrderByDescending(mt => mt.CreatedOn));
+
+        public IQueryable<MapTemplate> GetFeaturedMapTemplates()
+        {
+            if (!_memoryCache.TryGetValue(FeaturedMapTemplatesCacheKey, out IEnumerable<MapTemplate> cachedMapTemplates))
+            {
+                //TO BE CHANGED
+                cachedMapTemplates = GetMapTemplates();
+
+                var nextMonday = DateTime.Now.AddDays(((int)DayOfWeek.Monday - (int)DateTime.Now.DayOfWeek + 7) % 7).Date;
+
+                var cacheEntryOptions = new MemoryCacheEntryOptions()
+                    .SetAbsoluteExpiration(nextMonday);
+
+                _memoryCache.Set(FeaturedMapTemplatesCacheKey, cachedMapTemplates, cacheEntryOptions);
+            }
+
+            return cachedMapTemplates!.AsQueryable();
+        }
+
 
         public async Task CreateMapAsync(string name, string mapTemplateId)
         {
@@ -85,9 +124,10 @@ namespace MapLab.Services
             await _mapRepository.SaveChangesAsync();
         }
 
-        public async Task UploadMapTemplateAsync(MapTemplate mapTemplate)
+        public async Task UploadMapTemplateAsync(MapTemplate mapTemplate, IFormFile file)
         {
             await _mapTemplateRepository.AddAsync(mapTemplate);
+            await _fileStorageManager.SaveFileAsync(file, "MapTemplates", "File", mapTemplate.Id!);
             await _mapTemplateRepository.SaveChangesAsync();
         }
     }

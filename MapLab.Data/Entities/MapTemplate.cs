@@ -1,7 +1,5 @@
-﻿using MapLab.Common.Models;
-using MapLab.Data.Models.Entities;
+﻿using MapLab.Data.Models.Entities;
 using MapLab.Data.Models.Enums;
-using Microsoft.AspNetCore.Http;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -15,8 +13,9 @@ namespace MapLab.Data.Entities
         [Required]
         public Region Region { get; set; }
 
-        [Required]
-        public SingleFile? File { get; set; }
+        public string? ThumbnailFilePath { get; set; }
+
+        public string? FilePath { get; set; }
 
         [ForeignKey(nameof(Profile))]
         public string? ProfileId { get; set; }

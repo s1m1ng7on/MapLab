@@ -4,6 +4,7 @@ using MapLab.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250218152914_Added filepath properties for Thumbnail for Map and MapTemplate entities")]
+    partial class AddedfilepathpropertiesforThumbnailforMapandMapTemplateentities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,6 +37,7 @@ namespace Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -52,6 +56,7 @@ namespace Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("ThumbnailFilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedOn")
@@ -78,6 +83,7 @@ namespace Data.Migrations
                         .HasColumnType("datetime2");
 
                     b.Property<string>("FilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<bool>("IsDeleted")
@@ -94,6 +100,7 @@ namespace Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("ThumbnailFilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("UpdatedOn")
@@ -152,6 +159,7 @@ namespace Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("ProfilePictureFilePath")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("SecurityStamp")
@@ -180,7 +188,7 @@ namespace Data.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("MapLab.Data.Entities.ProfileCreatedMapTemplate", b =>
+            modelBuilder.Entity("MapLab.Data.Entities.ProfileRecentMapTemplate", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -205,7 +213,7 @@ namespace Data.Migrations
 
                     b.HasIndex("ProfileId");
 
-                    b.ToTable("ProfileRecentMapTemplates");
+                    b.ToTable("ProfileRecentMapTemplate");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -374,7 +382,7 @@ namespace Data.Migrations
                     b.Navigation("Profile");
                 });
 
-            modelBuilder.Entity("MapLab.Data.Entities.ProfileCreatedMapTemplate", b =>
+            modelBuilder.Entity("MapLab.Data.Entities.ProfileRecentMapTemplate", b =>
                 {
                     b.HasOne("MapLab.Data.Entities.MapTemplate", "MapTemplate")
                         .WithMany("ProfileRecentMapTemplates")

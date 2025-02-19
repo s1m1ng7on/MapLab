@@ -1,0 +1,49 @@
+﻿@using MapLab.Common.Extensions
+@using MapLab.Data.Models.Enums
+@model MapTemplateViewModel
+@{
+    ViewData["Title"] = "Create Map Template";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-header bg-primary text-white text-center">
+                    <h4>@ViewData["Title"]</h4>
+                </div>
+                <div class="card-body">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label">Map Name</label>
+                            <input type="text" class="form-control" id="mapName" asp-for="Name" placeholder="Enter map name" value="@Model.Name">
+                            <span class="text-danger" asp-validation-for="Name"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Region" class="form-label">Region</label>
+                            <select class="form-select rounded-pill" asp-for="Region">
+                                <option value="" class="text-muted" selected>Select Region</option>
+                                @foreach (var region in Enum.GetValues<Region>())
+                                {
+                                    <option value="@region">@region.GetDisplayName()</option>
+                                }
+                            </select>
+                            <span class="text-danger" asp-validation-for="Region"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="File" class="form-label">Upload Map File</label>
+                            <input type="file" class="form-control" asp-for="File" accept=".geojson,.json">
+                            <span class="text-danger" asp-validation-for="File"></span>
+                        </div>
+
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success">Upload</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -8,7 +8,6 @@ using Profile = MapLab.Data.Entities.Profile;
 
 namespace MapLab.Web.Controllers
 {
-    [Route("[controller]")]
     public class MapsController : Controller
     {
         private readonly IProfileService _profileService;
@@ -24,14 +23,16 @@ namespace MapLab.Web.Controllers
             _mapper = mapper;
         }
 
-        [Route("{profileUserName?}")]
+        [Route("[controller]/{profileUserName?}")]
         public async Task<IActionResult> Index(string profileUserName)
         {
             var (profileId, isCurrentProfile) = string.IsNullOrEmpty(profileUserName)
                 ? (_profileService.GetProfileId(), true)
-                : ((await _profileManager.FindByNameAsync(profileUserName)).Id, false);
+                : (await _profileManager.FindByNameAsync(profileUserName) is var profile
+                    ? (profile?.Id, profile?.Id == _profileService.GetProfileId())
+                    : throw new Exception("Profile not found"));
 
-            var maps = await _mapService.GetMapsForProfile(profileId);
+            var maps = await _mapService.GetMapsForProfile(profileId!);
 
             var mapsIndexViewModel = new MapsIndexViewModel()
             {
@@ -41,6 +42,27 @@ namespace MapLab.Web.Controllers
             };
 
             return View(mapsIndexViewModel);
+        }
+
+        [Route("map/{id}")]
+        public IActionResult View(string id)
+        {
+            Response.Cookies.Append("mapIdCookie", id, new CookieOptions
+            {
+                Expires = DateTimeOffset.Now.AddMinutes(1),
+                HttpOnly = false,
+                Secure = true,
+                SameSite = SameSiteMode.Strict
+            });
+
+            return View();
+        }
+
+        [Route("api/map/{id}")]
+        public async Task<IActionResult> GetMapApi(string id)
+        {
+            var map = await _mapService.GetMapAsync(id);
+            return Json(map);
         }
     }
 }

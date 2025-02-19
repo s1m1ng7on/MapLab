@@ -86,6 +86,10 @@ img {
     width: auto;
 }
 
+.card a {
+    text-decoration: none;
+}
+
 .selectable-card {
     transition: transform 0.3s ease, box-shadow 0.2s ease-in-out;
     cursor: pointer;
