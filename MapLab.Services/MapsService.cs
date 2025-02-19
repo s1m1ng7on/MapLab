@@ -12,7 +12,7 @@ using System.Text;
 
 namespace MapLab.Services
 {
-    public class MapService : IMapService
+    public class MapsService : IMapsService
     {
         private readonly IDeletableEntityRepository<Map> _mapRepository;
         private readonly IDeletableEntityRepository<MapTemplate> _mapTemplateRepository;
@@ -25,7 +25,7 @@ namespace MapLab.Services
 
         private const string FeaturedMapTemplatesCacheKey = "FeaturedMapTemplates";
 
-        public MapService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IMemoryCache memoryCache, IFileStorageManager fileStorageManager, IProfileService profileService)
+        public MapsService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IMemoryCache memoryCache, IFileStorageManager fileStorageManager, IProfileService profileService)
         {
             _mapRepository = mapRepository;
             _mapTemplateRepository = mapTemplateRepository;
@@ -37,17 +37,16 @@ namespace MapLab.Services
             _profileService = profileService;
         }
 
-        public async Task<IEnumerable<Map>?> GetMapsForProfile(string profileId)
-            => await _mapRepository.AllWithIncludes(q => q
+        public IEnumerable<Map>? GetMapsForProfile(string profileId)
+            => _mapRepository.All()
                 .Where(m => m.ProfileId == profileId)
                 .Include(m => m.Profile)
-                .Include(m => m.Template)
-            ).ToListAsync();
+                .Include(m => m.Template);
 
         public async Task<string> GetMapAsync(string mapId)
         {
-            var mapEntity = await _mapRepository.AllWithIncludes(q => q
-                .Include(q => q.Template))
+            var mapEntity = await _mapRepository.All()
+                .Include(q => q.Template)
                 .FirstOrDefaultAsync(m => m.Id == mapId);
 
             //TO BE ENABLED ONCE FILE STORAGE SYSTEM IS COMPLETE
@@ -71,8 +70,9 @@ namespace MapLab.Services
 
         public IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel? filters = null)
         {
-            var query = _mapTemplateRepository.AllWithIncludes(q => q
-                .Include(mt => mt.Profile));
+            var query = _mapTemplateRepository.All()
+                .Include(mt => mt.Profile)
+                .AsQueryable();
 
             if (filters != null)
             {
@@ -86,18 +86,18 @@ namespace MapLab.Services
             return query;
         }
 
-        public IQueryable<MapTemplate> GetRecentMapTemplates()
-            => _mapTemplateRepository.AllWithIncludes(q => q
+        public IEnumerable<MapTemplate> GetRecentMapTemplates()
+            => _mapTemplateRepository.All()
                 .Include(mt => mt.Maps)
                 .Where(mt => mt.Maps.Any(m => m.ProfileId == _profileService.GetProfileId()))
-                .OrderByDescending(mt => mt.CreatedOn));
+                .OrderByDescending(mt => mt.CreatedOn);
 
-        public IQueryable<MapTemplate> GetFeaturedMapTemplates()
+        public IEnumerable<MapTemplate> GetFeaturedMapTemplates()
         {
             if (!_memoryCache.TryGetValue(FeaturedMapTemplatesCacheKey, out IEnumerable<MapTemplate> cachedMapTemplates))
             {
                 //TO BE CHANGED
-                cachedMapTemplates = GetMapTemplates();
+                cachedMapTemplates = GetMapTemplates().ToList();
 
                 var nextMonday = DateTime.Now.AddDays(((int)DayOfWeek.Monday - (int)DateTime.Now.DayOfWeek + 7) % 7).Date;
 
@@ -107,7 +107,7 @@ namespace MapLab.Services
                 _memoryCache.Set(FeaturedMapTemplatesCacheKey, cachedMapTemplates, cacheEntryOptions);
             }
 
-            return cachedMapTemplates!.AsQueryable();
+            return cachedMapTemplates;
         }
 
 

@@ -12,10 +12,10 @@ namespace MapLab.Web.Controllers
     {
         private readonly IProfileService _profileService;
         private readonly ProfileManager<Profile> _profileManager;
-        private readonly IMapService _mapService;
+        private readonly IMapsService _mapService;
         private readonly IMapper _mapper;
 
-        public MapsController(IProfileService profileService, ProfileManager<Profile> profileManager, IMapService mapService, IMapper mapper)
+        public MapsController(IProfileService profileService, ProfileManager<Profile> profileManager, IMapsService mapService, IMapper mapper)
         {
             _profileService = profileService;
             _profileManager = profileManager;
@@ -32,7 +32,7 @@ namespace MapLab.Web.Controllers
                     ? (profile?.Id, profile?.Id == _profileService.GetProfileId())
                     : throw new Exception("Profile not found"));
 
-            var maps = await _mapService.GetMapsForProfile(profileId!);
+            var maps = _mapService.GetMapsForProfile(profileId!);
 
             var mapsIndexViewModel = new MapsIndexViewModel()
             {

@@ -90,13 +90,13 @@ namespace MapLab
             // You can also explicitly register your AutoMapper configuration class like so:
             builder.Services.AddSingleton(provider =>
             {
-                AutoMapperConfiguration.RegisterMappings(AppDomain.CurrentDomain.GetAssemblies());
+                AutoMapperConfiguration.RegisterMappings(AppDomain.CurrentDomain.GetAssemblies()); // Register mappings from all assemblies
                 return AutoMapperConfiguration.MapperInstance;
             });
 
             // Application services
             builder.Services.AddTransient<IProfileService, ProfileService>();
-            builder.Services.AddTransient<IMapService, MapService>();
+            builder.Services.AddTransient<IMapsService, MapsService>();
         }
 
         private static void Configure(this WebApplication app)
@@ -119,8 +119,6 @@ namespace MapLab
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-
-            app.UseResponseCaching();
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

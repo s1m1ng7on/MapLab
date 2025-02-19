@@ -11,10 +11,10 @@ namespace MapLab.Web.Areas.Admin.Controllers
     [Authorize(Roles = "Admin")]
     public class MapTemplatesController : Controller
     {
-        private readonly IMapService _mapService;
+        private readonly IMapsService _mapService;
         private readonly IMapper _mapper;
 
-        public MapTemplatesController(IMapService mapService, IMapper mapper)
+        public MapTemplatesController(IMapsService mapService, IMapper mapper)
         {
             _mapService = mapService;
             _mapper = mapper;

@@ -8,9 +8,9 @@ namespace MapLab.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IMapService _mapService;
+        private readonly IMapsService _mapService;
 
-        public HomeController(ILogger<HomeController> logger, IMapService mapService)
+        public HomeController(ILogger<HomeController> logger, IMapsService mapService)
         {
             _logger = logger;
             _mapService = mapService;

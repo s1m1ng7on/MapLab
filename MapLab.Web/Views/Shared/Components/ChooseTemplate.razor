@@ -3,12 +3,13 @@
 @using MapLab.Shared.Models.FilterModels
 @using MapLab.Web.Models.Templates
 @using Microsoft.AspNetCore.Components.Forms
-@inject MapLab.Services.Contracts.IMapService _mapService
+@inject MapLab.Services.Contracts.IMapsService _mapService
 @inject AutoMapper.IMapper _mapper
 
+<div class="container">
 <div class="row">
     <div class="search-bar col-12 col-md-8 position-relative">
-        <input type="text" class="form-control rounded-pill pl-5" @oninput="OnSearch" placeholder="Search" />
+        <input type="text" class="form-control rounded-pill h-100" @oninput="OnSearch" placeholder="Search" />
         <span class="position-absolute icon-container">
             <i class="bi bi-search"></i>
         </span>
@@ -20,7 +21,7 @@
         }
     </div>
     <div class="col-6 col-md-4 d-flex align-items-center">
-        <InputSelect class="form-select rounded-pill" @bind-Value="filters.Region" TValue="Region?">
+        <InputSelect class="form-select rounded-pill h-100" @bind-Value="filters.Region" TValue="Region?">
             <option class="text-muted" value="">Region</option>
             @foreach (var region in Enum.GetValues<Region>())
             {
@@ -39,9 +40,9 @@
     var recentMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapService.GetRecentMapTemplates());
     if (recentMapTemplates.Count > 0)
     {
-        <h2>Recents</h2>
+        <h2 class="pt-4 pb-2 fs-4">Recents</h2>
         <div class="container-fluid">
-            <div class="row flex-nowrap overflow-auto">
+            <div class="card-wrapper row flex-nowrap overflow-auto">
                 <ul class="list-unstyled d-flex gap-3 position-relative">
                     @foreach (var template in recentMapTemplates)
                     {
@@ -60,7 +61,7 @@
 
     <h2>By MapLab</h2>
     <div class="container-fluid">
-        <div class="row flex-nowrap overflow-auto">
+        <div class="card-wrapper row flex-nowrap overflow-auto">
             <ul class="list-unstyled d-flex gap-3 position-relative">
                 @foreach (var template in mapLabMapTemplates)
                 {
@@ -78,9 +79,9 @@
 
     <h2>Featured</h2>
     <div class="container-fluid">
-        <div class="row flex-nowrap overflow-auto">
+        <div class="card-wrapper row flex-nowrap overflow-auto">
             <ul class="list-unstyled d-flex gap-3 position-relative">
-                @foreach (var template in templates)
+                @foreach (var template in featuredMapTemplates)
                 {
                     <li class="d-inline-block">
                         <div class="position-relative">
@@ -124,6 +125,7 @@ else
         </div>
     </div>
 }
+</div>
 
 @code {
     private List<MapTemplateViewModel> mapLabMapTemplates = new();
@@ -140,7 +142,7 @@ else
         var templateEntities = _mapService.GetMapTemplates();
         templates = _mapper.Map<List<MapTemplateViewModel>>(templateEntities);
         mapLabMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapService.GetMapTemplates(new MapTemplateFiltersModel() { ByMapLab = true }).OrderBy(mt => mt.Region));
-        //featuredMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapService.GetFeaturedMapTemplates());
+        featuredMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapService.GetFeaturedMapTemplates());
     }
 
     private void OnSearch(ChangeEventArgs e)

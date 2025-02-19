@@ -4,14 +4,14 @@ using Microsoft.AspNetCore.Http;
 
 namespace MapLab.Services.Contracts
 {
-    public interface IMapService
+    public interface IMapsService
     {
         Task<string> GetMapAsync(string mapId);
-        Task<IEnumerable<Map>?> GetMapsForProfile(string profileId);
+        IEnumerable<Map>? GetMapsForProfile(string profileId);
         Task CreateMapAsync(string name, string mapTemplateId);
         Task UploadMapTemplateAsync(MapTemplate mapTemplate, IFormFile file);
         IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel? filters = null);
-        IQueryable<MapTemplate> GetRecentMapTemplates();
-        IQueryable<MapTemplate> GetFeaturedMapTemplates();
+        IEnumerable<MapTemplate> GetRecentMapTemplates();
+        IEnumerable<MapTemplate> GetFeaturedMapTemplates();
     }
 }
