@@ -91,26 +91,23 @@ img {
 }
 
 .selectable-card {
-    transition: transform 0.3s ease, box-shadow, border-color 0.3s ease-in-out;
+    transition: transform 0.3s ease, box-shadow 0.3s ease-in-out;
     cursor: pointer;
-/*    border: 4px solid transparent;*/
 }
 
 .selectable-card:hover {
     transform: scale(1.1);
 }
 
-    .selectable-card.selected {
-/*        border-color: #318CE7;*/
-                    box-shadow: inset 0 0 0 4px #318CE7;
-/*        border-radius: var(--bs-card-inner-border-radius);*/
-    }
+.selectable-card.selected {
+    box-shadow: inset 0 0 0 4px var(--bs-primary);
+}
 
-    .modal-dialog {
-        max-width: 80vw;
-        width: auto;
-        height: 80vh;
-    }
+.modal-dialog {
+    max-width: 80vw;
+    width: auto;
+    height: 80vh;
+}
 
 .modal-content {
     display: flex;

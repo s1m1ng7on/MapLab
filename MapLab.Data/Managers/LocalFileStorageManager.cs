@@ -1,4 +1,5 @@
 ﻿using MapLab.Data.Managers.Contracts;
+using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
 
 namespace MapLab.Data.Managers
@@ -16,20 +17,30 @@ namespace MapLab.Data.Managers
         }
 
         public async Task<string> SaveFileAsync(IFormFile file, string tableName, string propertyName, string entityId)
+            => await SaveFileAsync(file.OpenReadStream(), file.Name, tableName, propertyName, entityId);
+
+        public async Task<string> SaveFileAsync(IBrowserFile file, string tableName, string propertyName, string entityId)
+            => await SaveFileAsync(file.OpenReadStream(), file.Name, tableName, propertyName, entityId);
+
+        private async Task<string> SaveFileAsync(Stream fileStream, string fileName, string tableName, string propertyName, string entityId)
         {
-            if (file == null || file.Length == 0)
+            if (fileStream == null)
                 return null!;
 
             var folderPath = Path.Combine(_storagePath, tableName, propertyName);
             Directory.CreateDirectory(folderPath);
 
-            var fileExtension = Path.GetExtension(file.FileName);
+            var fileExtension = Path.GetExtension(fileName);
             var filePath = Path.Combine(folderPath, entityId + fileExtension);
 
-            using var stream = new FileStream(filePath, FileMode.Create);
-            await file.CopyToAsync(stream);
+            if (File.Exists(filePath))
+                File.Delete(filePath);
 
-            return filePath;
+            await using var stream = new FileStream(filePath, FileMode.Create);
+            await fileStream.CopyToAsync(stream);
+
+            var relativePath = filePath.Replace("wwwroot", string.Empty);
+            return relativePath;
         }
     }
 }

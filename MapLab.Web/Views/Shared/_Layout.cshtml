@@ -4,14 +4,11 @@
 
 <header>
     <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow">
-        <div class="container-fluid position-relative">
-            <!-- Logo (Left) -->
+        <div class="container position-relative">
             <a class="navbar-brand d-flex align-items-baseline" asp-area="" asp-controller="Home" asp-action="Index">
                 <img src="~/images/logo/logo256.png" alt="MapLab Logo" class="navbar-logo" />
                 <span class="fs-1">MapLab</span>
             </a>
-
-            <!-- Centered Navbar Links -->
             <div class="position-absolute start-50 translate-middle-x">
                 <ul class="navbar-nav d-flex flex-row gap-3">
                     <li class="nav-item">
@@ -25,8 +22,6 @@
                     </li>
                 </ul>
             </div>
-
-            <!-- Login (Right) -->
             <div class="ms-auto">
                 <partial name="_LoginPartial" />
             </div>

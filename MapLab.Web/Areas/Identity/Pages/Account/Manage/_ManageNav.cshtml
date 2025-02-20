@@ -7,8 +7,6 @@
 
     var profile = await ProfileManager.GetUserAsync(User);
     var isAdmin = profile != null && await ProfileManager.IsInRoleAsync(profile, "Admin");
-
-    var userWithPfp = new MapLab.Data.Entities.Profile() { ProfilePictureFilePath = "https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/364e52dc-32da-493c-a45a-e121ef3fe06c/de9vyhn-ebc4dc68-44bc-4d86-ae2f-e39740471e8f.png/v1/fill/w_894,h_894,q_70,strp/dream_pfp_by_shirsis_de9vyhn-pre.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7ImhlaWdodCI6Ijw9MTI4MCIsInBhdGgiOiJcL2ZcLzM2NGU1MmRjLTMyZGEtNDkzYy1hNDVhLWUxMjFlZjNmZTA2Y1wvZGU5dnlobi1lYmM0ZGM2OC00NGJjLTRkODYtYWUyZi1lMzk3NDA0NzFlOGYucG5nIiwid2lkdGgiOiI8PTEyODAifV1dLCJhdWQiOlsidXJuOnNlcnZpY2U6aW1hZ2Uub3BlcmF0aW9ucyJdfQ.gob7sMM_ugBRqqk7i6EIxO5092qHJTWmxGyamv0MtrE" };
 }
 
 <div class="sidebar d-flex flex-column">
@@ -19,7 +17,7 @@
     <button class="btn btn-outline-light mb-3" id="toggleSidebar">Toggle</button>
     <div class="text-center mb-4 p-4">
         <a asp-controller="Profile" asp-action="Index">
-            <img src="@userWithPfp.ProfilePictureFilePath" alt="(@profile.UserName)'s Profile Picture'" class="profile-picture img-fluid rounded-circle">
+            <img src="@profile.ProfilePictureFilePath" alt="@(profile.UserName)'s Profile Picture'" class="profile-picture img-fluid rounded-circle">
         </a>
         <h4 class="mt-3 text-wrap">
             @if (isAdmin)

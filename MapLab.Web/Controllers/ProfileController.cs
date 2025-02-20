@@ -33,7 +33,7 @@ namespace MapLab.Web.Controllers
             var profileViewModel = _mapper.Map<ProfileViewModel>(profile);
 
             var currentProfile = await _profileManager.GetUserAsync(User);
-            profileViewModel.IsCurrentProfile = currentProfile.Id == profile.Id;
+            profileViewModel.IsCurrentProfile = currentProfile?.Id == profile.Id;
             profileViewModel.IsAdmin = await _profileManager.IsInRoleAsync(profile, "Admin");
 
             return View(profileViewModel);

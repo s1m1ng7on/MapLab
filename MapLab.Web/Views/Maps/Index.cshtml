@@ -5,15 +5,17 @@
     ViewData["Title"] = Model.IsCurrentProfile ? "My Maps" : Model.ProfileUserName + "'s Maps";
 }
 
-<h1>@ViewData["Title"]</h1>
-<ul class="list-unstyled d-flex flex-wrap gap-3">
-    @foreach (var map in Model.Maps!)
-    {
-        <li flex-item>
-            <partial name="_MapCardPartial" model="@map" />
-        </li>
-    }
-</ul>
+<div class="container py-4">
+    <h1>@ViewData["Title"]</h1>
+    <ul class="list-unstyled d-flex flex-wrap gap-3">
+        @foreach (var map in Model.Maps!)
+        {
+            <li flex-item>
+                <partial name="_MapCardPartial" model="@map" />
+            </li>
+        }
+    </ul>
+</div>
 
 @if (Model.IsCurrentProfile) {
     string modalId = $"modal-{Guid.NewGuid().ToString()}";

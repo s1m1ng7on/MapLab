@@ -8,6 +8,8 @@ namespace MapLab.Web.Models.Profile
     {
         public string? UserName { get; set; }
 
+        public string? ProfilePictureFilePath { get; set; }
+
         public ICollection<Map>? Maps { get; set; }
 
         public DateTime CreatedOn { get; set; }

@@ -20,7 +20,7 @@
             </button>
         }
     </div>
-    <div class="col-6 col-md-4 d-flex align-items-center">
+    <div class="col-6 col-md-4 d-flex gap-3 align-items-center">
         <InputSelect class="form-select rounded-pill h-100" @bind-Value="filters.Region" TValue="Region?">
             <option class="text-muted" value="">Region</option>
             @foreach (var region in Enum.GetValues<Region>())
@@ -40,7 +40,7 @@
     var recentMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapService.GetRecentMapTemplates());
     if (recentMapTemplates.Count > 0)
     {
-        <h2 class="pt-4 pb-2 fs-4">Recents</h2>
+        <h3 class="pt-4 pb-2 fs-4">Recents</h3>
         <div class="container-fluid">
             <div class="card-wrapper row flex-nowrap overflow-auto">
                 <ul class="list-unstyled d-flex gap-3 position-relative">
@@ -59,7 +59,7 @@
         </div>
     }
 
-    <h2>By MapLab</h2>
+    <h3 class="pt-4 pb-2 fs-4">By MapLab</h3>
     <div class="container-fluid">
         <div class="card-wrapper row flex-nowrap overflow-auto">
             <ul class="list-unstyled d-flex gap-3 position-relative">
@@ -77,7 +77,7 @@
         </div>
     </div>
 
-    <h2>Featured</h2>
+    <h3 class="pt-4 pb-2 fs-4">Featured</h3>
     <div class="container-fluid">
         <div class="card-wrapper row flex-nowrap overflow-auto">
             <ul class="list-unstyled d-flex gap-3 position-relative">
@@ -97,7 +97,7 @@
 }
 else
 {
-    <h2>Search Results</h2>
+    <h3 class="pt-4 pb-2 fs-4">Search Results</h3>
     <div class="container-fluid">
         <div class="row">
             @if (templates.Count == 0)

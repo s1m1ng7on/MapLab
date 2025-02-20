@@ -1,4 +1,5 @@
 ﻿@page "/profile/settings"
+@using MapLab.Web.Views.Shared.Components
 @model IndexModel
 @{
     ViewData["Title"] = "Profile";
@@ -20,6 +21,7 @@
                 <label asp-for="Input.PhoneNumber" class="form-label"></label>
                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span>
             </div>
+            <component type="typeof(ProfilePictureFileInput)" render-mode="ServerPrerendered" />
             <button id="update-profile-button" type="submit" class="w-100 btn btn-lg btn-primary">Save</button>
         </form>
     </div>
