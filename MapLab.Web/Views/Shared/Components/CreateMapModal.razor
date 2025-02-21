@@ -4,24 +4,29 @@
 @inject IMapsService _mapService
 
 <Modal Id="@Id"
-       OnFinish="OnFinish">
-    <ModalStep Title="Choose Template">
+       OnFinish="OnFinish"
+       @ref="modal">
+    <ModalStep Title="Choose Map Template">
         <ChooseTemplate @bind-SelectedMapTemplate="SelectedMapTemplate" />
     </ModalStep>
     <ModalStep Title="Name Your Map">
-        <NameMap SelectedMapTemplate="SelectedMapTemplate" @bind-Name="Name" />
+        <NameMap SelectedMapTemplate="SelectedMapTemplate" @bind-Name="Name" @bind-IsPublic="IsPublic" OnSelectedMapCardClicked="modal.PrevStep" />
     </ModalStep>
 </Modal>
 
 @code {
+    private Modal modal;
+
     [Parameter] public string? Id { get; set; }
 
     public string? Name { get; set; }
+
+    public bool IsPublic { get; set; }
 
     public MapTemplateViewModel? SelectedMapTemplate { get; set; }
 
     public async Task OnFinish()
     {
-        await _mapService.CreateMapAsync(Name!, SelectedMapTemplate!.Id!);
+        await _mapService.CreateMapAsync(Name!, SelectedMapTemplate!.Id!, IsPublic);
     }
 }

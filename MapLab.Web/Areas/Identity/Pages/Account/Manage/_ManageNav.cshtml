@@ -9,12 +9,7 @@
     var isAdmin = profile != null && await ProfileManager.IsInRoleAsync(profile, "Admin");
 }
 
-<div class="sidebar d-flex flex-column">
-    
-</div>
-
 <div class="sidebar d-flex flex-column flex-shrink-0 p-3" id="sidebar">
-    <button class="btn btn-outline-light mb-3" id="toggleSidebar">Toggle</button>
     <div class="text-center mb-4 p-4">
         <a asp-controller="Profile" asp-action="Index">
             <img src="@profile.ProfilePictureFilePath" alt="@(profile.UserName)'s Profile Picture'" class="profile-picture img-fluid rounded-circle">
@@ -27,32 +22,45 @@
             @profile.UserName
         </h4>
     </div>
-    <ul class="nav nav-pills flex-column m-3">
-        <li class="nav-item"><a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">Profile</a></li>
+    <span class="fs-4 me-2 mb-3 mb-md-0 text-light text-center text-decoration-none">Settings</span>
+    <hr />
+    <ul class="nav nav-pills flex-column">
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.IndexNavClass(ViewContext)" id="profile" asp-page="./Index">
+                <i class="bi bi-person-fill"></i>
+                <span>Profile</span>
+            </a>
+        </li>
         <li class="nav-item"><a class="nav-link @ManageNavPages.EmailNavClass(ViewContext)" id="email" asp-page="./Email">Email</a></li>
-        <li class="nav-item"><a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">Password</a></li>
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.ChangePasswordNavClass(ViewContext)" id="change-password" asp-page="./ChangePassword">
+                <i class="bi bi-person-fill"></i>
+                <span>Password</span>
+            </a>
+        </li>
         @if (hasExternalLogins)
         {
             <li id="external-logins" class="nav-item"><a id="external-login" class="nav-link @ManageNavPages.ExternalLoginsNavClass(ViewContext)" asp-page="./ExternalLogins">External logins</a></li>
         }
         <li class="nav-item"><a class="nav-link @ManageNavPages.TwoFactorAuthenticationNavClass(ViewContext)" id="two-factor" asp-page="./TwoFactorAuthentication">Two-factor authentication</a></li>
-        <li class="nav-item"><a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">Personal data</a></li>
-
-
-
-        <form asp-area="Identity"
-              asp-page="/Account/Logout"
-              asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
-              method="post">
-            <button class="btn btn-danger w-100" type="submit">Logout</button>
-        </form>
+        <li class="nav-item">
+            <a class="nav-link @ManageNavPages.PersonalDataNavClass(ViewContext)" id="personal-data" asp-page="./PersonalData">
+                <i class="bi bi-database-fill"></i>
+                <span>Data</span>
+            </a>
+        </li>
     </ul>
+    <hr />
+    <a class="btn btn-warning w-100"
+       asp-area="Admin"
+       asp-controller="Dashboard">
+        <i class="bi bi-star-fill"></i>
+        Admin Panel
+    </a>
+    <form asp-area="Identity"
+          asp-page="/Account/Logout"
+          asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })"
+          method="post">
+        <button class="btn btn-danger w-100" type="submit">Logout</button>
+    </form>
 </div>
-
-<script>
-    $(document).ready(function () {
-        $('#toggleSidebar').click(function () {
-            $('#sidebar').toggleClass('small');
-        });
-    });
-</script>

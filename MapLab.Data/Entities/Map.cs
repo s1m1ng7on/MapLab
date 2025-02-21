@@ -17,6 +17,9 @@ namespace MapLab.Data.Entities
         [Required]
         public string? TemplateId { get; set; }
 
+        [Required]
+        public bool IsPublic { get; set; }
+
         [ForeignKey(nameof(Profile))]
         [Required]
         public string? ProfileId { get; set; }

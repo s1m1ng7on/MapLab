@@ -37,11 +37,11 @@ namespace MapLab.Services
             _profileService = profileService;
         }
 
-        public IEnumerable<Map>? GetMapsForProfile(string profileId)
+        public IEnumerable<Map>? GetMapsForProfile(string profileId, bool isCurrentProfile)
             => _mapRepository.All()
-                .Where(m => m.ProfileId == profileId)
-                .Include(m => m.Profile)
-                .Include(m => m.Template);
+                    .Where(m => m.ProfileId == profileId && (isCurrentProfile || m.IsPublic))
+                    .Include(m => m.Profile)
+                    .Include(m => m.Template);
 
         public async Task<string> GetMapAsync(string mapId)
         {
@@ -111,12 +111,13 @@ namespace MapLab.Services
         }
 
 
-        public async Task CreateMapAsync(string name, string mapTemplateId)
+        public async Task CreateMapAsync(string name, string mapTemplateId, bool isPublic)
         {
             Map newMap = new Map()
             {
                 Name = name,
                 TemplateId = mapTemplateId,
+                IsPublic= isPublic,
                 ProfileId = _profileService.GetProfileId()
             };
 

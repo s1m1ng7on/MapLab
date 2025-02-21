@@ -75,6 +75,14 @@ img {
     display: flex;
 }
 
+.selectable-card img {
+    transition: all 0.2s ease-in-out;
+}
+
+.selectable-card:hover img.card-img-top {
+    filter: brightness(80%);
+}
+
 .navbar {
     padding-top: 0px;
     padding-bottom: 0px;
@@ -89,10 +97,11 @@ img {
     margin: 0 !important;
 }
 
-.container, .container-fluid {
-    padding-left: 4rem !important;
-    padding-right: 4rem !important;
-}
+/*.container, .container-fluid {
+    max-width: 100% !important;
+    margin-left: 4rem !important;
+    margin-right: 4rem !important;
+}*/
 
 .card a {
     text-decoration: none;
@@ -101,10 +110,6 @@ img {
 .selectable-card {
     transition: transform 0.3s ease, box-shadow 0.3s ease-in-out;
     cursor: pointer;
-}
-
-.selectable-card:hover {
-    transform: scale(1.1);
 }
 
 .selectable-card.selected {
@@ -151,18 +156,6 @@ img {
 .sidebar .nav-link.active, .sidebar .nav-link:hover {
     color: white;
     background-color: #495057;
-}
-
-.sidebar.small {
-    width: 80px;
-}
-
-.sidebar.small .nav-link span {
-    display: none;
-}
-
-.sidebar.small .dropdown strong {
-    display: none;
 }
 
 a img.profile-picture,
@@ -245,4 +238,8 @@ button img.profile-picture:hover {
 
 .card-wrapper ul {
     padding: 15px;
+}
+
+.sidebar a.nav-link i {
+    margin-right: 0.5rem;
 }

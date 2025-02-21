@@ -39,13 +39,13 @@
         return steps.Count - 1;
     }
 
-    private void NextStep()
+    public void NextStep()
     {
         if (CurrentStep < steps.Count - 1)
             CurrentStep++;
     }
 
-    private void PrevStep()
+    public void PrevStep()
     {
         if (CurrentStep > 0)
             CurrentStep--;

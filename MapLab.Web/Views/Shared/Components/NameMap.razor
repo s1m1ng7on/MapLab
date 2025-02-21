@@ -1,17 +1,55 @@
 ﻿@using MapLab.Web.Models.Templates
 
-<input type="text" class="form-control rounded-pill pl-5" @oninput="OnNameChanged" placeholder="Name" />
-<SelectedMapTemplateCard SelectedMapTemplate="SelectedMapTemplate" />
+<div class="row g-3">
+    <div class="col-md-8">
+        <input type="text" class="form-control rounded-pill h-100 ps-4" @oninput="OnNameChanged" placeholder="Name" />
+    </div>
+    <div class="col-md-4">
+        <div class="form-check form-switch h-100 d-flex align-items-center">
+            <input class="form-check-input" type="checkbox" @onchange="OnIsPublicChanged" id="publicSwitch">
+            <label class="form-check-label d-flex ms-2" for="publicSwitch">
+                Public
+                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Public maps can be viewed by other profiles, and may be featured on the MapLab Community page."></i>
+            </label>
+        </div>
+    </div>
+</div>
+
+<h3 class="pt-4 pb-2 fs-4">Selected Map Template</h3>
+<SelectedMapTemplateCard SelectedMapTemplate="SelectedMapTemplate" OnClick="OnSelectedMapTemplateCardClicked" />
+
+<script>
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+      return new bootstrap.Tooltip(tooltipTriggerEl)
+    });
+</script>
 
 @code {
-    [Parameter] public MapTemplateViewModel? SelectedMapTemplate { get; set; }
-
     [Parameter] public string? Name { get; set; }
 
-    [Parameter] public EventCallback<string>? NameChanged { get; set; }
+    [Parameter] public bool IsPublic { get; set; }
+
+    [Parameter] public MapTemplateViewModel? SelectedMapTemplate { get; set; }
+
+    [Parameter] public EventCallback<string> NameChanged { get; set; }
+
+    [Parameter] public EventCallback<bool> IsPublicChanged { get; set; }
+
+    [Parameter] public EventCallback OnSelectedMapCardClicked { get; set; }
 
     private async Task OnNameChanged(ChangeEventArgs e)
     {
-        await NameChanged?.InvokeAsync(e.Value.ToString());
+        await NameChanged.InvokeAsync(e.Value.ToString());
+    }
+
+    private async Task OnIsPublicChanged(ChangeEventArgs e)
+    {
+        await IsPublicChanged.InvokeAsync((bool)e.Value);
+    }
+
+    private async Task OnSelectedMapTemplateCardClicked()
+    {
+        await OnSelectedMapCardClicked.InvokeAsync();
     }
 }

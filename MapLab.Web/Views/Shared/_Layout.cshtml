@@ -4,24 +4,39 @@
 
 <header>
     <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow">
-        <div class="container-fluid">
+        <div class="container">
             <!-- Brand Logo -->
             <a class="navbar-brand d-flex align-items-baseline gap-2" asp-area="" asp-controller="Home" asp-action="Index">
                 <img src="~/images/logo/logo256.png" alt="MapLab Logo" class="navbar-logo" />
-                <span class="fs-1">MapLab</span>
+                <span class="fs-1 d-none d-sm-block">MapLab</span>
             </a>
 
             <!-- Centered Navigation -->
             <div class="position-absolute start-50 translate-middle-x">
                 <ul class="navbar-nav d-flex flex-row gap-3 justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
+                        <a class="nav-link text-dark"
+                           asp-area=""
+                           asp-controller="Home"
+                           asp-action="Index">
+                            Home
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="Community" asp-action="Index">Community</a>
+                        <a class="nav-link text-dark"
+                           asp-area=""
+                           asp-controller="Community"
+                           asp-action="Index">
+                            Community
+                        </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-controller="News" asp-action="Index">News</a>
+                        <a class="nav-link text-dark"
+                           asp-area=""
+                           asp-controller="News"
+                           asp-action="Index">
+                            News
+                        </a>
                     </li>
                 </ul>
             </div>

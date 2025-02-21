@@ -1,7 +1,26 @@
 ﻿@using MapLab.Web.Models.Templates
 
-<h3>Selected Map Template: @SelectedMapTemplate?.Name</h3>
+<div class="row g-3">
+    <div class="col-12">
+        <div class="card position-relative" @onclick="OnClickHandler" >
+            <!-- Image of the map -->
+            <img src="@(SelectedMapTemplate?.ThumbnailFilePath ?? "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=")" class="card-img-top" alt="Map Template" />
+
+            <!-- Overlay with hover effect -->
+            <div class="overlay d-flex justify-content-center align-items-center position-absolute top-0 start-0 w-100 h-100 bg-dark bg-opacity-50 text-white" style="opacity: 0; transition: opacity 0.3s;">
+                <span>Click to change</span>
+            </div>
+        </div>
+    </div>
+</div>
 
 @code {
     [Parameter] public MapTemplateViewModel? SelectedMapTemplate { get; set; }
+
+    [Parameter] public EventCallback OnClick { get; set; }
+
+    private async Task OnClickHandler()
+    {
+        await OnClick.InvokeAsync(null);
+    }
 }

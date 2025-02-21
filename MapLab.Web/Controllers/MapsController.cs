@@ -32,7 +32,7 @@ namespace MapLab.Web.Controllers
                     ? (profile?.Id, profile?.Id == _profileService.GetProfileId())
                     : throw new Exception("Profile not found"));
 
-            var maps = _mapService.GetMapsForProfile(profileId!);
+            var maps = _mapService.GetMapsForProfile(profileId!, isCurrentProfile);
 
             var mapsIndexViewModel = new MapsIndexViewModel()
             {
