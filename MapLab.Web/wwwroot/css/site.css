@@ -76,7 +76,6 @@ img {
 }
 
 .navbar {
-    background-color: transparent !important;
     padding-top: 0px;
     padding-bottom: 0px;
 }
@@ -84,6 +83,15 @@ img {
 .navbar-logo {
     max-height: 48px;
     width: auto;
+}
+
+.navbar-brand {
+    margin: 0 !important;
+}
+
+.container, .container-fluid {
+    padding-left: 4rem !important;
+    padding-right: 4rem !important;
 }
 
 .card a {
@@ -220,10 +228,15 @@ button img.profile-picture:hover {
 }
 
 .profile-picture {
-    width: 100px;
-    height: 100px;
+    width: 132px;
+    height: 132px;
     border-radius: 50%;
     background-color: #6c757d;
+}
+
+.navbar img.profile-picture {
+    width: 64px;
+    height: 64px;
 }
 
 .card-wrapper {

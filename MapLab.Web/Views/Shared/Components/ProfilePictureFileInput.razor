@@ -5,7 +5,7 @@
 @inject IHttpContextAccessor _httpContextAccessor
 
 <InputFile type="file" id="file-input" class="d-none" accept=".jpg,.jpeg,.png" OnChange="OnFileChanged" />
-<img src="@ProfilePictureFilePath" class="profile-picture rounded-pill" @onclick="TriggerFileInput" />
+<img src="@ProfilePictureFilePath" class="profile-picture" @onclick="TriggerFileInput" />
 
 <Modal Id="crop-profile-picture-modal"
        OnFinish="OnImageCropped">

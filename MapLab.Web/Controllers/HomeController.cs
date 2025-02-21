@@ -21,14 +21,10 @@ namespace MapLab.Controllers
             return View();
         }
 
-        public IActionResult Privacy()
+        [Route("NotFound")]
+        public IActionResult NotFound()
         {
             return View();
-        }
-
-        public IActionResult MapTest(string id = "0ed69a24-d677-4ecf-8602-fbb1d8c2cc67")
-        {
-            return View((object)id);
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

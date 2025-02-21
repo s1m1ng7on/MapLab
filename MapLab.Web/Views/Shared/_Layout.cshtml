@@ -3,14 +3,17 @@
 }
 
 <header>
-    <nav class="navbar navbar-expand-sm navbar-light bg-white border-bottom box-shadow">
-        <div class="container position-relative">
-            <a class="navbar-brand d-flex align-items-baseline" asp-area="" asp-controller="Home" asp-action="Index">
+    <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow">
+        <div class="container-fluid">
+            <!-- Brand Logo -->
+            <a class="navbar-brand d-flex align-items-baseline gap-2" asp-area="" asp-controller="Home" asp-action="Index">
                 <img src="~/images/logo/logo256.png" alt="MapLab Logo" class="navbar-logo" />
                 <span class="fs-1">MapLab</span>
             </a>
+
+            <!-- Centered Navigation -->
             <div class="position-absolute start-50 translate-middle-x">
-                <ul class="navbar-nav d-flex flex-row gap-3">
+                <ul class="navbar-nav d-flex flex-row gap-3 justify-content-center">
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a>
                     </li>
@@ -22,12 +25,15 @@
                     </li>
                 </ul>
             </div>
-            <div class="ms-auto">
+
+            <!-- Login Section -->
+            <div class="ms-auto d-flex align-items-center">
                 <partial name="_LoginPartial" />
             </div>
         </div>
     </nav>
 </header>
+
 <div>
     <main role="main">
         @RenderBody()

@@ -33,13 +33,17 @@ namespace MapLab.Services.Mapping
                     // IMapFrom<>
                     foreach (var map in GetFromMaps(types))
                     {
-                        configuration.CreateMap(map.Source, map.Destination);
+                        configuration.CreateMap(map.Source, map.Destination)
+                            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) =>
+                                srcMember is not string || !string.IsNullOrWhiteSpace((string)srcMember)));
                     }
 
                     // IMapTo<>
                     foreach (var map in GetToMaps(types))
                     {
-                        configuration.CreateMap(map.Source, map.Destination);
+                        configuration.CreateMap(map.Source, map.Destination)
+                            .ForAllMembers(opt => opt.Condition((src, dest, srcMember) =>
+                                srcMember is not string || !string.IsNullOrWhiteSpace((string)srcMember)));
                     }
 
                     // IHaveCustomMappings

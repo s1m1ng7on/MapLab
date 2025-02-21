@@ -5,34 +5,31 @@
     ViewData["Title"] = Model.IsCurrentProfile ? "My Profile" : Model.UserName;
 }
 
-<div class="container py-4">
-    <div class="row justify-content-center">
-        <div class="col-md-8 text-center bg-light p-4 rounded shadow">
-            @if (Model.IsCurrentProfile)
+<div class="row justify-content-center">
+    <div class="col-md-8 text-center bg-light p-4 rounded shadow">
+        @if (Model.IsCurrentProfile)
+        {
+            <a asp-area="Identity"
+               asp-page="/Account/Manage/Index">
+                <i class="bi bi-gear-fill"></i>
+            </a>
+        }
+        <img src="@(Model.ProfilePictureFilePath ?? "https://static.vecteezy.com/system/resources/thumbnails/048/334/475/small_2x/a-person-icon-on-a-transparent-background-png.png")"
+             class="rounded-circle border shadow-sm mb-3"
+             alt="Profile Picture"
+             width="150" height="150" />
+        <h1 class="fw-bold">
+            @if (Model.IsAdmin)
             {
-                <a
-                   asp-area="Identity"
-                   asp-page="/Account/Manage/Index">
-                    <i class="bi bi-gear-fill"></i>
-                </a>
+                <i class="bi bi-star-fill text-warning" title="Admin"></i>
             }
-            <img src="@Model.ProfilePictureFilePath"
-                 class="rounded-circle border shadow-sm mb-3"
-                 alt="Profile Picture"
-                 width="150" height="150" />
-            <h1 class="fw-bold">
-                @if (Model.IsAdmin)
-                {
-                    <i class="bi bi-star-fill text-warning" title="Admin"></i>
-                }
-                @Model.UserName
-            </h1>
-            <p class="text-muted">Mapping since @Model.CreatedOn.ToString("MMM d, yyyy")</p>
-        </div>
+            @Model.UserName
+        </h1>
+        <p class="text-muted">Mapping since @Model.CreatedOn.ToString("MMM d, yyyy")</p>
     </div>
-    <div class="row mt-4">
-        <div class="col-12">
-            <!-- Additional content sections go here -->
-        </div>
+</div>
+<div class="row mt-4">
+    <div class="col-12">
+        <!-- Additional content sections go here -->
     </div>
 </div>
