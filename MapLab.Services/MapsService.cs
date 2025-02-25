@@ -1,5 +1,4 @@
-﻿using AutoMapper;
-using MapLab.Data.Entities;
+﻿using MapLab.Data.Entities;
 using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
@@ -43,21 +42,36 @@ namespace MapLab.Services
                     .Include(m => m.Profile)
                     .Include(m => m.Template);
 
-        public async Task<string> GetMapAsync(string mapId)
+        public async Task<Map?> GetMapAsync(string id)
+            => await _mapRepository.All()
+                .Include(m => m.Template)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+        public async Task<string> GetMapJsonAsync(Map map)
         {
-            var mapEntity = await _mapRepository.All()
-                .Include(q => q.Template)
-                .FirstOrDefaultAsync(m => m.Id == mapId);
-
             //TO BE ENABLED ONCE FILE STORAGE SYSTEM IS COMPLETE
-            /*var template = await _fileStorageManager.GetFileAsync(mapEntity?.Template?.File?.Path);
-            var map = await _fileStorageManager.GetFileAsync(mapEntity?.File?.Path);*/
+            var templateFile = await _fileStorageManager.GetFileAsync(map?.Template?.FilePath);
+            //var map = await _fileStorageManager.GetFileAsync(mapEntity?.File?.Path);*/
 
-            var template = await _fileStorageManager.GetFileAsync("C:\\Users\\ITBP\\Desktop\\maptest\\template.json");
-            var map = await _fileStorageManager.GetFileAsync("C:\\Users\\ITBP\\Desktop\\maptest\\map.json");
+            //var template = await _fileStorageManager.GetFileAsync("C:\\Users\\ITBP\\Desktop\\maptest\\template.json");
+            var mapFile = await _fileStorageManager.GetFileAsync("C:\\Users\\ITBP\\Desktop\\maptest\\map.json");
 
-            string templateJson = Encoding.UTF8.GetString(template);
-            string mapJson = Encoding.UTF8.GetString(map);
+            string templateJson = Encoding.UTF8.GetString(templateFile!);
+            //string mapJson = Encoding.UTF8.GetString(map!);
+            string mapJson = @"{
+  ""type"": ""FeatureCollection"",
+  ""features"": [
+    {
+      ""type"": ""Feature"",
+      ""properties"": {
+        ""nuts3"": ""BLG"",
+        ""name"": ""Blagoevgrad"",
+        ""fill"": ""#f0f0f0""
+      }
+    }
+  ]
+}";
+
 
             JObject templateJsonObject = JObject.Parse(templateJson);
             JObject mapJsonObject = JObject.Parse(mapJson);
@@ -127,8 +141,8 @@ namespace MapLab.Services
 
         public async Task UploadMapTemplateAsync(MapTemplate mapTemplate, IFormFile file)
         {
+            mapTemplate.FilePath = await _fileStorageManager.SaveFileAsync(file, "MapTemplates", "File", mapTemplate.Id!);
             await _mapTemplateRepository.AddAsync(mapTemplate);
-            await _fileStorageManager.SaveFileAsync(file, "MapTemplates", "File", mapTemplate.Id!);
             await _mapTemplateRepository.SaveChangesAsync();
         }
     }

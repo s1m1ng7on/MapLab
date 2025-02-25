@@ -1,0 +1,104 @@
+﻿@using MapLab.Services.Contracts
+@using MapLab.Web.Models.Maps
+@inject IMapsService _mapService
+@inject IProfileService _profileService
+@inject IJSRuntime _js
+
+<div id="map-container">
+    <!-- Map will be loaded here -->
+</div>
+@if (CanEdit)
+{
+    <Toolbar @bind-SelectedTool="SelectedTool" />
+    @if (SelectedTool == ToolType.Pinpoint)
+    {
+        <IconPicker @bind-SelectedIcon="SelectedIcon" />
+    }
+    @if (SelectedTool == ToolType.Fill)
+    {
+        <ColorPicker @bind-SelectedColor="FillColor" />
+    }
+}
+<Legend />
+
+@code {
+    [Parameter] public string? Id { get; set; }
+
+    public string? Json { get; set; }
+
+    public bool CanEdit { get; set; }
+
+    private ToolType _selectedTool;
+    public ToolType SelectedTool
+    {
+        get => _selectedTool;
+        set
+        {
+            if (_selectedTool != value)
+            {
+                _selectedTool = value;
+                UpdateSelectedTool();
+            }
+        }
+    }
+
+    private string _fillColor = "#fafafa";
+    public string FillColor
+    {
+        get => _fillColor;
+        set
+        {
+            if (_fillColor != value)
+            {
+                _fillColor = value;
+                UpdateFillColor();
+            }
+        }
+    }
+
+    private string selectedIcon;
+    public string? SelectedIcon
+    {
+        get => selectedIcon;
+        set
+        {
+            if (selectedIcon != value)
+            {
+                selectedIcon = value;
+                UpdateSelectedIcon();
+            }
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var map = await _mapService.GetMapAsync(Id);
+
+        Json = await _mapService.GetMapJsonAsync(map);
+        CanEdit = map.ProfileId == _profileService.GetProfileId();
+        SelectedTool = ToolType.View;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _js.InvokeVoidAsync("mapInterop.loadMap", Json, CanEdit, SelectedTool.ToString(), FillColor);
+        }
+    }
+
+    private async Task UpdateSelectedTool()
+    {
+        await _js.InvokeVoidAsync("mapInterop.updateSelectedTool", SelectedTool.ToString());
+    }
+
+    private async Task UpdateFillColor()
+    {
+        await _js.InvokeVoidAsync("mapInterop.updateFillColor", FillColor);
+    }
+
+    private async Task UpdateSelectedIcon()
+    {
+        await _js.InvokeVoidAsync("mapInterop.updateSelectedIcon", SelectedIcon);
+    }
+}

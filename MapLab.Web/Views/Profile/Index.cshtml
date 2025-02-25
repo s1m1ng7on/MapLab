@@ -17,7 +17,9 @@
         <img src="@(Model.ProfilePictureFilePath ?? "/images/default-profile-picture.png")"
              class="rounded-circle border shadow-sm mb-3"
              alt="Profile Picture"
-             width="150" height="150" />
+             width="150"
+             height="150"
+             asp-append-version="true" />
         <h1 class="fw-bold">
             @if (Model.IsAdmin)
             {

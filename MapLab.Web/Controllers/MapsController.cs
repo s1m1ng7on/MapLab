@@ -44,7 +44,7 @@ namespace MapLab.Web.Controllers
             return View(mapsIndexViewModel);
         }
 
-        [Route("map/{id}")]
+        /*[Route("map/{id}")]
         public IActionResult View(string id)
         {
             Response.Cookies.Append("mapIdCookie", id, new CookieOptions
@@ -56,13 +56,13 @@ namespace MapLab.Web.Controllers
             });
 
             return View();
-        }
+        }*/
 
-        [Route("api/map/{id}")]
-        public async Task<IActionResult> GetMapApi(string id)
+        //BLAZOR TEST
+        [Route("map/{id}")]
+        public async Task<IActionResult> View(string id)
         {
-            var map = await _mapService.GetMapAsync(id);
-            return Json(map);
+            return View("BlazorView", id);
         }
     }
 }

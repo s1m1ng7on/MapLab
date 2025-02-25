@@ -1,0 +1,46 @@
+﻿<div class="color-picker">
+    <div class="color-grid">
+        @foreach (var color in colors)
+        {
+            <label class="color-option">
+                <input type="checkbox" class="d-none" value="@color" checked="@(SelectedColor == color)"
+                       @onchange="() => OnColorChanged(color)" />
+                <span class="color-switch" style="background-color: @color;"></span>
+            </label>
+        }
+        <label class="color-option">
+            <input type="color" class="position-absolute opacity-0 w-0 h-0" value="@customColor" @onchange="OnCustomColorChanged" />
+            <span class="color-switch" style="background-color: @customColor;">
+                <i class="bi bi-palette-fill"></i>
+            </span>
+        </label>
+    </div>
+</div>
+
+@code {
+    private string[] colors = new[]
+    {
+        "#8b0000", "#ff0000", "#dc143c", "#ff6347", "#ff4500",
+        "#ff8c00", "#ffa500", "#ffd700", "#ffff00", "#eee8aa",
+        "#006400", "#008000", "#32cd32", "#00ff00", "#98fb98",
+        "#008080", "#20b2aa", "#00ffff", "#1e90ff", "#0000ff",
+        "#000000", "#2f2f2f", "#808080", "#d3d3d3"
+    };
+
+    [Parameter] public string? SelectedColor { get; set; }
+
+    [Parameter] public EventCallback<string> SelectedColorChanged { get; set; }
+
+    private string customColor = "#ffffff";
+
+    private async Task OnColorChanged(string color)
+    {
+        await SelectedColorChanged.InvokeAsync(color);
+    }
+
+    private async Task OnCustomColorChanged(ChangeEventArgs e)
+    {
+        customColor = e.Value?.ToString() ?? "#ffffff";
+        await OnColorChanged(customColor);
+    }
+}

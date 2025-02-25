@@ -6,7 +6,8 @@ namespace MapLab.Services.Contracts
 {
     public interface IMapsService
     {
-        Task<string> GetMapAsync(string mapId);
+        Task<Map> GetMapAsync(string id);
+        Task<string> GetMapJsonAsync(Map map);
         IEnumerable<Map>? GetMapsForProfile(string profileId, bool isCurrentProfile);
         Task CreateMapAsync(string name, string mapTemplateId, bool isPublic);
         Task UploadMapTemplateAsync(MapTemplate mapTemplate, IFormFile file);

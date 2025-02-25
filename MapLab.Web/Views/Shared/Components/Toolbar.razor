@@ -1,0 +1,35 @@
+﻿@using MapLab.Web.Models.Maps
+<div class="toolbar">
+    <ul>
+        <li><button onclick="alert('Undo')"><i class="bi bi-arrow-counterclockwise"></i></button></li>
+        <li><button onclick="alert('Redo')"><i class="bi bi-arrow-clockwise"></i></button></li>
+        @foreach (var tool in _tools)
+        {
+            <li>
+                <button class="selectable-tool @(SelectedTool == tool.Type ? "selected" : string.Empty)"
+                        @onclick="() => OnToolSelected(tool.Type)">
+                    <i class="@tool.Icon"></i>
+                </button>
+            </li>
+        }
+    </ul>
+</div>
+
+@code {
+    private record ToolRecord(ToolType Type, string Icon);
+
+    private IReadOnlyList<ToolRecord> _tools = new List<ToolRecord>()
+    {
+        new(ToolType.View, "bi bi-cursor-fill"),
+        new(ToolType.Pinpoint, "bi bi-geo-alt-fill"),
+        new(ToolType.Fill, "bi bi-bucket-fill")
+    }.AsReadOnly();
+
+    [Parameter] public ToolType SelectedTool { get; set; }
+    [Parameter] public EventCallback<ToolType> SelectedToolChanged { get; set; }
+
+    private async Task OnToolSelected(ToolType toolType)
+    {
+        await SelectedToolChanged.InvokeAsync(toolType);
+    }
+}

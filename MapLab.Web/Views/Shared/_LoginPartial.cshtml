@@ -13,7 +13,8 @@
                 data-bs-toggle="dropdown"
                 aria-expanded="false">
             <img src="@profile.ProfilePictureFilePath"
-                 class="profile-picture rounded-circle border shadow-sm" />
+                 class="profile-picture rounded-circle border shadow-sm"
+                 asp-append-version="true" />
         </a>
         <div class="dropdown-menu position-absolute dropdown-menu-end" aria-labelledby="profile-dropdown">
             <h6 class="dropdown-header">@User.Identity?.Name</h6>

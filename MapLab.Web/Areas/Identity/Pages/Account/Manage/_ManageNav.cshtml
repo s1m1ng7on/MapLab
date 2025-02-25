@@ -12,7 +12,7 @@
 <div class="sidebar d-flex flex-column flex-shrink-0 p-3" id="sidebar">
     <div class="text-center mb-4 p-4">
         <a asp-controller="Profile" asp-action="Index">
-            <img src="@profile.ProfilePictureFilePath" alt="@(profile.UserName)'s Profile Picture'" class="profile-picture img-fluid rounded-circle">
+            <img src="@profile.ProfilePictureFilePath" alt="@(profile.UserName)'s Profile Picture'" class="profile-picture img-fluid rounded-circle" asp-append-version="true">
         </a>
         <h4 class="mt-3 text-wrap">
             @if (isAdmin)

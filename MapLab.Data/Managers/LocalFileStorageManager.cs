@@ -10,6 +10,8 @@ namespace MapLab.Data.Managers
 
         public async Task<byte[]?> GetFileAsync(string? filePath)
         {
+            filePath = $"wwwroot{filePath}";
+
             if (!File.Exists(filePath))
                 return null;
 

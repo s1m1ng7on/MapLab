@@ -1,0 +1,33 @@
+﻿@{
+    Layout = "_LayoutShared";
+}
+
+<header>
+    <nav class="navbar sticky-top glassy-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-baseline gap-2" asp-area="" asp-controller="Home" asp-action="Index">
+                <img src="~/images/logo/logo256.png" alt="MapLab Logo" class="navbar-logo" />
+            </a>
+            <div class="ms-auto d-flex align-items-center">
+                <partial name="_LoginPartial" />
+            </div>
+        </div>
+    </nav>
+</header>
+@RenderBody()
+
+<style>
+    /* Ultra-glassy effect */
+    .glassy-navbar {
+        background: rgba(255, 255, 255, 0.02); /* Almost fully transparent */
+        backdrop-filter: blur(25px) saturate(200%); /* Extreme glass effect */
+        -webkit-backdrop-filter: blur(25px) saturate(200%); /* Safari support */
+        border-bottom: 1px solid rgba(255, 255, 255, 0.15); /* Soft frosted border */
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Deeper shadow for realism */
+    }
+
+    /* Ensure navbar stays above other content */
+    .sticky-top {
+        z-index: 1050;
+    }
+</style>

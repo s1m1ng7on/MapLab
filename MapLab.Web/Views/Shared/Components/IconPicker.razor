@@ -1,0 +1,60 @@
+﻿<div class="color-picker" style="height: 150px;">
+    <div class="search-bar col-12 col-md-8 position-relative">
+        <input type="text" class="form-control rounded-pill h-100" @oninput="OnSearch" placeholder="Search" />
+        <span class="position-absolute icon-container">
+            <i class="bi bi-search"></i>
+        </span>
+        @if (!string.IsNullOrEmpty(searchQuery))
+        {
+            <button type="button" class="clear-button position-absolute">
+                ×
+            </button>
+        }
+    </div>
+    <div class="icon-grid">
+        @foreach (var icon in Icons)
+        {
+            <label class="icon-option">
+                <input type="checkbox" value="@icon" checked="@(SelectedIcon == icon)"
+                       @onchange="() => OnIconSelected(icon)" />
+                <span class="icon-preview">
+                    <i class="@($"bi bi-{icon}")"></i>
+                </span>
+            </label>
+        }
+    </div>
+</div>
+
+@code {
+    private string[] icons = new[]
+    {
+        "house", "heart", "star", "gear", "person",
+        "cart", "envelope", "phone", "lock", "key",
+        "bell", "bookmark", "camera", "chat", "cloud",
+        "download", "eye", "flag", "gift", "globe",
+        "hourglass", "image", "inbox", "lightbulb"
+    };
+
+    public string[] Icons { get; set; }
+
+    private string searchQuery = string.Empty;
+
+    [Parameter] public string? SelectedIcon { get; set; }
+
+    [Parameter] public EventCallback<string> SelectedIconChanged { get; set; }
+
+    protected override void OnInitialized()
+    {
+        Icons = icons;
+    }
+
+    private async Task OnIconSelected(string icon)
+    {
+        await SelectedIconChanged.InvokeAsync(icon);
+    }
+
+    private async Task OnSearch(ChangeEventArgs e)
+    {
+        searchQuery = e.Value.ToString();
+    }
+}

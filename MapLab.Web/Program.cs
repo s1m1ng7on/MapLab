@@ -1,3 +1,4 @@
+using Cropper.Blazor.Extensions;
 using MapLab.Data;
 using MapLab.Data.Entities;
 using MapLab.Data.Managers;
@@ -57,6 +58,8 @@ namespace MapLab
             builder.Services.AddControllersWithViews()
                 .AddRazorRuntimeCompilation();
             builder.Services.AddServerSideBlazor();
+
+            builder.Services.AddCropper();
 
             builder.Services.AddSingleton(builder.Configuration);
 

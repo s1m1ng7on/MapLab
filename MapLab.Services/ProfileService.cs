@@ -13,7 +13,7 @@ namespace MapLab.Services
             _httpContextAccessor = httpContextAccessor;
         }
 
-        public string GetProfileId()
-            => _httpContextAccessor.HttpContext.User.FindFirstValue(ClaimTypes.NameIdentifier);
+        public string? GetProfileId()
+            => _httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 }
