@@ -1,6 +1,8 @@
 ﻿using MapLab.Data.Managers.Contracts;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
+using System.Net.Http.Json;
+using System.Text;
 
 namespace MapLab.Data.Managers
 {
@@ -19,12 +21,15 @@ namespace MapLab.Data.Managers
         }
 
         public async Task<string> SaveFileAsync(IFormFile file, string tableName, string propertyName, string entityId)
-            => await SaveFileAsync(file.OpenReadStream(), file.Name, tableName, propertyName, entityId);
+            => await SaveFileAsync(file.OpenReadStream(), tableName, propertyName, entityId, Path.GetExtension(file.Name));
 
         public async Task<string> SaveFileAsync(IBrowserFile file, string tableName, string propertyName, string entityId)
-            => await SaveFileAsync(file.OpenReadStream(), file.Name, tableName, propertyName, entityId);
+            => await SaveFileAsync(file.OpenReadStream(), tableName, propertyName, entityId, Path.GetExtension(file.Name));
 
-        private async Task<string> SaveFileAsync(Stream fileStream, string fileName, string tableName, string propertyName, string entityId)
+        public async Task<string> SaveJsonFileAsync(string json, string tableName, string propertyName, string entityId)
+            => await SaveFileAsync(new MemoryStream(Encoding.UTF8.GetBytes(json)), tableName, propertyName, entityId, ".json");
+
+        private async Task<string> SaveFileAsync(Stream fileStream, string tableName, string propertyName, string entityId, string fileExtension)
         {
             if (fileStream == null)
                 return null!;
@@ -32,7 +37,6 @@ namespace MapLab.Data.Managers
             var folderPath = Path.Combine(_storagePath, tableName, propertyName);
             Directory.CreateDirectory(folderPath);
 
-            var fileExtension = Path.GetExtension(fileName);
             var filePath = Path.Combine(folderPath, entityId + fileExtension);
 
             if (File.Exists(filePath))

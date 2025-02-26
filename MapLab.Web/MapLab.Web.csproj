@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>aspnet-MapLab-51fc1477-6476-4e8d-bc0f-6b150b0ff18f</UserSecretsId>
     <StartupObject>MapLab.Program</StartupObject>
+    <AssemblyName>MapLab.Web</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

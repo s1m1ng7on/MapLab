@@ -47,40 +47,34 @@ namespace MapLab.Services
                 .Include(m => m.Template)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-        public async Task<string> GetMapJsonAsync(Map map)
+        public async Task<(string, JObject)> GetMapJsonAsync(Map map)
         {
-            //TO BE ENABLED ONCE FILE STORAGE SYSTEM IS COMPLETE
+            // Load template and map files
             var templateFile = await _fileStorageManager.GetFileAsync(map?.Template?.FilePath);
-            //var map = await _fileStorageManager.GetFileAsync(mapEntity?.File?.Path);*/
+            var mapFile = await _fileStorageManager.GetFileAsync(map?.FilePath);
 
-            //var template = await _fileStorageManager.GetFileAsync("C:\\Users\\ITBP\\Desktop\\maptest\\template.json");
-            var mapFile = await _fileStorageManager.GetFileAsync("C:\\Users\\ITBP\\Desktop\\maptest\\map.json");
-
+            // Convert files to strings
             string templateJson = Encoding.UTF8.GetString(templateFile!);
-            //string mapJson = Encoding.UTF8.GetString(map!);
-            string mapJson = @"{
-  ""type"": ""FeatureCollection"",
-  ""features"": [
-    {
-      ""type"": ""Feature"",
-      ""properties"": {
-        ""nuts3"": ""BLG"",
-        ""name"": ""Blagoevgrad"",
-        ""fill"": ""#f0f0f0""
-      }
-    }
-  ]
-}";
 
+            JObject mapJsonObject;
 
-            JObject templateJsonObject = JObject.Parse(templateJson);
-            JObject mapJsonObject = JObject.Parse(mapJson);
+            try
+            {
+                string mapJson = Encoding.UTF8.GetString(mapFile!);
+                mapJsonObject = JObject.Parse(mapJson);
+            }
+            catch
+            {
+                mapJsonObject = new JObject
+                {
+                    ["type"] = "FeatureCollection",
+                    ["features"] = new JArray()
+                };
+            }
 
-            JObject completeMapJsonObject = new JObject(templateJsonObject);
-            ((JArray)completeMapJsonObject["features"]).Merge(mapJsonObject["features"]);
-
-            return completeMapJsonObject.ToString();
+            return (templateJson, mapJsonObject);
         }
+
 
         public IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel? filters = null)
         {
@@ -137,6 +131,13 @@ namespace MapLab.Services
 
             await _mapRepository.AddAsync(newMap);
             await _mapRepository.SaveChangesAsync();
+        }
+
+        public async Task SaveMapAsync(string Id, string updatedMapJson)
+        {
+            var map = await GetMapAsync(Id);
+            map.FilePath = await _fileStorageManager.SaveJsonFileAsync(updatedMapJson, "Maps", "File", Id);
+            await _mapTemplateRepository.SaveChangesAsync();
         }
 
         public async Task UploadMapTemplateAsync(MapTemplate mapTemplate, IFormFile file)

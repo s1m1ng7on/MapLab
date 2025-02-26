@@ -1,8 +1,8 @@
 ﻿@using MapLab.Web.Models.Maps
 <div class="toolbar">
     <ul>
-        <li><button onclick="alert('Undo')"><i class="bi bi-arrow-counterclockwise"></i></button></li>
-        <li><button onclick="alert('Redo')"><i class="bi bi-arrow-clockwise"></i></button></li>
+        <li><button @onclick="OnUndo"><i class="bi bi-arrow-counterclockwise"></i></button></li>
+        <li><button @onclick="OnRedo"><i class="bi bi-arrow-clockwise"></i></button></li>
         @foreach (var tool in _tools)
         {
             <li>
@@ -27,6 +27,8 @@
 
     [Parameter] public ToolType SelectedTool { get; set; }
     [Parameter] public EventCallback<ToolType> SelectedToolChanged { get; set; }
+    [Parameter] public EventCallback OnUndo { get; set; }
+    [Parameter] public EventCallback OnRedo { get; set; }
 
     private async Task OnToolSelected(ToolType toolType)
     {

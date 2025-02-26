@@ -6,11 +6,17 @@
     let selectedFillColor = '#fafafa'; // Default color
     let selectedIcon;
     let canEdit = false; // Will be set by loadMap
+    let mapJsonObj;
+    let dotNetReference;
 
-    const loadMap = async (mapJson, editPermission, selectedTool, fillColor) => {
+    const loadMap = async (_dotNetReference, mapTemplateJson, mapJson, editPermission, selectedTool, fillColor) => {
+        dotNetReference = _dotNetReference;
         canEdit = editPermission; // Set permission
         currentTool = selectedTool;
         selectedFillColor = fillColor;
+
+        console.log(mapTemplateJson);
+        console.log(mapJson);
 
         const width = window.innerWidth;
         const height = window.innerHeight;
@@ -50,7 +56,12 @@
             .attr('class', 'tooltip')
             .style('visibility', 'hidden');
 
-        const map = JSON.parse(mapJson);
+        const map = JSON.parse(mapTemplateJson);
+
+        mapJsonObj = mapJson !== '{}' ? JSON.parse(mapJson) : {
+            type: "FeatureCollection",
+            features: []
+        };
 
         const bounds = d3.geoBounds(map);
 
@@ -69,6 +80,7 @@
         const path = d3.geoPath()
             .projection(projection);
 
+        console.log("map.features");
         console.log(map.features);
 
         const paths = g.selectAll('path')
@@ -76,7 +88,12 @@
             .enter()
             .append('path')
             .attr('d', path)
-            .attr('fill', d => d.properties.fill || '#fcba03')
+            .attr('fill', d => {
+                console.log("mapJsonObj");
+                console.log(mapJsonObj);
+                const feature = mapJsonObj.features.find(f => f.properties.name === d.properties.name);
+                return feature ? feature.properties.fill : '#fcba03';
+            })
             .attr('stroke', 'black')
             .attr('stroke-width', 0.5)
             .on('mouseenter', function (e, d) {
@@ -123,7 +140,23 @@
                     }
                     if (currentTool === 'Fill') {
                         d.properties.fill = selectedFillColor;
+
+                        /*const features = mapJsonObj.features.find(f => f.properties.name === d.properties.name);
+                        if (!features) {
+                            mapJsonObj.features.push({
+                                type: "Feature",
+                                properties: {
+                                    name: d.properties.name,
+                                    fill: d.properties.fill
+                                }
+                            });
+                        } else {
+                            features.properties.fill = d.properties.fill;
+                        }*/
+
                         d3.select(this).attr('fill', d.properties.fill);
+
+                        dotNetReference.invokeMethodAsync("HandleFill", d.properties.name, d.properties.fill);
                     }
                 }
             })
@@ -154,11 +187,16 @@
         }
     }
 
+    const saveMap = () => {
+        return JSON.stringify(mapJsonObj);
+    }
+
     // Expose only these functions to Blazor via a custom object
     window.mapInterop = {
         loadMap,
         updateSelectedTool,
         updateFillColor,
-        updateSelectedIcon
+        updateSelectedIcon,
+        saveMap
     };
 })();

@@ -1,6 +1,7 @@
 ﻿@using MapLab.Services.Contracts
 @using MapLab.Web.Models.Maps
-@inject IMapsService _mapService
+@using Newtonsoft.Json.Linq
+@inject IMapsService _mapsService
 @inject IProfileService _profileService
 @inject IJSRuntime _js
 
@@ -9,7 +10,9 @@
 </div>
 @if (CanEdit)
 {
-    <Toolbar @bind-SelectedTool="SelectedTool" />
+    <Toolbar @bind-SelectedTool="SelectedTool"
+    OnUndo="Undo"
+    OnRedo="Redo"/>
     @if (SelectedTool == ToolType.Pinpoint)
     {
         <IconPicker @bind-SelectedIcon="SelectedIcon" />
@@ -18,13 +21,22 @@
     {
         <ColorPicker @bind-SelectedColor="FillColor" />
     }
+    <button style="position: absolute; top: 100px; right: 100px;" @onclick="SaveMapJson">Save</button>
 }
-<Legend />
+<Legend Title="@Title"/>
 
 @code {
+    private readonly object _lock = new object();
+
+    private TaskCompletionSource<bool> _initializationCompleted = new TaskCompletionSource<bool>();
+
     [Parameter] public string? Id { get; set; }
 
-    public string? Json { get; set; }
+    public string? Title { get; set; }
+
+    public string? MapTemplateJson { get; set; }
+
+    public JObject? MapJsonObject { get; set; }
 
     public bool CanEdit { get; set; }
 
@@ -72,18 +84,31 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var map = await _mapService.GetMapAsync(Id);
+        var map = await _mapsService.GetMapAsync(Id);
 
-        Json = await _mapService.GetMapJsonAsync(map);
+        (MapTemplateJson, MapJsonObject) = await _mapsService.GetMapJsonAsync(map);
+        Title = map.Name;
         CanEdit = map.ProfileId == _profileService.GetProfileId();
         SelectedTool = ToolType.View;
+
+        lock (_lock)
+        {
+            _initializationCompleted.SetResult(true);
+        }
     }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (firstRender)
         {
-            await _js.InvokeVoidAsync("mapInterop.loadMap", Json, CanEdit, SelectedTool.ToString(), FillColor);
+            // Wait for initialization to complete before proceeding
+            await _initializationCompleted.Task;
+
+            // Ensure MapTemplateJson and MapJson are set
+            if (MapTemplateJson != null && MapJsonObject != null)
+            {
+                await _js.InvokeVoidAsync("mapInterop.loadMap", DotNetObjectReference.Create(this), MapTemplateJson, MapJsonObject.ToString(), CanEdit, SelectedTool.ToString(), FillColor);
+            }
         }
     }
 
@@ -97,8 +122,57 @@
         await _js.InvokeVoidAsync("mapInterop.updateFillColor", FillColor);
     }
 
+    public void Fill(string featureName, string newColor)
+    {
+        var feature = MapJsonObject["features"]?
+            .FirstOrDefault(f => f["properties"]?["name"]?.ToString() == featureName);
+
+        if (feature != null)
+        {
+            // Update the "fill" property with the new color
+            feature["properties"]["fill"] = newColor;
+        }
+        else
+        {
+            // If the feature doesn't exist, create a new one and add it
+            var newFeature = new JObject
+                {
+                    ["type"] = "Feature",
+                    ["properties"] = new JObject
+                    {
+                        ["name"] = featureName,
+                        ["fill"] = newColor
+                    }
+                };
+
+            // Use the correct method to add the new feature to the "features" array
+            (MapJsonObject["features"] as JArray)?.Add(newFeature);
+        }
+    }
+
+    [JSInvokable]
+    public void HandleFill(string featureName, string newColor)
+    {
+        Fill(featureName, newColor);
+    }
+
     private async Task UpdateSelectedIcon()
     {
         await _js.InvokeVoidAsync("mapInterop.updateSelectedIcon", SelectedIcon);
+    }
+
+    private async Task Undo()
+    {
+        //await _js.InvokeVoidAsync("mapInterop.undo");
+    }
+
+    private async Task Redo()
+    {
+        //await _js.InvokeVoidAsync("mapInterop.redo");
+    }
+
+    public async Task SaveMapJson()
+    {
+        await _mapsService.SaveMapAsync(Id, MapJsonObject.ToString());
     }
 }
