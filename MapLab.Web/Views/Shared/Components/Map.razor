@@ -122,38 +122,77 @@
         await _js.InvokeVoidAsync("mapInterop.updateFillColor", FillColor);
     }
 
-    public void Fill(string featureName, string newColor)
+    [JSInvokable]
+    public void Fill(string name, string newColor)
     {
-        var feature = MapJsonObject["features"]?
-            .FirstOrDefault(f => f["properties"]?["name"]?.ToString() == featureName);
+        var featuresArray = MapJsonObject["features"] as JArray;
+        if (featuresArray == null) return;
+
+        var feature = featuresArray
+            .FirstOrDefault(f => f["properties"]?["name"]?.ToString() == name);
 
         if (feature != null)
         {
-            // Update the "fill" property with the new color
-            feature["properties"]["fill"] = newColor;
+            if (newColor == null)
+            {
+                featuresArray.Remove(feature);
+            }
+            else
+            {
+                feature["properties"]["fill"] = newColor;
+            }
         }
-        else
+        else if (newColor != null)
         {
-            // If the feature doesn't exist, create a new one and add it
             var newFeature = new JObject
                 {
                     ["type"] = "Feature",
                     ["properties"] = new JObject
                     {
-                        ["name"] = featureName,
+                        ["name"] = name,
                         ["fill"] = newColor
                     }
                 };
 
-            // Use the correct method to add the new feature to the "features" array
-            (MapJsonObject["features"] as JArray)?.Add(newFeature);
+            featuresArray.Add(newFeature);
         }
     }
 
     [JSInvokable]
-    public void HandleFill(string featureName, string newColor)
+    public void Pinpoint(string name, string icon, string fill, double longitude, double latitude)
     {
-        Fill(featureName, newColor);
+        var featuresArray = MapJsonObject["features"] as JArray;
+        if (featuresArray == null) return;
+
+        if (longitude == null && latitude == null)
+        {
+            var feature = featuresArray
+                .FirstOrDefault(f =>
+                    f["geometry"]?["coordinates"]?[0].ToString() == longitude.ToString() &&
+                    f["geometry"]?["coordinates"]?[1].ToString() == latitude.ToString());
+
+            featuresArray.Remove(feature);
+        }
+        else
+        {
+            var newFeature = new JObject
+                {
+                    ["type"] = "Feature",
+                    ["properties"] = new JObject
+                    {
+                        ["name"] = name,
+                        ["icon"] = icon,
+                        ["fill"] = fill
+                    },
+                    ["geometry"] = new JObject()
+                    {
+                        ["type"] = "Point",
+                        ["coordinates"] = new JArray(longitude, latitude)
+                    }
+                };
+
+            featuresArray.Add(newFeature);
+        }
     }
 
     private async Task UpdateSelectedIcon()

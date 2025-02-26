@@ -7,6 +7,7 @@
     let selectedIcon;
     let canEdit = false; // Will be set by loadMap
     let mapJsonObj;
+    const defaultFill = '#fcba03';
     let dotNetReference;
 
     const loadMap = async (_dotNetReference, mapTemplateJson, mapJson, editPermission, selectedTool, fillColor) => {
@@ -57,11 +58,7 @@
             .style('visibility', 'hidden');
 
         const map = JSON.parse(mapTemplateJson);
-
-        mapJsonObj = mapJson !== '{}' ? JSON.parse(mapJson) : {
-            type: "FeatureCollection",
-            features: []
-        };
+        mapJsonObj = JSON.parse(mapJson);
 
         const bounds = d3.geoBounds(map);
 
@@ -80,19 +77,14 @@
         const path = d3.geoPath()
             .projection(projection);
 
-        console.log("map.features");
-        console.log(map.features);
-
         const paths = g.selectAll('path')
             .data(map.features)
             .enter()
             .append('path')
             .attr('d', path)
             .attr('fill', d => {
-                console.log("mapJsonObj");
-                console.log(mapJsonObj);
                 const feature = mapJsonObj.features.find(f => f.properties.name === d.properties.name);
-                return feature ? feature.properties.fill : '#fcba03';
+                return feature ? feature.properties.fill : defaultFill;
             })
             .attr('stroke', 'black')
             .attr('stroke-width', 0.5)
@@ -130,42 +122,57 @@
                     if (currentTool === "Pinpoint") {
                         const [x, y] = d3.pointer(e, this);
 
+                        const [longitude, latitude] = projection.invert([x, y]);
+
                         g.append("foreignObject")
-                            .attr("x", x - 10) // Adjust for centering
+                            .attr("x", x - 10)
                             .attr("y", y - 20)
                             .attr("width", 30)
                             .attr("height", 30)
                             .html(() => `<i class="bi bi-${selectedIcon || "pin-map"}"
                             style="font-size: 20px; color: ${selectedFillColor};"></i>`);
+
+                        dotNetReference.invokeMethodAsync("Pinpoint", "", selectedIcon, selectedFillColor, longitude, latitude);
                     }
                     if (currentTool === 'Fill') {
                         d.properties.fill = selectedFillColor;
-
-                        /*const features = mapJsonObj.features.find(f => f.properties.name === d.properties.name);
-                        if (!features) {
-                            mapJsonObj.features.push({
-                                type: "Feature",
-                                properties: {
-                                    name: d.properties.name,
-                                    fill: d.properties.fill
-                                }
-                            });
-                        } else {
-                            features.properties.fill = d.properties.fill;
-                        }*/
-
                         d3.select(this).attr('fill', d.properties.fill);
-
-                        dotNetReference.invokeMethodAsync("HandleFill", d.properties.name, d.properties.fill);
+                        dotNetReference.invokeMethodAsync("Fill", d.properties.name, d.properties.fill);
                     }
                 }
             })
             .on('contextmenu', function (e, d) {
                 e.preventDefault();
                 if (canEdit && currentTool === 'Fill') {
-                    d.properties.fill = '#fcba03'; // Reset to default fill color
+                    d.properties.fill = defaultFill;
                     d3.select(this).attr('fill', d.properties.fill);
+                    dotNetReference.invokeMethodAsync("Fill", d.properties.name, null);
                 }
+            });
+
+        console.log(mapJsonObj);
+
+        mapJsonObj.features
+            .filter(f => f.geometry?.type === "Point") // Only process Point features
+            .forEach(pointFeature => {
+                const [longitude, latitude] = pointFeature.geometry.coordinates;
+
+                // Check if the point is within the region (polygon)
+                map.features.forEach(region => {
+                    const isInside = d3.geoContains(region, [longitude, latitude]);
+
+                    if (isInside) {
+                        const projected = projection([longitude, latitude]);
+
+                        g.append("foreignObject")
+                            .attr("x", projected[0] - 10) // Adjust for centering
+                            .attr("y", projected[1] - 20)
+                            .attr("width", 30)
+                            .attr("height", 30)
+                            .html(() => `<i class="bi bi-${pointFeature.properties.icon || "pin-map"}"
+                            style="font-size: 20px; color: ${pointFeature.properties.fill || selectedFillColor};"></i>`);
+                    }
+                });
             });
     };
 
