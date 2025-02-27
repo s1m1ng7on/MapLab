@@ -164,7 +164,7 @@
         var featuresArray = MapJsonObject["features"] as JArray;
         if (featuresArray == null) return;
 
-        if (longitude == null && latitude == null)
+        if (icon == null && fill == null)
         {
             var feature = featuresArray
                 .FirstOrDefault(f =>
@@ -202,12 +202,12 @@
 
     private async Task Undo()
     {
-        //await _js.InvokeVoidAsync("mapInterop.undo");
+        
     }
 
     private async Task Redo()
     {
-        //await _js.InvokeVoidAsync("mapInterop.redo");
+        
     }
 
     public async Task SaveMapJson()
