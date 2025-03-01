@@ -23,7 +23,8 @@
     }
     <button style="position: absolute; top: 100px; right: 100px;" @onclick="SaveMapJson">Save</button>
 }
-<Legend Title="@Title"/>
+<Legend Title="@Title"
+        Data="@MapJsonObject"/>
 
 @code {
     private readonly object _lock = new object();

@@ -220,6 +220,229 @@ button img.profile-picture:hover {
     border-color: rgb(254, 174, 0);
 }
 
+/*#region Footer styles*/
+.nav-links {
+    position: relative;
+    width: 100%;
+    height: 40px;
+    margin: 20px 0;
+    z-index: 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+    .nav-links a {
+        position: relative;
+        color: white;
+        text-decoration: none;
+        font-family: 'Exo 2', sans-serif;
+        transform: translateX(-50%);
+        top: 50%;
+        transform: translate(-50%, -50%);
+        opacity: 0;
+        animation: fadeIn 0.5s ease-out forwards;
+        transition: all 0.3s ease;
+        padding: 5px 10px;
+        position: relative;
+    }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            width: 0;
+            height: 2px;
+            bottom: 0;
+            left: 50%;
+            background-color: white;
+            transition: all 0.3s ease;
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover {
+            transform: translate(-50%, -55%);
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+        }
+
+            .nav-links a:hover::after {
+                width: 100%;
+            }
+
+footer {
+    background-color: #007581;
+    min-height: 200px;
+    width: 100%;
+    margin: 0 auto;
+    position: relative;
+    padding: 40px 30px;
+    box-sizing: border-box;
+    color: white;
+    font-family: 'Exo 2', sans-serif;
+    overflow: hidden;
+    animation: fadeIn 1s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes float {
+    0% {
+        transform: translate(-50%, -50%);
+    }
+
+    50% {
+        transform: translate(-50%, -48%);
+    }
+
+    100% {
+        transform: translate(-50%, -50%);
+    }
+}
+
+.logo-section {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    position: absolute;
+    bottom: 5px;
+    left: 10px;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: 0.6s;
+}
+
+    .logo-section img {
+        height: 40px;
+        width: auto;
+    }
+
+    .logo-section p {
+        margin: 0;
+        color: white;
+        font-family: 'Exo 2', sans-serif;
+        font-weight: 700;
+        font-size: 18px;
+        letter-spacing: 0.5px;
+    }
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+
+    50% {
+        transform: translate(-50%, -50%) scale(1.05);
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+    }
+}
+
+.nav-links a:active {
+    animation: pulse 0.3s ease-out;
+}
+
+.nav-links a:nth-child(1) {
+    animation-delay: 0.1s;
+}
+
+.nav-links a:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.nav-links a:nth-child(3) {
+    animation-delay: 0.3s;
+}
+
+.nav-links a:nth-child(4) {
+    animation-delay: 0.4s;
+}
+
+.nav-links a:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+#left {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100%;
+    width: auto;
+    max-width: 33%;
+    object-fit: cover;
+}
+
+#right {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    height: 100%;
+    width: auto;
+    max-width: 33%;
+    object-fit: cover;
+}
+
+#center {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 100%;
+    max-width: 80%;
+    height: auto;
+    object-fit: contain;
+    z-index: 1;
+    opacity: 0.4;
+    animation: float 4s ease-in-out infinite;
+}
+
+#Copyright {
+    position: absolute;
+    right: 20px;
+    bottom: 15px;
+    text-align: right;
+    font-size: 10px;
+    margin: 0;
+    font-family: 'Exo 2', sans-serif;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: 0.8s;
+}
+
+.social-icons {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    z-index: 2;
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out forwards;
+    animation-delay: 0.7s;
+}
+
+.bi-instagram {
+    width: 18px;
+    height: 18px;
+    color: white;
+    transition: opacity 0.3s ease;
+}
+
+    .bi-instagram:hover {
+        opacity: 0.8;
+        cursor: pointer;
+    }
+/*#endregion*/
+
 .profile-picture {
     width: 132px;
     height: 132px;

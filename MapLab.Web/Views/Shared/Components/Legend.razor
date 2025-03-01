@@ -1,12 +1,45 @@
-﻿<div class="legend">
+﻿@using Newtonsoft.Json.Linq
+<div class="legend">
     <h3>@Title</h3>
     <ul>
-        <li><span style="background-color: red; padding: 2px 8px; border-radius: 4px;">Red</span>: High risk</li>
-        <li><span style="background-color: yellow; padding: 2px 8px; border-radius: 4px;">Yellow</span>: Medium risk</li>
-        <li><span style="background-color: green; padding: 2px 8px; border-radius: 4px;">Green</span>: Low risk</li>
+        @foreach (var item in legendItems)
+        {
+            <li>
+                <span style="background-color: @item.Key; padding: 2px 8px; border-radius: 4px;">
+                    @item.Value
+                </span>
+            </li>
+        }
     </ul>
 </div>
 
 @code {
     [Parameter] public string? Title { get; set; }
+    [Parameter] public JObject? Data { get; set; }
+
+    private Dictionary<string, string> legendItems = new();
+
+    protected override void OnParametersSet()
+    {
+        if (Data == null) return;
+
+        legendItems.Clear();
+        var featuresArray = Data["features"] as JArray;
+        if (featuresArray == null) return;
+
+        foreach (var feature in featuresArray)
+        {
+            var properties = feature["properties"];
+            if (properties != null)
+            {
+                var name = properties["name"]?.ToString();
+                var fillColor = properties["fill"]?.ToString();
+
+                if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(fillColor) && !legendItems.ContainsKey(fillColor))
+                {
+                    legendItems[fillColor] = name;
+                }
+            }
+        }
+    }
 }
