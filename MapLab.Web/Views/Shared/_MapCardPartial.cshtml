@@ -30,9 +30,18 @@
                         <i class="bi bi-three-dots-vertical"></i>
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="moreOptions">
-                        <li><a class="dropdown-item" href="#">Action 1</a></li>
-                        <li><a class="dropdown-item" href="#">Action 2</a></li>
-                        <li><a class="dropdown-item" href="#">Action 3</a></li>
+                        <li>
+                            <form asp-area=""
+                                  asp-controller="Maps"
+                                  asp-action="DeleteMap"
+                                  asp-route-Id="@Model.Id"
+                                  method="post">
+                                <button class="dropdown-item text-danger" type="submit">
+                                    <i class="bi bi-trash-fill me-2"></i>
+                                    Delete
+                                </button>
+                            </form>
+                        </li>
                     </ul>
                 </div>
             </div>

@@ -21,6 +21,35 @@ namespace MapLab.Controllers
             return View();
         }
 
+        [Route("about")]
+        public IActionResult AboutUs()
+        {
+            return View();
+        }
+
+        public IActionResult UserGuide()
+        {
+            return View();
+        }
+
+        [Route("faq")]
+        public IActionResult FrequentlyAskedQuestions()
+        {
+            return View();
+        }
+
+        [Route("privacy")]
+        public IActionResult PrivacyPolicy()
+        {
+            return View();
+        }
+
+        [Route("terms")]
+        public IActionResult TermsOfService()
+        {
+            return View();
+        }
+
         [Route("NotFound")]
         public IActionResult NotFound()
         {

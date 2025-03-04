@@ -76,8 +76,9 @@
             .append('path')
             .attr('d', path)
             .attr('fill', d => {
-                const feature = mapJsonObj.features.find(f => f.properties.name === d.properties.name);
-                return feature ? feature.properties.fill : defaultFill;
+                const feature = mapJsonObj.features.find(f => f.type === 'Feature' && f.properties.name === d.properties.name);
+                const legendItem = mapJsonObj.legend.find(l => l.type === 'Region' && l.id === feature?.properties.id);
+                return legendItem?.fill || defaultFill;
             })
             .attr('stroke', 'black')
             .attr('stroke-width', 0.5);
@@ -165,13 +166,16 @@
             }
         });
 
-        // Render existing "Point" features from mapJsonObj
         mapJsonObj.features
-            .filter(f => f.geometry?.type === "Point") // Only process Point features
+            .filter(f => f.geometry?.type === "Point")
             .forEach(pointFeature => {
                 const [longitude, latitude] = pointFeature.geometry.coordinates;
                 const [x, y] = projection([longitude, latitude]);
-                createPinpointElement(x, y, pointFeature.properties.icon, pointFeature.properties.fill);
+
+                const legendItem = mapJsonObj.legend.find(l => l.id === pointFeature?.properties.id);
+                const [icon, fill] = [legendItem.icon, legendItem.fill];
+
+                createPinpointElement(x, y, icon, fill);
             });
     };
 

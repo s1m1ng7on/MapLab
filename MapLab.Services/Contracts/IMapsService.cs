@@ -11,6 +11,7 @@ namespace MapLab.Services.Contracts
         Task<(string, JObject)> GetMapJsonAsync(Map map);
         IEnumerable<Map>? GetMapsForProfile(string profileId, bool isCurrentProfile);
         Task CreateMapAsync(string name, string mapTemplateId, bool isPublic);
+        Task DeleteMapAsync(string id);
         Task SaveMapAsync(string Id, string updatedMapJson);
         Task UploadMapTemplateAsync(MapTemplate mapTemplate, IFormFile file);
         IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel? filters = null);

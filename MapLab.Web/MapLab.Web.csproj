@@ -46,7 +46,7 @@
 
   <ItemGroup>
     <Folder Include="wwwroot\images\layout\" />
-    <Folder Include="wwwroot\uploads\MapTemplates\File\" />
+    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
 </Project>

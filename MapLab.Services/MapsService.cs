@@ -68,7 +68,8 @@ namespace MapLab.Services
                 mapJsonObject = new JObject
                 {
                     ["type"] = "FeatureCollection",
-                    ["features"] = new JArray()
+                    ["legend"] = new JArray(),
+                    ["features"] = new JArray(),
                 };
             }
 
@@ -118,7 +119,6 @@ namespace MapLab.Services
             return cachedMapTemplates;
         }
 
-
         public async Task CreateMapAsync(string name, string mapTemplateId, bool isPublic)
         {
             Map newMap = new Map()
@@ -130,6 +130,13 @@ namespace MapLab.Services
             };
 
             await _mapRepository.AddAsync(newMap);
+            await _mapRepository.SaveChangesAsync();
+        }
+
+        public async Task DeleteMapAsync(string id)
+        {
+            var map = await GetMapAsync(id);
+            _mapRepository.Delete(map);
             await _mapRepository.SaveChangesAsync();
         }
 

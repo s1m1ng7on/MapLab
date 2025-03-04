@@ -1,45 +1,75 @@
 ﻿@using Newtonsoft.Json.Linq
-<div class="legend">
-    <h3>@Title</h3>
-    <ul>
-        @foreach (var item in legendItems)
-        {
-            <li>
-                <span style="background-color: @item.Key; padding: 2px 8px; border-radius: 4px;">
-                    @item.Value
-                </span>
-            </li>
-        }
-    </ul>
+
+<div class="legend container mt-3">
+    <h3 class="mb-3">@Title</h3>
+    @if (Data != null && Data.Count > 0)
+    {
+        var regions = Data.Where(d => d["type"].ToString() == "Region").ToList();
+        var points = Data.Where(d => d["type"].ToString() == "Point").ToList();
+
+        <div class="row">
+            @if (regions.Any())
+            {
+                <div class="col-md-6">
+                    <h5 class="fw-bold">Regions</h5>
+                    <ul class="list-unstyled">
+                        @foreach (var region in regions)
+                        {
+                            <li class="d-flex align-items-center mb-2">
+                                <span class="color-switch me-2 d-inline-block" style="background-color: @region["fill"]"></span>
+                                <input type="text"
+                                       class="form-control form-control-sm text-white border-white bg-transparent"
+                                       value="@region["name"]"
+                                       @onchange="@(e => UpdateName(region, e.Value.ToString()))"
+                                       placeholder="Enter name" />
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+
+            @if (points.Any())
+            {
+                <div class="col-md-6">
+                    <h5 class="fw-bold">Points</h5>
+                    <ul class="list-unstyled">
+                        @foreach (var point in points)
+                        {
+                            <li class="d-flex align-items-center mb-2">
+                                <span class="me-2 d-inline-block text-center"
+                                      style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-@(point["icon"])" style="color: @point["fill"];"></i>
+                                </span>
+                                <input type="text"
+                                       class="form-control form-control-sm text-white border-white bg-transparent"
+                                       value="@point["name"]"
+                                       @onchange="@(e => UpdateName(point, e.Value.ToString()))"
+                                       placeholder="Enter name" />
+                            </li>
+                        }
+                    </ul>
+                </div>
+            }
+        </div>
+    }
+    else
+    {
+        <span class="text-muted">Start by editing the map.</span>
+    }
 </div>
 
 @code {
     [Parameter] public string? Title { get; set; }
-    [Parameter] public JObject? Data { get; set; }
+    [Parameter] public JArray? Data { get; set; }
 
-    private Dictionary<string, string> legendItems = new();
+    [CascadingParameter] public Action OnNameChanged { get; set; }
 
-    protected override void OnParametersSet()
+    private void UpdateName(JToken legendItem, string newName)
     {
-        if (Data == null) return;
-
-        legendItems.Clear();
-        var featuresArray = Data["features"] as JArray;
-        if (featuresArray == null) return;
-
-        foreach (var feature in featuresArray)
+        if (legendItem["name"]?.ToString() != newName)
         {
-            var properties = feature["properties"];
-            if (properties != null)
-            {
-                var name = properties["name"]?.ToString();
-                var fillColor = properties["fill"]?.ToString();
-
-                if (!string.IsNullOrEmpty(name) && !string.IsNullOrEmpty(fillColor) && !legendItems.ContainsKey(fillColor))
-                {
-                    legendItems[fillColor] = name;
-                }
-            }
+            legendItem["name"] = newName;
+            OnNameChanged?.Invoke();
         }
     }
 }

@@ -44,25 +44,17 @@ namespace MapLab.Web.Controllers
             return View(mapsIndexViewModel);
         }
 
-        /*[Route("map/{id}")]
-        public IActionResult View(string id)
-        {
-            Response.Cookies.Append("mapIdCookie", id, new CookieOptions
-            {
-                Expires = DateTimeOffset.Now.AddMinutes(1),
-                HttpOnly = false,
-                Secure = true,
-                SameSite = SameSiteMode.Strict
-            });
-
-            return View();
-        }*/
-
-        //BLAZOR TEST
         [Route("map/{id}")]
         public async Task<IActionResult> View(string id)
         {
             return View("BlazorView", id);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteMap(string id)
+        {
+            await _mapService.DeleteMapAsync(id);
+            return RedirectToAction("Index");
         }
     }
 }

@@ -21,10 +21,12 @@
     {
         <ColorPicker @bind-SelectedColor="FillColor" />
     }
-    <button style="position: absolute; top: 100px; right: 100px;" @onclick="SaveMapJson">Save</button>
+    <button style="position: absolute; top: 100px; right: 100px;" @onclick="SaveMapJson">
+        <i class="bi bi-floppy2-fill"></i>
+    </button>
 }
 <Legend Title="@Title"
-        Data="@MapJsonObject"/>
+        Data="@(MapJsonObject?["legend"] as JArray)"/>
 
 @code {
     private readonly object _lock = new object();
@@ -102,10 +104,8 @@
     {
         if (firstRender)
         {
-            // Wait for initialization to complete before proceeding
             await _initializationCompleted.Task;
 
-            // Ensure MapTemplateJson and MapJson are set
             if (MapTemplateJson != null && MapJsonObject != null)
             {
                 await _js.InvokeVoidAsync("mapInterop.loadMap", DotNetObjectReference.Create(this), MapTemplateJson, MapJsonObject.ToString(), CanEdit, SelectedTool.ToString(), FillColor);
@@ -124,36 +124,63 @@
     }
 
     [JSInvokable]
-    public void Fill(string name, string newColor)
+    public void Fill(string name, string fill)
     {
-        var featuresArray = MapJsonObject["features"] as JArray;
-        if (featuresArray == null) return;
+        if (MapJsonObject == null) return;
 
-        var feature = featuresArray
-            .FirstOrDefault(f => f["properties"]?["name"]?.ToString() == name);
+        var legendArray = MapJsonObject["legend"] as JArray;
+        var featuresArray = MapJsonObject["features"] as JArray;
+
+        var legendItem = legendArray?
+            .FirstOrDefault(l => l["type"]?.ToString() == "Region" && l["fill"]?.ToString() == fill);
+
+        if (legendItem == null && fill != null)
+        {
+            legendItem = new JObject()
+            {
+                ["type"] = "Region",
+                ["id"] = Guid.NewGuid().ToString(),
+                ["name"] = string.Empty,
+                ["fill"] = fill
+            };
+
+            legendArray.Add(legendItem);
+            StateHasChanged();
+        }
+
+        var feature = featuresArray?
+            .FirstOrDefault(f => f["properties"]?["name"]?.ToString() == name.ToString());
 
         if (feature != null)
         {
-            if (newColor == null)
+            var featureId = feature["properties"]?["id"]?.ToString();
+
+            if (fill == null)
             {
                 featuresArray.Remove(feature);
             }
             else
             {
-                feature["properties"]["fill"] = newColor;
+                feature["properties"]["id"] = legendItem["id"];
+            }
+
+            if (!featuresArray?.Any(f => f["properties"]?["id"]?.ToString() == featureId) ?? true)
+            {
+                legendArray?.Remove(legendArray?.FirstOrDefault(l => l["id"]?.ToString() == featureId));
+                StateHasChanged();
             }
         }
-        else if (newColor != null)
+        else if (fill != null)
         {
-            var newFeature = new JObject
+            var newFeature = new JObject()
+            {
+                ["type"] = "Feature",
+                ["properties"] = new JObject
                 {
-                    ["type"] = "Feature",
-                    ["properties"] = new JObject
-                    {
-                        ["name"] = name,
-                        ["fill"] = newColor
-                    }
-                };
+                    ["id"] = legendItem["id"],
+                    ["name"] = name
+                }
+            };
 
             featuresArray.Add(newFeature);
         }
@@ -162,8 +189,28 @@
     [JSInvokable]
     public void Pinpoint(string name, string icon, string fill, double longitude, double latitude)
     {
+        if (MapJsonObject == null) return;
+
+        var legendArray = MapJsonObject["legend"] as JArray;
         var featuresArray = MapJsonObject["features"] as JArray;
-        if (featuresArray == null) return;
+
+        var legendItem = legendArray?
+            .FirstOrDefault(l => l["type"]?.ToString() == "Point" && l["icon"].ToString() == icon && l["fill"]?.ToString() == fill);
+
+        if (legendItem == null && icon != null && fill != null)
+        {
+            legendItem = new JObject()
+            {
+                ["type"] = "Point",
+                ["id"] = Guid.NewGuid().ToString(),
+                ["name"] = string.Empty,
+                ["icon"] = icon,
+                ["fill"] = fill
+            };
+
+            legendArray.Add(legendItem);
+            StateHasChanged();
+        }
 
         if (icon == null && fill == null)
         {
@@ -173,6 +220,12 @@
                     f["geometry"]?["coordinates"]?[1].ToString() == latitude.ToString());
 
             featuresArray.Remove(feature);
+
+            if (!featuresArray?.Any(f => f["properties"]?["id"]?.ToString() == feature["properties"]["id"].ToString()) ?? true)
+            {
+                legendArray?.Remove(legendArray?.FirstOrDefault(l => l["id"]?.ToString() == feature["properties"]?["id"]?.ToString()));
+                StateHasChanged();
+            }
         }
         else
         {
@@ -181,9 +234,8 @@
                     ["type"] = "Feature",
                     ["properties"] = new JObject
                     {
-                        ["name"] = name,
-                        ["icon"] = icon,
-                        ["fill"] = fill
+                        ["id"] = legendItem["id"],
+                        ["name"] = name
                     },
                     ["geometry"] = new JObject()
                     {
