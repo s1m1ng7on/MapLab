@@ -5,28 +5,33 @@
 @inject IProfileService _profileService
 @inject IJSRuntime _js
 
-<div id="map-container">
-    <!-- Map will be loaded here -->
+<div id="map">
+    <div id="map-container">
+        <!-- Map will be loaded here -->
+    </div>
+
+    @if (CanEdit)
+    {
+        <Toolbar @bind-SelectedTool="SelectedTool"
+                 OnUndo="Undo"
+                 OnRedo="Redo" />
+
+        @if (SelectedTool == ToolType.Pinpoint)
+        {
+            <IconPicker @bind-SelectedIcon="SelectedIcon" />
+        }
+        @if (SelectedTool == ToolType.Fill)
+        {
+            <ColorPicker @bind-SelectedColor="FillColor" />
+        }
+    }
+
+    <Legend Title="@Title"
+            Data="@(MapJsonObject?["legend"] as JArray)" />
+
+    <Controls CanEdit="CanEdit"
+              OnSaveMap="SaveMap" />
 </div>
-@if (CanEdit)
-{
-    <Toolbar @bind-SelectedTool="SelectedTool"
-    OnUndo="Undo"
-    OnRedo="Redo"/>
-    @if (SelectedTool == ToolType.Pinpoint)
-    {
-        <IconPicker @bind-SelectedIcon="SelectedIcon" />
-    }
-    @if (SelectedTool == ToolType.Fill)
-    {
-        <ColorPicker @bind-SelectedColor="FillColor" />
-    }
-    <button style="position: absolute; top: 100px; right: 100px;" @onclick="SaveMapJson">
-        <i class="bi bi-floppy2-fill"></i>
-    </button>
-}
-<Legend Title="@Title"
-        Data="@(MapJsonObject?["legend"] as JArray)"/>
 
 @code {
     private readonly object _lock = new object();
@@ -263,7 +268,7 @@
         
     }
 
-    public async Task SaveMapJson()
+    public async Task SaveMap()
     {
         await _mapsService.SaveMapAsync(Id, MapJsonObject.ToString());
     }

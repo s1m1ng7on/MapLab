@@ -1,7 +1,7 @@
 ﻿@using Newtonsoft.Json.Linq
 
-<div class="legend container mt-3">
-    <h3 class="mb-3">@Title</h3>
+<div class="legend">
+    <h1 class="fw-bold mb-3">@Title</h1>
     @if (Data != null && Data.Count > 0)
     {
         var regions = Data.Where(d => d["type"].ToString() == "Region").ToList();
@@ -11,14 +11,17 @@
             @if (regions.Any())
             {
                 <div class="col-md-6">
-                    <h5 class="fw-bold">Regions</h5>
+                    @if (regions.Count < Data.Count)
+                    {
+                        <h2>Regions</h2>
+                    }
                     <ul class="list-unstyled">
                         @foreach (var region in regions)
                         {
                             <li class="d-flex align-items-center mb-2">
                                 <span class="color-switch me-2 d-inline-block" style="background-color: @region["fill"]"></span>
                                 <input type="text"
-                                       class="form-control form-control-sm text-white border-white bg-transparent"
+                                       class="text-white border-0 bg-transparent legend-input"
                                        value="@region["name"]"
                                        @onchange="@(e => UpdateName(region, e.Value.ToString()))"
                                        placeholder="Enter name" />
@@ -31,7 +34,10 @@
             @if (points.Any())
             {
                 <div class="col-md-6">
-                    <h5 class="fw-bold">Points</h5>
+                    @if (points.Count < Data.Count)
+                    {
+                        <h2>Points</h2>
+                    }
                     <ul class="list-unstyled">
                         @foreach (var point in points)
                         {
@@ -41,7 +47,7 @@
                                     <i class="bi bi-@(point["icon"])" style="color: @point["fill"];"></i>
                                 </span>
                                 <input type="text"
-                                       class="form-control form-control-sm text-white border-white bg-transparent"
+                                       class="text-white border-0 bg-transparent legend-input"
                                        value="@point["name"]"
                                        @onchange="@(e => UpdateName(point, e.Value.ToString()))"
                                        placeholder="Enter name" />
@@ -54,7 +60,7 @@
     }
     else
     {
-        <span class="text-muted">Start by editing the map.</span>
+        <span>Start by editing the map.</span>
     }
 </div>
 

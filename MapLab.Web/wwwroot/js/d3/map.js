@@ -8,6 +8,7 @@
     let mapJsonObj;
     const defaultFill = '#fcba03';
     let dotNetReference;
+    let svg;
 
     const loadMap = async (_dotNetReference, mapTemplateJson, mapJson, editPermission, selectedTool, fillColor) => {
         dotNetReference = _dotNetReference;
@@ -16,9 +17,9 @@
         selectedFillColor = fillColor;
 
         const width = window.innerWidth;
-        const height = window.innerHeight;
+        const height = window.innerHeight - document.querySelector('nav.navbar').offsetHeight;
 
-        const svg = d3
+        svg = d3
             .select('#map-container')
             .append('svg')
             .attr('width', width)
@@ -179,17 +180,41 @@
             });
     };
 
+    const shareMap = (title, text, url) => {
+        if (navigator.share) {
+            navigator.share({
+                title: title,
+                text: text,
+                url: url
+            }).catch(err => console.log("Sharing failed", err));
+        } else {
+            console.log("Web Share API not supported.");
+        }
+    }
+
     const updateSelectedTool = (newTool) => { if (canEdit) currentTool = newTool; };
     const updateFillColor = (newColor) => { if (canEdit) selectedFillColor = newColor; };
     const updateSelectedIcon = (newIcon) => { if (canEdit) selectedIcon = newIcon; };
     const saveMap = () => JSON.stringify(mapJsonObj);
 
-    // Expose functions to Blazor
+    const downloadMap = async () => {
+        //Implement map image download (svg + legend)
+    };
+
+    window.addEventListener('resize', () => {
+        const width = window.innerWidth;
+        const height = window.innerHeight - document.querySelector('nav.navbar').offsetHeight;
+
+        svg.attr('width', width).attr('height', height);
+    });
+
     window.mapInterop = {
         loadMap,
+        shareMap,
         updateSelectedTool,
         updateFillColor,
         updateSelectedIcon,
-        saveMap
+        saveMap,
+        downloadMap
     };
 })();

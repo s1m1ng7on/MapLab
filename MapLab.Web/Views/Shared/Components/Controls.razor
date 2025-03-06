@@ -1,0 +1,29 @@
+﻿@inject IJSRuntime _js
+
+<div class="controls">
+    @if (CanEdit)
+    {
+        <button @onclick="OnSaveMap">
+            <i class="bi bi-floppy2-fill"></i>
+        </button>
+    }
+
+    <button data-bs-toggle="modal" data-bs-target="#share-map-modal">
+        <i class="bi bi-share-fill"></i>
+    </button>
+    <ShareMapModal />
+
+    <button @onclick="DownloadMap">
+        <i class="bi bi-download"></i>
+    </button>
+</div>
+
+@code {
+    [Parameter] public bool CanEdit { get; set; }
+    [Parameter] public EventCallback OnSaveMap { get; set; }
+
+    public async Task DownloadMap()
+    {
+        await _js.InvokeVoidAsync("mapInterop.downloadMap");
+    }
+}

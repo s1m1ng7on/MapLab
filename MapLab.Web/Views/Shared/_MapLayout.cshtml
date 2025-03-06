@@ -15,19 +15,3 @@
     </nav>
 </header>
 @RenderBody()
-
-<style>
-    /* Ultra-glassy effect */
-    .glassy-navbar {
-        background: rgba(255, 255, 255, 0.02); /* Almost fully transparent */
-        backdrop-filter: blur(25px) saturate(200%); /* Extreme glass effect */
-        -webkit-backdrop-filter: blur(25px) saturate(200%); /* Safari support */
-        border-bottom: 1px solid rgba(255, 255, 255, 0.15); /* Soft frosted border */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2); /* Deeper shadow for realism */
-    }
-
-    /* Ensure navbar stays above other content */
-    .sticky-top {
-        z-index: 1050;
-    }
-</style>

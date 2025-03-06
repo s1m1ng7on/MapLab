@@ -1,18 +1,33 @@
 ﻿@using MapLab.Web.Models.Maps
 <div class="toolbar">
-    <ul>
-        <li><button @onclick="OnUndo"><i class="bi bi-arrow-counterclockwise"></i></button></li>
-        <li><button @onclick="OnRedo"><i class="bi bi-arrow-clockwise"></i></button></li>
-        @foreach (var tool in _tools)
-        {
+    <div class="actions">
+        <ul>
             <li>
-                <button class="selectable-tool @(SelectedTool == tool.Type ? "selected" : string.Empty)"
-                        @onclick="() => OnToolSelected(tool.Type)">
-                    <i class="@tool.Icon"></i>
+                <button @onclick="OnUndo">
+                    <i class="bi bi-arrow-counterclockwise"></i>
                 </button>
             </li>
-        }
-    </ul>
+            <li>
+                <button @onclick="OnRedo">
+                    <i class="bi bi-arrow-clockwise"></i>
+                </button>
+            </li>
+        </ul>
+    </div>
+    <hr />
+    <div class="tools">
+        <ul>
+            @foreach (var tool in _tools)
+            {
+                <li>
+                    <button class="selectable-tool @(SelectedTool == tool.Type ? "selected" : string.Empty)"
+                            @onclick="() => OnToolSelected(tool.Type)">
+                        <i class="@tool.Icon"></i>
+                    </button>
+                </li>
+            }
+        </ul>
+    </div>
 </div>
 
 @code {

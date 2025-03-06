@@ -1,0 +1,16 @@
+﻿@inject IJSRuntime _js
+@inject NavigationManager _navigationManager
+
+<Modal Id="share-map-modal"
+       DarkMode="true">
+    <ModalStep Title="Share Map">
+        <h1>Share Your Map</h1>
+    </ModalStep>
+</Modal>
+
+@code {
+    public async Task Share()
+    {
+        await _js.InvokeVoidAsync("mapInterop.shareMap", "Check this out", "Hey, I found this map", _navigationManager.Uri);
+    }
+}
