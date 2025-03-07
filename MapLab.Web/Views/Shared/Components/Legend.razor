@@ -18,14 +18,24 @@
                     <ul class="list-unstyled">
                         @foreach (var region in regions)
                         {
-                            <li class="d-flex align-items-center mb-2">
-                                <span class="color-switch me-2 d-inline-block" style="background-color: @region["fill"]"></span>
-                                <input type="text"
-                                       class="text-white border-0 bg-transparent legend-input"
-                                       value="@region["name"]"
-                                       @onchange="@(e => UpdateName(region, e.Value.ToString()))"
-                                       placeholder="Enter name" />
-                            </li>
+                            @if (CanEdit || (!CanEdit && region["name"]?.ToString() != string.Empty))
+                            {
+                                <li class="d-flex align-items-center mb-2">
+                                    <span class="color-switch me-2 d-inline-block" style="background-color: @region["fill"]"></span>
+                                    @if (CanEdit)
+                                    {
+                                        <input type="text"
+                                               class="text-white border-0 bg-transparent legend-input"
+                                               value="@region["name"]"
+                                               @onchange="@(e => UpdateName(region, e.Value.ToString()))"
+                                               placeholder="Enter name" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-white border-0 bg-transparent">@region["name"]</span>
+                                    }
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
@@ -41,17 +51,27 @@
                     <ul class="list-unstyled">
                         @foreach (var point in points)
                         {
-                            <li class="d-flex align-items-center mb-2">
-                                <span class="me-2 d-inline-block text-center"
-                                      style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
-                                    <i class="bi bi-@(point["icon"])" style="color: @point["fill"];"></i>
-                                </span>
-                                <input type="text"
-                                       class="text-white border-0 bg-transparent legend-input"
-                                       value="@point["name"]"
-                                       @onchange="@(e => UpdateName(point, e.Value.ToString()))"
-                                       placeholder="Enter name" />
-                            </li>
+                            @if (CanEdit || (!CanEdit && point["name"]?.ToString() != string.Empty))
+                            {
+                                <li class="d-flex align-items-center mb-2">
+                                    <span class="me-2 d-inline-block text-center"
+                                          style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
+                                        <i class="bi bi-@(point["icon"])" style="color: @point["fill"];"></i>
+                                    </span>
+                                    @if (CanEdit)
+                                    {
+                                        <input type="text"
+                                               class="text-white border-0 bg-transparent legend-input"
+                                               value="@point["name"]"
+                                               @onchange="@(e => UpdateName(point, e.Value.ToString()))"
+                                               placeholder="Enter name" />
+                                    }
+                                    else
+                                    {
+                                        <span class="text-white border-0 bg-transparent">@point["name"]</span>
+                                    }
+                                </li>
+                            }
                         }
                     </ul>
                 </div>
@@ -67,6 +87,7 @@
 @code {
     [Parameter] public string? Title { get; set; }
     [Parameter] public JArray? Data { get; set; }
+    [Parameter] public bool CanEdit { get; set; }
 
     [CascadingParameter] public Action OnNameChanged { get; set; }
 

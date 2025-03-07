@@ -16,6 +16,7 @@
         }
     </ul>
 </div>
+<component type="typeof(ShareMapModal)" render-mode="ServerPrerendered" param-DarkMode="false" />
 
 @if (Model.IsCurrentProfile) {
     string modalId = $"modal-{Guid.NewGuid().ToString()}";

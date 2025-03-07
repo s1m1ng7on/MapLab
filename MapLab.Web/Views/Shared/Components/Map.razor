@@ -27,10 +27,11 @@
     }
 
     <Legend Title="@Title"
-            Data="@(MapJsonObject?["legend"] as JArray)" />
+            Data="@(MapJsonObject?["legend"] as JArray)"
+            CanEdit="CanEdit" />
 
     <Controls CanEdit="CanEdit"
-              OnSaveMap="SaveMap" />
+              OnSaveMap="Save" />
 </div>
 
 @code {
@@ -268,7 +269,8 @@
         
     }
 
-    public async Task SaveMap()
+    [JSInvokable]
+    public async Task Save()
     {
         await _mapsService.SaveMapAsync(Id, MapJsonObject.ToString());
     }

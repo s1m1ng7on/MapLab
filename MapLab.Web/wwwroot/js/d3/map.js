@@ -195,10 +195,81 @@
     const updateSelectedTool = (newTool) => { if (canEdit) currentTool = newTool; };
     const updateFillColor = (newColor) => { if (canEdit) selectedFillColor = newColor; };
     const updateSelectedIcon = (newIcon) => { if (canEdit) selectedIcon = newIcon; };
-    const saveMap = () => JSON.stringify(mapJsonObj);
 
     const downloadMap = async () => {
-        //Implement map image download (svg + legend)
+        const createStyleElementFromCSS = () => {
+            // Get the first stylesheet loaded in the document
+            const sheet = document.styleSheets[0];
+            const styleRules = [];
+
+            // Collect all CSS rules
+            try {
+                for (let i = 0; i < sheet.cssRules.length; i++) {
+                    styleRules.push(sheet.cssRules.item(i).cssText);
+                }
+            } catch (e) {
+                console.error("Error accessing CSS rules (possible cross-origin issue):", e);
+                return document.createElement('style'); // Return empty style element as fallback
+            }
+
+            const style = document.createElement('style');
+            style.type = 'text/css';
+            style.appendChild(document.createTextNode(styleRules.join(' ')));
+            return style;
+        };
+
+        // Get the original SVG element
+        const svgElement = document.querySelector('#map-container svg');
+
+        // Clone the SVG to avoid modifying the original
+        const svgClone = svgElement.cloneNode(true);
+
+        // Embed styles into the cloned SVG
+        const style = createStyleElementFromCSS();
+        svgClone.insertBefore(style, svgClone.firstChild);
+
+        // Ensure SVG has explicit width and height attributes to capture the full map
+        const bbox = svgElement.getBBox(); // Get the bounding box of the full SVG content
+        svgClone.setAttribute('width', bbox.width);
+        svgClone.setAttribute('height', bbox.height);
+        svgClone.setAttribute('viewBox', `${bbox.x} ${bbox.y} ${bbox.width} ${bbox.height}`);
+
+        // Serialize the cloned SVG
+        const data = new XMLSerializer().serializeToString(svgClone);
+        const svgBlob = new Blob([data], { type: 'image/svg+xml;charset=utf-8' });
+        const url = URL.createObjectURL(svgBlob);
+
+        // Create an image to load the SVG
+        const img = new Image();
+        img.width = bbox.width;
+        img.height = bbox.height;
+
+        // Wait for the image to load
+        await new Promise((resolve, reject) => {
+            img.onload = resolve;
+            img.onerror = reject;
+            img.src = url;
+        });
+
+        // Create a canvas with the full dimensions of the map
+        const canvas = document.createElement('canvas');
+        canvas.width = bbox.width;
+        canvas.height = bbox.height;
+        const ctx = canvas.getContext('2d');
+
+        // Draw the image onto the canvas
+        ctx.drawImage(img, 0, 0, bbox.width, bbox.height);
+
+        // Clean up the object URL
+        URL.revokeObjectURL(url);
+
+        // Trigger the PNG download
+        const a = document.createElement('a');
+        a.download = 'map.png';
+        document.body.appendChild(a);
+        a.href = canvas.toDataURL('image/png');
+        a.click();
+        a.remove();
     };
 
     window.addEventListener('resize', () => {
@@ -208,13 +279,19 @@
         svg.attr('width', width).attr('height', height);
     });
 
+    window.addEventListener("keydown", function (e) {
+        if (canEdit && e.ctrlKey && e.key === 's') {
+            e.preventDefault();
+            dotNetReference.invokeMethodAsync('Save');
+        }
+    });
+
     window.mapInterop = {
         loadMap,
         shareMap,
         updateSelectedTool,
         updateFillColor,
         updateSelectedIcon,
-        saveMap,
         downloadMap
     };
 })();
