@@ -114,6 +114,10 @@
         "scss/_variables-dark.scss",
         "scss/_variables.scss"
       ]
+    },
+    {
+      "library": "aos@2.3.4",
+      "destination": "wwwroot/lib/aos/"
     }
   ]
 }

@@ -73,18 +73,27 @@
     color: var(--bs-primary);
 }
 
-.tooltip {
+.map-tooltip {
     position: absolute;
-    background-color: #1f1f1f;
-    border: 1px solid #ccc;
+    background-color: #2c2c2c;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    pointer-events: none;
+}
+
+.map-tooltip h1 {
     font-size: 16px;
     font-weight: bold;
-    color: #ccc;
-    pointer-events: none;
-    transition: opacity 0.3s;
+    color: #f0f0f0;
+    margin-bottom: 0;
+}
+
+.map-tooltip h2 {
+    font-size: 14px;
+    color: var(--bs-gray-400);
+    margin-top: 0.25rem;
+    margin-bottom: 0;
 }
 
 .color-picker {

@@ -50,7 +50,7 @@
         const tooltip = d3
             .select('body')
             .append('div')
-            .attr('class', 'tooltip')
+            .attr('class', 'map-tooltip')
             .style('visibility', 'hidden');
 
         const map = JSON.parse(mapTemplateJson);
@@ -113,8 +113,21 @@
                 .style('transition', 'filter 0.1s ease-in-out');
 
             if (!isDragging) {
-                tooltip.style('visibility', 'visible').text(e.target.__data__.properties.name);
+                const regionName = e.target.__data__.properties.name;
+                const feature = mapJsonObj.features.find(f => f.properties.name === regionName);
+
+                // Ensure the feature and legend are valid before accessing properties
+                const regionLegendName = feature
+                    ? mapJsonObj.legend.find(l => l.type === 'Region' && l.id === feature.properties.id)?.name
+                    : null;
+
+                // Display tooltip with conditional <h2>
+                tooltip.style('visibility', 'visible').html(`
+                    <h1>${regionName}</h1>
+                    ${regionLegendName ? `<h2>${regionLegendName}</h2>` : ''}
+                `);
             }
+
         }, true);
 
         g.on('mouseout', (e) => {

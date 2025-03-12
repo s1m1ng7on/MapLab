@@ -1,69 +1,260 @@
-﻿@using MapLab.Web.Models.Shared
+﻿@using MapLab.Data.Entities
+@using MapLab.Web.Models.Shared
+@using Microsoft.AspNetCore.Identity
+@using Microsoft.AspNetCore.Localization
+@inject SignInManager<Profile> _signInManager
 
-<section class="hero-section d-flex">
-    <div class="hero-text container">
-        <h1>Design Your Idea for a Map</h1>
-        <p>Create custom maps with ease, explore different regions, and visualize your creative ideas in an interactive way.</p>
+<section class="hero-section d-flex align-items-center position-relative">
+    <div class="overlay"></div>
+    <div class="container position-relative z-1">
+        <div class="row align-items-center">
+            <div class="hero-text col-lg-6 mb-5 mb-lg-0" data-aos="fade-right" data-aos-duration="1000">
+                <h1 class="display-3 fw-bold text-gradient mb-3">Design Interactive Maps With Ease</h1>
+                <p class="lead mb-4 text-light-muted">Create custom maps, explore different regions, and visualize your creative ideas in an interactive, immersive way.</p>
+                <div class="d-flex gap-3">
+                    @if (_signInManager.IsSignedIn(User))
+                    {
+                        <a class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg pulse-btn"
+                           asp-controller="Maps"
+                           asp-action="Index">
+                            Start Mapping <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <a class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg pulse-btn"
+                           asp-area="Identity"
+                           asp-page="/Account/Login">
+                            Start Mapping <i class="bi bi-arrow-right ms-2"></i>
+                        </a>
+                    }                    <a href="#" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                        <i class="bi bi-play-fill me-2"></i> Watch Demo
+                    </a>
+                </div>
+            </div>
+            <div class="hero-image col-lg-6 d-none d-lg-block text-center" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                <img src="~/images/home/ruslan1.png" alt="MapLab Interface Demo" class="img-fluid floating-animation shadow-lg rounded-4">
+            </div>
+        </div>
     </div>
-    <div class="hero-image container d-none d-md-block">
-        <img src="~/images/home/ruslan1.png" alt="Ruslan holding a map">
+    <div class="wave-shape">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 320">
+            <path fill="var(--bs-dark)" fill-opacity="1" d="M0,160L48,165.3C96,171,192,181,288,181.3C384,181,480,171,576,160C672,149,768,139,864,149.3C960,160,1056,192,1152,192C1248,192,1344,160,1392,144L1440,128L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z"></path>
+        </svg>
     </div>
 </section>
-<div class="container card-container mt-n5">
-    <div class="row">
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h3 class="card-title">Create Interactive Maps</h3>
-                    <p class="card-text">Build custom maps effortlessly with our user-friendly tools. Add markers, draw shapes, and visualize data with ease.</p>
-                </div>
+
+<section class="features-section py-5 bg-dark text-light">
+    <div class="container py-4">
+        <div class="row justify-content-center mb-5" data-aos="fade-up">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">Powerful Tools for Your Mapping Needs</h2>
+                <p class="lead text-light-muted">Discover what makes MapLab the ultimate platform for creating interactive maps</p>
             </div>
         </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h3 class="card-title">Analyze & Visualize Data</h3>
-                    <p class="card-text">Bring your data to life with heatmaps, layers, and advanced styling options. Gain insights with powerful mapping analytics.</p>
+
+        <div class="row g-4 mt-2">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card feature-card h-100 bg-dark-surface border-0 shadow-lg rounded-4">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="bi bi-map text-primary fs-1"></i>
+                        </div>
+                        <h3 class="card-title h4 fw-bold mb-3">Create Interactive Maps</h3>
+                        <p class="card-text text-light-muted">Build custom maps effortlessly with our user-friendly tools. Add markers, draw shapes, and visualize data with ease.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-center pb-4">
+                        <a href="#" class="btn btn-outline-primary rounded-pill px-4">Learn More</a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="col-md-4">
-            <div class="card text-center">
-                <div class="card-body">
-                    <h3 class="card-title">Collaborate & Share</h3>
-                    <p class="card-text">Connect with the community by sharing your maps in the Community section. Discover, explore, and contribute to interactive maps from other creators.</p>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card feature-card h-100 bg-dark-surface border-0 shadow-lg rounded-4">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="bi bi-graph-up text-primary fs-1"></i>
+                        </div>
+                        <h3 class="card-title h4 fw-bold mb-3">Analyze & Visualize Data</h3>
+                        <p class="card-text text-light-muted">Bring your data to life with heatmaps, layers, and advanced styling options. Gain insights with powerful mapping analytics.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-center pb-4">
+                        <a href="#" class="btn btn-outline-primary rounded-pill px-4">Learn More</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card feature-card h-100 bg-dark-surface border-0 shadow-lg rounded-4">
+                    <div class="card-body p-4 text-center">
+                        <div class="icon-wrapper mb-3">
+                            <i class="bi bi-people text-primary fs-1"></i>
+                        </div>
+                        <h3 class="card-title h4 fw-bold mb-3">Collaborate & Share</h3>
+                        <p class="card-text text-light-muted">Connect with the community by sharing your maps. Discover, explore, and contribute to interactive maps from other creators.</p>
+                    </div>
+                    <div class="card-footer bg-transparent border-0 text-center pb-4">
+                        <a href="#" class="btn btn-outline-primary rounded-pill px-4">Learn More</a>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<div class="container col-xxl-8 px-4 py-5">
-    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
-        <div class="col-10 col-sm-8 col-lg-6">
-            <img src="~/images/home/ruslan2.png" class="d-block mx-lg-auto img-fluid" alt="Ruslan presenting map tools" width="700" height="500" loading="lazy">
-        </div>
-        <div class="col-lg-6">
-            <h1 class="display-5 fw-bold lh-1 mb-3">Create, Customize, and Share Your Interactive Maps</h1>
-            <p class="lead">With MapLab, design beautiful maps with ease and bring your ideas to life. Whether you're mapping out a neighborhood, visualizing data, or creating a custom map for a project, our intuitive platform makes the process simple and fun. Unlock endless possibilities with powerful tools, seamless collaboration, and stunning results!</p>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
-                <button type="button" class="btn btn-primary btn-lg px-4 me-md-2">Start Designing Now</button>
+</section>
+
+<section class="showcase-section bg-dark-alt py-5">
+    <div class="container py-5">
+        <div class="row align-items-center g-5">
+            <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
+                <img src="~/images/home/ruslan2.png" class="img-fluid rounded-4 shadow-lg" alt="Ruslan presenting map tools">
+            </div>
+            <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
+                <h2 class="display-5 fw-bold mb-4 text-light">Customize and Share Your Maps</h2>
+                <p class="lead text-light-muted mb-4">With MapLab, design beautiful maps and bring your ideas to life. Whether you're mapping a neighborhood, visualizing data, or creating a custom project, our intuitive platform makes the process simple and enjoyable.</p>
+                <div class="d-flex flex-column gap-3 mb-4">
+                    <div class="feature-item d-flex align-items-start">
+                        <div class="feature-icon me-3">
+                            <i class="bi bi-brush text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 text-light">Intuitive Design Tools</h4>
+                            <p class="text-light-muted mb-0">No coding required - our drag-and-drop interface makes map creation simple.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item d-flex align-items-start">
+                        <div class="feature-icon me-3">
+                            <i class="bi bi-cloud-arrow-up text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 text-light">Cloud-Based Platform</h4>
+                            <p class="text-light-muted mb-0">Access your maps from anywhere, collaborate with your team in real-time.</p>
+                        </div>
+                    </div>
+                    <div class="feature-item d-flex align-items-start">
+                        <div class="feature-icon me-3">
+                            <i class="bi bi-share text-primary fs-4"></i>
+                        </div>
+                        <div>
+                            <h4 class="h5 text-light">Easy Sharing</h4>
+                            <p class="text-light-muted mb-0">Embed maps in websites or share with specific users with custom permissions.</p>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="btn btn-primary btn-lg px-4 rounded-pill">
+                    Start Designing Now <i class="bi bi-arrow-right ms-2"></i>
+                </a>
             </div>
         </div>
     </div>
-</div>
-<div class="container py-4 text-center">
-    <h1>Welcome to MapLab - Your Ultimate Interactive Map Creation Platform</h1>
-    <p>MapLab is a cutting-edge, user-friendly platform designed to empower individuals, businesses, and organizations to create highly interactive and visually appealing maps with ease. Whether you're starting from scratch or using our diverse collection of map templates, MapLab provides you with all the tools you need to craft stunning, dynamic maps.</p>
-    <p>With MapLab, you don’t need any prior mapping or coding experience. Our intuitive drag-and-drop interface allows you to add elements, customize map features, and integrate real-time data effortlessly. From geographical representations to custom thematic maps, MapLab enables users to build and share professional-grade maps without a steep learning curve.</p>
-    <p>Our platform supports a variety of map templates, making it easy to jump-start your project. Choose from pre-designed layouts tailored for business analytics, urban planning, tourism guides, event coordination, logistics, and more. Each template is fully customizable, allowing you to adapt colors, labels, markers, and other visual elements to suit your specific needs.</p>
-    <p>Beyond static maps, MapLab excels at interactive map creation. Enhance your maps with clickable markers, hover effects, pop-up information windows, embedded multimedia, and real-time data layers. These interactive features make it perfect for storytelling, data visualization, and user engagement across multiple industries.</p>
-    <p>Collaboration is at the heart of MapLab. Our platform enables teams to work together on map projects in real time. Share access with team members, assign editing permissions, and track version history to ensure seamless coordination. Whether you're working on a small-scale project or a large enterprise-level mapping initiative, our collaboration tools make teamwork effortless.</p>
-    <p>MapLab is fully cloud-based, meaning you can access your maps from anywhere, on any device. No need for complex installations or software updates—simply log in, and your work is always up to date. Our cloud storage ensures your maps are securely saved and easily retrievable whenever you need them.</p>
-    <p>We support a range of data import options, allowing you to bring in geographic data from various sources. Upload CSV files, connect to live APIs, or integrate with GIS platforms to enrich your maps with accurate and meaningful information. Our data management system ensures smooth processing and visualization of complex datasets.</p>
-    <p>MapLab is designed with performance and scalability in mind. Whether you're creating a small local map or a large-scale global visualization, our platform ensures smooth rendering and fast loading times. Optimized for both desktop and mobile devices, MapLab guarantees a seamless experience for all users.</p>
-    <p>Security is a top priority at MapLab. We employ advanced encryption and access control features to protect your data and maps. Define viewing and editing permissions, publish maps publicly or restrict them to private audiences, and ensure your sensitive information remains secure at all times.</p>
-    <p>For developers and advanced users, MapLab offers API access and custom scripting capabilities. Integrate MapLab with your existing systems, add custom functionality, or automate processes using our powerful API endpoints. This ensures ultimate flexibility for those who need deeper customization options.</p>
-    <p>MapLab provides seamless map embedding and sharing options. Easily integrate your interactive maps into websites, blogs, presentations, and reports. Generate custom shareable links, export maps in multiple formats, and make your geographic insights accessible to a broader audience.</p>
-    <p>Education and support are key to our user experience. MapLab offers a comprehensive knowledge base, step-by-step tutorials, and a dedicated support team ready to assist you. Whether you're a beginner or a professional, our resources will help you make the most of our platform.</p>
-    <p>Experience the power of MapLab today and revolutionize the way you create, visualize, and share maps. Sign up now and start building your first interactive map in minutes!</p>
-</div>
+</section>
+
+<section class="testimonials-section py-5 bg-dark text-light">
+    <div class="container py-4">
+        <div class="row justify-content-center mb-5" data-aos="fade-up">
+            <div class="col-lg-8 text-center">
+                <h2 class="display-5 fw-bold mb-3">What Our Users Say</h2>
+                <p class="lead text-light-muted">Join thousands of satisfied MapLab users worldwide</p>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
+                <div class="card testimonial-card h-100 bg-dark-surface border-0 shadow-lg rounded-4 p-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="bi bi-quote text-primary display-4 me-3"></i>
+                            <div>
+                                <h5 class="mb-1">Sarah Johnson</h5>
+                                <p class="mb-0 text-light-muted">Urban Planner</p>
+                            </div>
+                        </div>
+                        <p class="card-text text-light-muted">"MapLab transformed how I present urban development proposals. The interactive features make stakeholder engagement so much more effective!"</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
+                <div class="card testimonial-card h-100 bg-dark-surface border-0 shadow-lg rounded-4 p-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="bi bi-quote text-primary display-4 me-3"></i>
+                            <div>
+                                <h5 class="mb-1">David Chen</h5>
+                                <p class="mb-0 text-light-muted">Data Analyst</p>
+                            </div>
+                        </div>
+                        <p class="card-text text-light-muted">"The data visualization capabilities are incredible. I can import complex datasets and transform them into clear, compelling visual stories in minutes."</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
+                <div class="card testimonial-card h-100 bg-dark-surface border-0 shadow-lg rounded-4 p-4">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-4">
+                            <i class="bi bi-quote text-primary display-4 me-3"></i>
+                            <div>
+                                <h5 class="mb-1">Maria Rodriguez</h5>
+                                <p class="mb-0 text-light-muted">Travel Blogger</p>
+                            </div>
+                        </div>
+                        <p class="card-text text-light-muted">"I use MapLab to create interactive travel guides for my blog. My audience loves being able to explore destinations through these dynamic maps!"</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="cta-section py-5 bg-primary text-white position-relative overflow-hidden">
+    <div class="container py-5 position-relative z-1">
+        <div class="row justify-content-center" data-aos="zoom-in">
+            <div class="col-lg-10 text-center">
+                <h2 class="display-4 fw-bold mb-4">Ready to Create Your First Map?</h2>
+                <p class="lead mb-4">Join thousands of users already creating stunning interactive maps with MapLab</p>
+                <div class="d-flex justify-content-center gap-3">
+                    <a href="#" class="btn btn-light btn-lg px-5 rounded-pill shadow-lg">
+                        Get Started Free <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                    <a href="#" class="btn btn-outline-light btn-lg px-5 rounded-pill">
+                        View Examples
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="cta-shapes">
+        <div class="shape shape-1"></div>
+        <div class="shape shape-2"></div>
+        <div class="shape shape-3"></div>
+    </div>
+</section>
+
+@section Scripts {
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            AOS.init();
+
+            // Initialize any additional scripts
+            const heroImage = document.querySelector('.floating-animation');
+            if (heroImage) {
+                heroImage.addEventListener('mousemove', function(e) {
+                    const rect = heroImage.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const moveX = (x - rect.width / 2) / 20;
+                    const moveY = (y - rect.height / 2) / 20;
+
+                    heroImage.style.transform = `translate(${moveX}px, ${moveY}px)`;
+                });
+
+                heroImage.addEventListener('mouseleave', function() {
+                    heroImage.style.transform = 'translate(0, 0)';
+                    heroImage.style.transition = 'transform 0.5s ease';
+                });
+            }
+        });
+    </script>
+}

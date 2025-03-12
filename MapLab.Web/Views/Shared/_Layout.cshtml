@@ -3,7 +3,7 @@
 }
 
 <header>
-    <nav class="navbar navbar-expand-sm navbar-light bg-light border-bottom box-shadow">
+    <nav class="navbar navbar-expand-sm navbar-dark border-bottom box-shadow">
         <div class="container">
             <!-- Brand Logo -->
             <a class="navbar-brand d-flex align-items-baseline gap-2"
@@ -13,12 +13,11 @@
                 <img src="~/images/logo/logo256.png" alt="MapLab Logo" class="navbar-logo" />
                 <span class="fs-1 d-none d-sm-block">MapLab</span>
             </a>
-
             <!-- Centered Navigation -->
             <div class="position-absolute start-50 translate-middle-x">
                 <ul class="navbar-nav d-flex flex-row gap-3 justify-content-center">
                     <li class="nav-item">
-                        <a class="nav-link text-dark"
+                        <a class="nav-link"
                            asp-area=""
                            asp-controller="Home"
                            asp-action="Index">
@@ -26,7 +25,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark"
+                        <a class="nav-link"
                            asp-area=""
                            asp-controller="Community"
                            asp-action="Index">
@@ -34,7 +33,7 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-dark"
+                        <a class="nav-link"
                            asp-area=""
                            asp-controller="News"
                            asp-action="Index">
@@ -43,7 +42,6 @@
                     </li>
                 </ul>
             </div>
-
             <!-- Login Section -->
             <div class="ms-auto d-flex align-items-center">
                 <partial name="_LoginPartial" />
@@ -51,13 +49,11 @@
         </div>
     </nav>
 </header>
-
-<div>
+<div class="content-wrapper">
     <main role="main">
         @RenderBody()
     </main>
 </div>
-
 <footer>
     <div class="container">
         <a class="logo-section"
@@ -67,7 +63,6 @@
             <img src="~/images/logo/logo64.png" alt="logo">
             <p>MapLab</p>
         </a>
-
         <div class="nav-links">
             <a asp-area=""
                asp-controller="Home"
@@ -95,17 +90,14 @@
                 Terms of Service
             </a>
         </div>
-
         <div class="social-icons">
             <a href="https://www.instagram.com/maplabbg/">
                 <i class="bi bi-instagram"></i>
             </a>
         </div>
-
         <img id="left" src="~/images/layout/burgas.png" alt="Burgas">
         <img id="center" src="~/images/layout/footer.png" alt="Footer">
         <img id="right" src="~/images/layout/varna.png" alt="Varna">
-
         <p id="Copyright">&copy; 2025 MapLab<br>All rights reserved</p>
     </div>
 </footer>

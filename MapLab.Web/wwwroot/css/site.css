@@ -1,5 +1,18 @@
+:root {
+    --bs-dark: #121212;
+    --bs-dark-alt: #1a1a1a;
+    --bs-dark-surface: #222222;
+    --bs-primary: #18b246;
+    --bs-primary-rgb: 24, 178, 70;
+    --bs-primary-dark: #0f752e;
+    --bs-light-muted: rgba(255, 255, 255, 0.7);
+}
+
 html {
+    font-family: "Exo 2", sans-serif;
     font-size: 14px;
+    background-color: var(--bs-dark);
+    color: white;
 }
 
 @media (min-width: 768px) {
@@ -80,20 +93,6 @@ img {
 
 .selectable-card:hover img.card-img-top {
     filter: brightness(80%);
-}
-
-.navbar {
-    padding-top: 0px;
-    padding-bottom: 0px;
-}
-
-.navbar-logo {
-    max-height: 48px;
-    width: auto;
-}
-
-.navbar-brand {
-    margin: 0 !important;
 }
 
 .card a {
@@ -196,23 +195,6 @@ button img.profile-picture:hover {
     width: 0px;
 }
 
-.nav-link:hover::before {
-    backface-visibility: hidden;
-    transition: width 0.5s ease-in-out;
-    width: 70%;
-    bottom: auto;
-    top: 0px;
-    width: 70%;
-}
-
-.nav-link {
-    color: rgb(254, 174, 0);
-}
-
-.nav-link:hover::before {
-    border-color: rgb(254, 174, 0);
-}
-
 /*#region Footer styles*/
 .nav-links {
     position: relative;
@@ -262,15 +244,12 @@ button img.profile-picture:hover {
             }
 
 footer {
-    background-color: #007581;
     min-height: 200px;
     width: 100%;
     margin: 0 auto;
     position: relative;
     padding: 40px 30px;
     box-sizing: border-box;
-    color: white;
-    font-family: 'Exo 2', sans-serif;
     overflow: hidden;
     animation: fadeIn 1s ease-out;
 }
@@ -497,3 +476,236 @@ footer {
         width: 100%; /* Make the image take up 100% of its container */
         height: 100%; /* Make sure it stretches to cover the height of the container */
     }
+
+/* Text utilities */
+.text-light-muted {
+    color: var(--bs-light-muted) !important;
+}
+
+.text-gradient {
+    background: linear-gradient(90deg, #fff, #0d6efd);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-fill-color: transparent;
+}
+
+/* Navbar styles */
+.navbar {
+    background-color: rgba(18, 18, 18, 0.95) !important;
+    backdrop-filter: blur(10px);
+    padding: 16px 0;
+    transition: all 0.3s ease;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-brand {
+    margin: 0 !important;
+}
+
+.navbar-logo {
+    max-height: 48px;
+    width: auto;
+    transition: all 0.3s ease;
+}
+
+.navbar .nav-link {
+    color: white !important;
+    font-weight: 500;
+    position: relative;
+    padding: 8px 0;
+    margin: 0 16px;
+    transition: all 0.3s ease;
+}
+
+    .navbar .nav-link::before {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--bs-primary);
+        transition: width 0.3s ease;
+    }
+
+    .navbar .nav-link:hover::before {
+        width: 100%;
+    }
+
+/* Hero section */
+.hero-section {
+    background: linear-gradient(135deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.8)), url('../images/map-bg.jpg');
+    background-size: cover;
+    background-position: center;
+    color: white;
+    min-height: 85vh;
+    position: relative;
+    overflow: hidden;
+    padding: 80px 0;
+}
+
+    .hero-section .overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(135deg, rgba(13, 110, 253, 0.3), rgba(0, 0, 0, 0.7));
+        z-index: 0;
+    }
+
+.wave-shape {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    line-height: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.z-1 {
+    z-index: 1;
+    position: relative;
+}
+
+/* Floating animation for hero image */
+.floating-animation {
+    transition: transform 0.3s ease;
+}
+
+/* Pulse animation for CTA button */
+.pulse-btn {
+    position: relative;
+    overflow: hidden;
+}
+
+    .pulse-btn::after {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 150%;
+        height: 150%;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transform: translate(-50%, -50%) scale(0);
+        animation: pulse 2s infinite;
+    }
+
+@keyframes pulse {
+    0% {
+        transform: translate(-50%, -50%) scale(0);
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translate(-50%, -50%) scale(1);
+        opacity: 0;
+    }
+}
+
+/* Features section */
+.features-section, .showcase-section, .testimonials-section {
+    position: relative;
+}
+
+.bg-dark-alt {
+    background-color: var(--bs-dark-alt);
+}
+
+.bg-dark-surface {
+    background-color: var(--bs-dark-surface);
+}
+
+.feature-card, .testimonial-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .feature-card:hover, .testimonial-card:hover {
+        transform: translateY(-10px);
+    }
+
+.icon-wrapper {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background-color: rgba(13, 110, 253, 0.1);
+    margin-bottom: 20px;
+}
+
+/* CTA section */
+.cta-section {
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-primary-dark));
+}
+
+.cta-shapes .shape {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.cta-shapes .shape-1 {
+    width: 300px;
+    height: 300px;
+    top: -100px;
+    left: -100px;
+}
+
+.cta-shapes .shape-2 {
+    width: 200px;
+    height: 200px;
+    bottom: -80px;
+    right: -80px;
+}
+
+.cta-shapes .shape-3 {
+    width: 150px;
+    height: 150px;
+    top: 50%;
+    right: 10%;
+    transform: translateY(-50%);
+}
+
+/* Footer modifications */
+footer {
+    background-color: var(--bs-dark-alt);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Card and Button styling */
+.card {
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn {
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.btn-primary {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
+}
+
+    .btn-primary:hover {
+        background-color: var(--bs-primary-dark);
+        border-color: var(--bs-primary-dark);
+        transform: translateY(-2px);
+    }
+
+.btn-outline-light:hover,
+.btn-outline-primary:hover {
+    transform: translateY(-2px);
+}
+
+/* Animation utilities */
+.rounded-4 {
+    border-radius: 1rem !important;
+}
