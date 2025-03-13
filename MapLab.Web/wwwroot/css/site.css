@@ -52,6 +52,12 @@ img {
     -ms-user-select: none;
 }
 
+.container {
+    padding: 0 4rem;
+    width: 100%;
+    max-width: none;
+}
+
 ::-webkit-scrollbar {
     width: 8px;
 }
