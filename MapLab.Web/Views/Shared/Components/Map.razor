@@ -13,8 +13,8 @@
     @if (CanEdit)
     {
         <Toolbar @bind-SelectedTool="SelectedTool"
-                 OnUndo="Undo"
-                 OnRedo="Redo" />
+        OnUndo="Undo"
+        OnRedo="Redo" />
 
         @if (SelectedTool == ToolType.Pinpoint)
         {
@@ -27,11 +27,11 @@
     }
 
     <Legend Title="@Title"
-            Data="@(MapJsonObject?["legend"] as JArray)"
-            CanEdit="CanEdit" />
+    Data="@(MapJsonObject?["legend"] as JArray)"
+    CanEdit="CanEdit" />
 
     <Controls CanEdit="CanEdit"
-              OnSaveMap="Save" />
+    OnSaveMap="Save" />
 </div>
 
 @code {
@@ -201,7 +201,7 @@
         var featuresArray = MapJsonObject["features"] as JArray;
 
         var legendItem = legendArray?
-            .FirstOrDefault(l => l["type"]?.ToString() == "Point" && l["icon"].ToString() == icon && l["fill"]?.ToString() == fill);
+            .FirstOrDefault(l => l["type"]?.ToString() == "Point" && l["icon"]?.ToString() == icon && l["fill"]?.ToString() == fill);
 
         if (legendItem == null && icon != null && fill != null)
         {
@@ -261,12 +261,12 @@
 
     private async Task Undo()
     {
-        
+
     }
 
     private async Task Redo()
     {
-        
+
     }
 
     [JSInvokable]

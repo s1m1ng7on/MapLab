@@ -9,5 +9,6 @@ namespace MapLab.Data.Managers.Contracts
         public Task<string> SaveFileAsync(IFormFile file, string tableName, string propertyName, string entityId);
         public Task<string> SaveFileAsync(IBrowserFile file, string tableName, string propertyName, string entityId);
         public Task<string> SaveJsonFileAsync(string json, string tableName, string propertyName, string entityId);
+        public Task<string> SaveFileAsync(Stream fileStream, string tableName, string propertyName, string entityId, string fileExtension);
     }
 }

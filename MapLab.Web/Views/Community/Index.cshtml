@@ -1,6 +1,45 @@
-﻿@{
+﻿@using MapLab.Common.Extensions
+@using MapLab.Data.Models.Enums
+@{
     ViewData["Title"] = "Community";
+
+    // Manually define the 8 regions (excluding Region.Other)
+    var selectedRegions = new Dictionary<Region, string>
+    {
+        { Region.World, "~/images/regions/world.jpg" },
+        { Region.Asia, "~/images/regions/asia.jpg" },
+        { Region.SouthAmerica, "~/images/regions/south-america.jpg" },
+        { Region.Australia, "~/images/regions/australia.jpg" },
+        { Region.Europe, "~/images/regions/europe.jpg" },
+        { Region.NorthAmerica, "~/images/regions/north-america.jpg" },
+        { Region.Africa, "~/images/regions/africa.jpg" },
+        { Region.Antarctica, "~/images/regions/antarctica.jpg" }
+    };
+
+    // Get the list of regions (keys) for structured looping
+    var regionList = selectedRegions.Keys.ToList();
 }
 
-<h1>Community</h1>
-<span>This page is still under construction.</span>
+<div class="container py-5">
+    <h2 class="mb-5 text-white text-center">Explore Regions</h2>
+
+    <div class="row row-cols-2 row-cols-md-4 g-4">
+        @for (int i = 0; i < 4; i++) // 4 columns
+        {
+            <div class="col">
+                @for (int j = i; j < regionList.Count; j += 4) // Top-to-bottom ordering
+                {
+                    var region = regionList[j];
+                    var imageUrl = selectedRegions[region]; // Get image for the region
+
+                    <div class="card bg-dark border-secondary h-100 overflow-hidden mb-3">
+                        <img src="@imageUrl" class="card-img-top" alt="@region.GetDisplayName()">
+                        <div class="card-body text-center">
+                            <h5 class="card-title text-white">@region.GetDisplayName()</h5>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</div>

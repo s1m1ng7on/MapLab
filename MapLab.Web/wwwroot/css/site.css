@@ -5,14 +5,13 @@
     --bs-primary: #18b246;
     --bs-primary-rgb: 24, 178, 70;
     --bs-primary-dark: #0f752e;
+    --bs-secondary-color: #e2e2e2;
     --bs-light-muted: rgba(255, 255, 255, 0.7);
 }
 
 html {
     font-family: "Exo 2", sans-serif;
     font-size: 14px;
-    background-color: var(--bs-dark);
-    color: white;
 }
 
 @media (min-width: 768px) {
@@ -38,8 +37,10 @@ html {
 }
 
 body {
-  font-family: "Exo 2", sans-serif;
-  overflow-x: hidden;
+    font-family: "Exo 2", sans-serif;
+    background-color: var(--bs-dark);
+    color: white;
+    overflow-x: hidden;
 }
 
 img {
@@ -708,4 +709,54 @@ footer {
 /* Animation utilities */
 .rounded-4 {
     border-radius: 1rem !important;
+}
+
+/* CTA section */
+.cta-section {
+    background: linear-gradient(135deg, var(--bs-primary), var(--bs-primary-dark));
+}
+
+/* Maps View Specific Styles */
+.map-card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+    .map-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 1rem 3rem rgba(0,0,0,0.5) !important;
+    }
+
+    .map-card .map-thumbnail {
+        height: 200px;
+        object-fit: cover;
+        transition: filter 0.3s ease;
+    }
+
+    .map-card:hover .map-thumbnail {
+        filter: brightness(80%);
+    }
+
+/* Animations */
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translate3d(0, 20px, 0);
+    }
+
+    to {
+        opacity: 1;
+        transform: translate3d(0, 0, 0);
+    }
+}
+
+.animate__animated {
+    animation-duration: 0.5s;
+}
+
+.animate__fadeIn {
+    animation-name: fadeIn;
+}
+
+.animate__fadeInUp {
+    animation-name: fadeInUp;
 }

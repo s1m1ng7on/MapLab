@@ -9,7 +9,10 @@ using MapLab.Services;
 using MapLab.Services.Contracts;
 using MapLab.Services.Mapping;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
+using System.Globalization;
 
 namespace MapLab
 {
@@ -56,8 +59,23 @@ namespace MapLab
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
             builder.Services.AddControllersWithViews()
+                .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddRazorRuntimeCompilation();
             builder.Services.AddServerSideBlazor();
+
+            builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[]
+                {
+                    new CultureInfo("en-US"),
+                    new CultureInfo("bg"),
+                };
+                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
 
             builder.Services.AddCropper();
 
@@ -129,6 +147,8 @@ namespace MapLab
             app.UseStaticFiles();
 
             app.UseRouting();
+
+            app.UseRequestLocalization();
 
             app.UseAuthentication();
             app.UseAuthorization();

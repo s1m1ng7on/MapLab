@@ -29,7 +29,7 @@ namespace MapLab.Data.Managers
         public async Task<string> SaveJsonFileAsync(string json, string tableName, string propertyName, string entityId)
             => await SaveFileAsync(new MemoryStream(Encoding.UTF8.GetBytes(json)), tableName, propertyName, entityId, ".json");
 
-        private async Task<string> SaveFileAsync(Stream fileStream, string tableName, string propertyName, string entityId, string fileExtension)
+        public async Task<string> SaveFileAsync(Stream fileStream, string tableName, string propertyName, string entityId, string fileExtension)
         {
             if (fileStream == null)
                 return null!;

@@ -21,7 +21,7 @@
                            asp-area=""
                            asp-controller="Home"
                            asp-action="Index">
-                            Home
+                            @_localizer["Home"]
                         </a>
                     </li>
                     <li class="nav-item">
@@ -29,7 +29,7 @@
                            asp-area=""
                            asp-controller="Community"
                            asp-action="Index">
-                            Community
+                            @_localizer["Community"]
                         </a>
                     </li>
                     <li class="nav-item">
@@ -37,7 +37,7 @@
                            asp-area=""
                            asp-controller="News"
                            asp-action="Index">
-                            News
+                            @_localizer["News"]
                         </a>
                     </li>
                 </ul>
@@ -67,27 +67,27 @@
             <a asp-area=""
                asp-controller="Home"
                asp-action="AboutUs">
-                About us
+                @_localizer["About Us"]
             </a>
             <a asp-area=""
                asp-controller="Home"
                asp-action="UserGuide">
-                User Guide
+                @_localizer["User Guide"]
             </a>
             <a asp-area=""
                asp-controller="Home"
                asp-action="FrequentlyAskedQuestions">
-                FAQ
+                @_localizer["FAQ"]
             </a>
             <a asp-area=""
                asp-controller="Home"
                asp-action="PrivacyPolicy">
-                Privacy Policy
+                @_localizer["Privacy Policy"]
             </a>
             <a asp-area=""
                asp-controller="Home"
                asp-action="TermsOfService">
-                Terms of Service
+                @_localizer["Terms of Service"]
             </a>
         </div>
         <div class="social-icons">
@@ -98,7 +98,7 @@
         <img id="left" src="~/images/layout/burgas.png" alt="Burgas">
         <img id="center" src="~/images/layout/footer.png" alt="Footer">
         <img id="right" src="~/images/layout/varna.png" alt="Varna">
-        <p id="Copyright">&copy; 2025 MapLab<br>All rights reserved</p>
+        <p id="Copyright">&copy; 2025 MapLab<br>@_localizer["All rights reserved"]</p>
     </div>
 </footer>
 

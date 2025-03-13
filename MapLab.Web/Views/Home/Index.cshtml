@@ -1,7 +1,6 @@
 ﻿@using MapLab.Data.Entities
 @using MapLab.Web.Models.Shared
 @using Microsoft.AspNetCore.Identity
-@using Microsoft.AspNetCore.Localization
 @inject SignInManager<Profile> _signInManager
 
 <section class="hero-section d-flex align-items-center position-relative">
@@ -9,7 +8,7 @@
     <div class="container position-relative z-1">
         <div class="row align-items-center">
             <div class="hero-text col-lg-6 mb-5 mb-lg-0" data-aos="fade-right" data-aos-duration="1000">
-                <h1 class="display-3 fw-bold text-gradient mb-3">Design Interactive Maps With Ease</h1>
+                <h1 class="display-3 fw-bold text-gradient mb-3">@_localizer["Design Interactive Maps With Ease"]</h1>
                 <p class="lead mb-4 text-light-muted">Create custom maps, explore different regions, and visualize your creative ideas in an interactive, immersive way.</p>
                 <div class="d-flex gap-3">
                     @if (_signInManager.IsSignedIn(User))
@@ -17,7 +16,7 @@
                         <a class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg pulse-btn"
                            asp-controller="Maps"
                            asp-action="Index">
-                            Start Mapping <i class="bi bi-arrow-right ms-2"></i>
+                            @_localizer["Start Mapping"] <i class="bi bi-arrow-right ms-2"></i>
                         </a>
                     }
                     else
@@ -25,15 +24,19 @@
                         <a class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg pulse-btn"
                            asp-area="Identity"
                            asp-page="/Account/Login">
-                            Start Mapping <i class="bi bi-arrow-right ms-2"></i>
+                            @_localizer["Start Mapping"] <i class="bi bi-arrow-right ms-2"></i>
                         </a>
-                    }                    <a href="#" class="btn btn-outline-light btn-lg px-4 rounded-pill">
-                        <i class="bi bi-play-fill me-2"></i> Watch Demo
+                    }
+                    <a href="#" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                        <i class="bi bi-play-fill me-2"></i> @_localizer["Watch Demo"]
                     </a>
                 </div>
             </div>
             <div class="hero-image col-lg-6 d-none d-lg-block text-center" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
-                <img src="~/images/home/ruslan1.png" alt="MapLab Interface Demo" class="img-fluid floating-animation shadow-lg rounded-4">
+                <img src="~/images/home/ruslan1.png"
+                     alt="MapLab Interface Demo"
+                     class="img-fluid floating-animation shadow-lg rounded-4"
+                     asp-append-version="true" />
             </div>
         </div>
     </div>
@@ -48,8 +51,8 @@
     <div class="container py-4">
         <div class="row justify-content-center mb-5" data-aos="fade-up">
             <div class="col-lg-8 text-center">
-                <h2 class="display-5 fw-bold mb-3">Powerful Tools for Your Mapping Needs</h2>
-                <p class="lead text-light-muted">Discover what makes MapLab the ultimate platform for creating interactive maps</p>
+                <h2 class="display-5 fw-bold mb-3">@_localizer["Meet Your Mapping Needs"]</h2>
+                <p class="lead text-light-muted">@_localizer["Discover what makes MapLab the ultimate mapping platform"]</p>
             </div>
         </div>
 
@@ -76,7 +79,7 @@
                             <i class="bi bi-graph-up text-primary fs-1"></i>
                         </div>
                         <h3 class="card-title h4 fw-bold mb-3">Analyze & Visualize Data</h3>
-                        <p class="card-text text-light-muted">Bring your data to life with heatmaps, layers, and advanced styling options. Gain insights with powerful mapping analytics.</p>
+                        <p class="card-text text-light-muted">Explore an ever-expanding universe of map templates – thousands of designs created by MapLab experts and our vibrant community of mapmakers.</p>
                     </div>
                     <div class="card-footer bg-transparent border-0 text-center pb-4">
                         <a href="#" class="btn btn-outline-primary rounded-pill px-4">Learn More</a>
@@ -106,7 +109,10 @@
     <div class="container py-5">
         <div class="row align-items-center g-5">
             <div class="col-lg-6" data-aos="fade-right" data-aos-duration="1000">
-                <img src="~/images/home/ruslan2.png" class="img-fluid rounded-4 shadow-lg" alt="Ruslan presenting map tools">
+                <img src="~/images/home/ruslan2.png"
+                     class="img-fluid rounded-4 shadow-lg"
+                     alt="Ruslan presenting map tools"
+                     asp-append-version="true" />
             </div>
             <div class="col-lg-6" data-aos="fade-left" data-aos-duration="1000" data-aos-delay="200">
                 <h2 class="display-5 fw-bold mb-4 text-light">Customize and Share Your Maps</h2>

@@ -2,23 +2,50 @@
 @using MapLab.Web.Models.Shared
 @model MapsIndexViewModel
 @{
-    ViewData["Title"] = Model.IsCurrentProfile ? "My Maps" : Model.ProfileUserName + "'s Maps";
+    ViewData["Title"] = Model.IsCurrentProfile ? _localizer["My Maps"] : _localizer["Profile's Maps", Model.ProfileUserName];
 }
-
-<div class="container py-4">
-    <h1>@ViewData["Title"]</h1>
-    <ul class="list-unstyled d-flex flex-wrap gap-3">
-        @foreach (var map in Model.Maps!)
+<div class="container py-5">
+    <div class="row align-items-center mb-4">
+        <div class="col-12 col-md-6">
+            <h1 class="display-6 text-white mb-3 animate__animated animate__fadeIn">@ViewData["Title"]</h1>
+        </div>
+        @if (Model.IsCurrentProfile)
         {
-            <li flex-item>
-                <partial name="_MapCardPartial" model="@map" />
-            </li>
+            <div class="col-12 col-md-6 text-md-end">
+                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMapModal">
+                    <i class="bi bi-plus-lg me-2"></i>Create New Map
+                </button>
+            </div>
         }
-    </ul>
+    </div>
+    @if (Model.Maps == null || !Model.Maps.Any())
+    {
+    <div class="row">
+        <div class="col-12">
+            <div class="alert alert-secondary text-center animate__animated animate__fadeIn" role="alert">
+                @(Model.IsCurrentProfile
+                    ? "You haven't created any maps yet. Click 'Create New Map' to get started!"
+                    : "This profile hasn't created any maps yet.")
+            </div>
+        </div>
+    </div>
+    }
+    else
+    {
+    <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+        @foreach (var map in Model.Maps)
+        {
+            <div class="col animate__animated animate__fadeInUp">
+                <partial name="_MapCardPartial" model="@map" />
+            </div>
+        }
+    </div>
+    }
 </div>
-<component type="typeof(ShareMapModal)" render-mode="ServerPrerendered" param-DarkMode="false" />
+<component type="typeof(ShareMapModal)" render-mode="ServerPrerendered" param-DarkMode="true" />
 
-@if (Model.IsCurrentProfile) {
+@if (Model.IsCurrentProfile)
+{
     string modalId = $"modal-{Guid.NewGuid().ToString()}";
 
     <button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalId">
