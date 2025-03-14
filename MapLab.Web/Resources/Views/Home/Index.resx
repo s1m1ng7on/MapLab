@@ -117,14 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Build custom maps effortlessly with our intuitive, user-friendly tools. Add points and fill areas to visualize data clearly and effectively, all with just a few clicks." xml:space="preserve">
+    <value>Build custom maps effortlessly with our intuitive, user-friendly tools. Add points and fill areas to visualize data clearly and effectively, all with just a few clicks.</value>
+  </data>
+  <data name="Create Interactive Maps" xml:space="preserve">
+    <value>Create Interactive Maps</value>
+  </data>
   <data name="Design Interactive Maps With Ease" xml:space="preserve">
     <value>Design Interactive Maps With Ease</value>
   </data>
   <data name="Discover what makes MapLab the ultimate mapping platform" xml:space="preserve">
     <value>Discover what makes MapLab the ultimate mapping platform</value>
   </data>
+  <data name="Explore an ever-expanding universe of map templates – thousands of designs created by MapLab and our vibrant community." xml:space="preserve">
+    <value>Explore an ever-expanding universe of map templates – thousands of designs created by MapLab and our vibrant community.</value>
+  </data>
+  <data name="Find Your Perfect Template" xml:space="preserve">
+    <value>Find Your Perfect Template</value>
+  </data>
   <data name="Meet Your Mapping Needs" xml:space="preserve">
     <value>Meet Your Mapping Needs</value>
+  </data>
+  <data name="Share &amp; Explore" xml:space="preserve">
+    <value>Share &amp; Explore</value>
+  </data>
+  <data name="Share your maps with the community and explore creations from others. Exchange ideas and find inspiration in interactive designs." xml:space="preserve">
+    <value>Share your maps with the community and explore creations from others. Exchange ideas and find inspiration in interactive designs.</value>
   </data>
   <data name="Start Mapping" xml:space="preserve">
     <value>Start Mapping</value>

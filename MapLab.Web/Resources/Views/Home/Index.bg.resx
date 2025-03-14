@@ -117,14 +117,32 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="Build custom maps effortlessly with our intuitive, user-friendly tools. Add points and fill areas to visualize data clearly and effectively, all with just a few clicks." xml:space="preserve">
+    <value>Създавайте персонализирани карти лесно с нашите интуитивни и лесни за използване инструменти. Добавяйте точки и запълвайте области, за да визуализирате данни ясно и ефективно, всичко с няколко клика.</value>
+  </data>
+  <data name="Create Interactive Maps" xml:space="preserve">
+    <value>Създавайте Интерактивни Карти</value>
+  </data>
   <data name="Design Interactive Maps With Ease" xml:space="preserve">
     <value>Проектирайте Интерактивни Карти с Лекота</value>
   </data>
   <data name="Discover what makes MapLab the ultimate mapping platform" xml:space="preserve">
     <value>Открийте какво прави MapLab най-добрата платформа за картографиране</value>
   </data>
+  <data name="Explore an ever-expanding universe of map templates – thousands of designs created by MapLab and our vibrant community." xml:space="preserve">
+    <value>Открийте безкрайния избор от шаблони за карти – хиляди дизайни, създадени от MapLab и активната ни общност.</value>
+  </data>
+  <data name="Find Your Perfect Template" xml:space="preserve">
+    <value>Намерете Перфектния Шаблон</value>
+  </data>
   <data name="Meet Your Mapping Needs" xml:space="preserve">
     <value>Задоволете Вашите Картографски Нужди</value>
+  </data>
+  <data name="Share &amp; Explore" xml:space="preserve">
+    <value>Споделете и Разгледайте</value>
+  </data>
+  <data name="Share your maps with the community and explore creations from others. Exchange ideas and find inspiration in interactive designs." xml:space="preserve">
+    <value>Споделете вашите карти с общността и разгледайте творения от други. Обменете идеи и намерете вдъхновение в интерактивните дизайни.</value>
   </data>
   <data name="Start Mapping" xml:space="preserve">
     <value>Започни Картирането</value>

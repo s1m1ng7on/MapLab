@@ -11,22 +11,11 @@
                 <h1 class="display-3 fw-bold text-gradient mb-3">@_localizer["Design Interactive Maps With Ease"]</h1>
                 <p class="lead mb-4 text-light-muted">Create custom maps, explore different regions, and visualize your creative ideas in an interactive, immersive way.</p>
                 <div class="d-flex gap-3">
-                    @if (_signInManager.IsSignedIn(User))
-                    {
-                        <a class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg pulse-btn"
-                           asp-controller="Maps"
-                           asp-action="Index">
-                            @_localizer["Start Mapping"] <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    }
-                    else
-                    {
-                        <a class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg pulse-btn"
-                           asp-area="Identity"
-                           asp-page="/Account/Login">
-                            @_localizer["Start Mapping"] <i class="bi bi-arrow-right ms-2"></i>
-                        </a>
-                    }
+                    <a class="btn btn-primary btn-lg px-4 rounded-pill shadow-lg pulse-btn"
+                       asp-controller="Maps"
+                       asp-action="Index">
+                        @_localizer["Start Mapping"] <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
                     <a href="#" class="btn btn-outline-light btn-lg px-4 rounded-pill">
                         <i class="bi bi-play-fill me-2"></i> @_localizer["Watch Demo"]
                     </a>
@@ -61,10 +50,10 @@
                 <div class="card feature-card h-100 bg-dark-surface border-0 shadow-lg rounded-4">
                     <div class="card-body p-4 text-center">
                         <div class="icon-wrapper mb-3">
-                            <i class="bi bi-map text-primary fs-1"></i>
+                            <i class="bi bi-geo-alt text-primary fs-1"></i>
                         </div>
-                        <h3 class="card-title h4 fw-bold mb-3">Create Interactive Maps</h3>
-                        <p class="card-text text-light-muted">Build custom maps effortlessly with our user-friendly tools. Add markers, draw shapes, and visualize data with ease.</p>
+                        <h3 class="card-title h4 fw-bold mb-3">@_localizer["Create Interactive Maps"]</h3>
+                        <p class="card-text text-light-muted">@_localizer["Build custom maps effortlessly with our intuitive, user-friendly tools. Add points and fill areas to visualize data clearly and effectively, all with just a few clicks."]</p>
                     </div>
                     <div class="card-footer bg-transparent border-0 text-center pb-4">
                         <a href="#" class="btn btn-outline-primary rounded-pill px-4">Learn More</a>
@@ -76,10 +65,10 @@
                 <div class="card feature-card h-100 bg-dark-surface border-0 shadow-lg rounded-4">
                     <div class="card-body p-4 text-center">
                         <div class="icon-wrapper mb-3">
-                            <i class="bi bi-graph-up text-primary fs-1"></i>
+                            <i class="bi bi-map text-primary fs-1"></i>
                         </div>
-                        <h3 class="card-title h4 fw-bold mb-3">Analyze & Visualize Data</h3>
-                        <p class="card-text text-light-muted">Explore an ever-expanding universe of map templates – thousands of designs created by MapLab experts and our vibrant community of mapmakers.</p>
+                        <h3 class="card-title h4 fw-bold mb-3">@_localizer["Find Your Perfect Template"]</h3>
+                        <p class="card-text text-light-muted">@_localizer["Explore an ever-expanding universe of map templates – thousands of designs created by MapLab and our vibrant community."]</p>
                     </div>
                     <div class="card-footer bg-transparent border-0 text-center pb-4">
                         <a href="#" class="btn btn-outline-primary rounded-pill px-4">Learn More</a>
@@ -93,8 +82,8 @@
                         <div class="icon-wrapper mb-3">
                             <i class="bi bi-people text-primary fs-1"></i>
                         </div>
-                        <h3 class="card-title h4 fw-bold mb-3">Collaborate & Share</h3>
-                        <p class="card-text text-light-muted">Connect with the community by sharing your maps. Discover, explore, and contribute to interactive maps from other creators.</p>
+                        <h3 class="card-title h4 fw-bold mb-3">@_localizer["Share & Explore"]</h3>
+                        <p class="card-text text-light-muted">@_localizer["Share your maps with the community and explore creations from others. Exchange ideas and find inspiration in interactive designs."]</p>
                     </div>
                     <div class="card-footer bg-transparent border-0 text-center pb-4">
                         <a href="#" class="btn btn-outline-primary rounded-pill px-4">Learn More</a>

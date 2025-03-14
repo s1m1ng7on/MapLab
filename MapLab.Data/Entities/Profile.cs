@@ -14,6 +14,6 @@ namespace MapLab.Data.Entities
         public DateTime? UpdatedOn { get; set; }
         public virtual ICollection<Map>? Maps { get; set; }
         public virtual ICollection<MapTemplate>? MapTemplates { get; set; }
-        public virtual ICollection<ProfileRecentMapTemplate>? ProfileRecentMapTemplates { get; set; }
+        public virtual ICollection<MapView>? MapViews { get; set; }
     }
 }

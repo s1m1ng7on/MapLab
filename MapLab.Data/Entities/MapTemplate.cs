@@ -23,7 +23,5 @@ namespace MapLab.Data.Entities
         public virtual Profile? Profile { get; set; }
 
         public virtual ICollection<Map>? Maps { get; set; }
-
-        public virtual ICollection<ProfileRecentMapTemplate>? ProfileRecentMapTemplates { get; set; }
     }
 }

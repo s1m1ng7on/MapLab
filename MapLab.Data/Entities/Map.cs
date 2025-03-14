@@ -27,5 +27,6 @@ namespace MapLab.Data.Entities
         public virtual MapTemplate? Template { get; set; }
 
         public virtual Profile? Profile { get; set; }
+        public virtual ICollection<MapView>? MapViews { get; set; }
     }
 }

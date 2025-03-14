@@ -27,10 +27,6 @@ html {
     font-style: normal;
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
-  box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
-
 html {
   position: relative;
   min-height: 100%;
@@ -696,6 +692,7 @@ footer {
     font-weight: 500;
 }
 
+/* Button state behaviors - Primary */
 .btn-primary {
     background-color: var(--bs-primary);
     border-color: var(--bs-primary);
@@ -707,10 +704,69 @@ footer {
         transform: translateY(-2px);
     }
 
-.btn-outline-light:hover,
-.btn-outline-primary:hover {
+    .btn-primary:active,
+    .btn-primary:focus-visible {
+        background-color: var(--bs-primary-darker, #0a53be);
+        border-color: var(--bs-primary-darker, #0a53be);
+        transform: translateY(0);
+        box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.5);
+    }
+
+    .btn-primary:disabled,
+    .btn-primary.disabled {
+        background-color: var(--bs-primary);
+        border-color: var(--bs-primary);
+        opacity: 0.65;
+        transform: none;
+    }
+
+/* Button state behaviors - Outline Light */
+.btn-outline-light:hover {
     transform: translateY(-2px);
 }
+
+.btn-outline-light:active,
+.btn-outline-light:focus-visible {
+    transform: translateY(0);
+    box-shadow: 0 0 0 0.25rem rgba(248, 249, 250, 0.5);
+}
+
+.btn-outline-light:disabled,
+.btn-outline-light.disabled {
+    opacity: 0.65;
+    transform: none;
+}
+
+/* Button state behaviors - Outline Primary */
+.btn-outline-primary {
+    border-color: var(--bs-primary);
+    color: var(--bs-primary);
+}
+
+    .btn-outline-primary:hover {
+        background-color: var(--bs-primary);
+        color: #fff;
+        border-color: var(--bs-primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .btn-outline-primary:active,
+    .btn-outline-primary:focus-visible {
+        background-color: var(--bs-primary-darker);
+        color: #fff;
+        border-color: var(--bs-primary-darker);
+        transform: translateY(0);
+        box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.5);
+    }
+
+    .btn-outline-primary:disabled,
+    .btn-outline-primary.disabled {
+        opacity: 0.65;
+        transform: none;
+        border-color: var(--bs-primary);
+        color: var(--bs-primary);
+    }
+
 
 /* Animation utilities */
 .rounded-4 {
@@ -765,4 +821,33 @@ footer {
 
 .animate__fadeInUp {
     animation-name: fadeInUp;
+}
+
+.form-control {
+    background-color: transparent !important;
+}
+
+.form-control:-webkit-autofill,
+.form-control:-webkit-autofill:hover,
+.form-control:-webkit-autofill:focus {
+    -webkit-text-fill-color: white !important;
+    -webkit-box-shadow: 0 0 0 1000px var(--bs-dark-alt, #1e2125) inset !important;
+    box-shadow: 0 0 0 1000px var(--bs-dark-alt, #1e2125) inset !important;
+    transition: background-color 5000s ease-in-out 0s;
+    caret-color: white;
+}
+
+.form-control:focus {
+    border-color: var(--bs-primary) !important;
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25) !important;
+}
+
+.form-check-input:focus {
+    border-color: var(--bs-primary);
+    box-shadow: 0 0 0 0.25rem rgba(var(--bs-primary-rgb), 0.25);
+}
+
+.form-check-input:checked {
+    background-color: var(--bs-primary);
+    border-color: var(--bs-primary);
 }

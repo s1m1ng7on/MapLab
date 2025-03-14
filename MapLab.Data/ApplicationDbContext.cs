@@ -10,7 +10,7 @@ namespace MapLab.Data
     {
         public DbSet<Map> Maps { get; set; }
         public DbSet<MapTemplate> MapTemplates { get; set; }
-        public DbSet<ProfileRecentMapTemplate> ProfileRecentMapTemplates { get; set; }
+        public DbSet<MapView> MapViews { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)

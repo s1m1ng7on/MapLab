@@ -26,6 +26,11 @@ namespace MapLab.Web.Controllers
         [Route("[controller]/{profileUserName?}")]
         public async Task<IActionResult> Index(string profileUserName)
         {
+            if (string.IsNullOrEmpty(profileUserName) && !User.Identity.IsAuthenticated)
+            {
+                return RedirectToPage("/Account/Login", new { area = "Identity", returnUrl = Url.Action("Index", "Maps") });
+            }
+
             var (profileId, isCurrentProfile) = string.IsNullOrEmpty(profileUserName)
                 ? (_profileService.GetProfileId(), true)
                 : (await _profileManager.FindByNameAsync(profileUserName) is var profile
