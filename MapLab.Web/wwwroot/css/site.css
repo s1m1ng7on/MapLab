@@ -37,6 +37,9 @@ body {
     background-color: var(--bs-dark);
     color: white;
     overflow-x: hidden;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
 }
 
 img {
@@ -823,8 +826,12 @@ footer {
     animation-name: fadeInUp;
 }
 
-.form-control {
+.form-control, .form-check-input {
     background-color: transparent !important;
+}
+
+.form-check-input {
+    transition: background-color 0.1s ease-in-out;
 }
 
 .form-control:-webkit-autofill,
@@ -848,6 +855,6 @@ footer {
 }
 
 .form-check-input:checked {
-    background-color: var(--bs-primary);
+    background-color: var(--bs-primary) !important;
     border-color: var(--bs-primary);
 }
