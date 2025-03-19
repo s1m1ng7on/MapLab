@@ -1,6 +1,25 @@
-﻿@{
+﻿@using MapLab.Web.Models.News
+@model NewsSectionViewModel
+@{
     ViewData["Title"] = "News";
 }
 
-<h1>@ViewData["Title"]</h1>
-<span>This page is still under construction.</span>
+<div class="container py-5">
+    <h2 class="mb-5">News</h2>
+    <div class="row g-4">
+        @foreach (var newsArticle in Model.Articles)
+        {
+            <div class="col-md-4">
+                <partial name="_NewsArticleCardPartial" model="@newsArticle" />
+            </div>
+        }
+    </div>
+    <div class="text-center mt-5">
+        <a asp-controller="News"
+           asp-action="Index"
+           class="btn btn-outline-primary btn-lg">
+            View All News
+            <i class="bi bi-newspaper ms-2"></i>
+        </a>
+    </div>
+</div>

@@ -119,6 +119,7 @@ namespace MapLab
             builder.Services.AddTransient<IProfileService, ProfileService>();
             builder.Services.AddTransient<IMapsService, MapsService>();
             builder.Services.AddTransient<IMapAnalyticsService, MapAnalyticsService>();
+            builder.Services.AddTransient<INewsService, NewsService>();
         }
 
         private static void Configure(this WebApplication app)

@@ -1,6 +1,8 @@
 ﻿@using MapLab.Data.Entities
+@using MapLab.Web.Models.Home
 @using MapLab.Web.Models.Shared
 @using Microsoft.AspNetCore.Identity
+@model HomeIndexViewModel
 @inject SignInManager<Profile> _signInManager
 
 <section class="hero-section d-flex align-items-center position-relative">
@@ -143,63 +145,35 @@
     </div>
 </section>
 
-<section class="testimonials-section py-5 bg-dark text-light">
-    <div class="container py-4">
-        <div class="row justify-content-center mb-5" data-aos="fade-up">
-            <div class="col-lg-8 text-center">
-                <h2 class="display-5 fw-bold mb-3">What Our Users Say</h2>
-                <p class="lead text-light-muted">Join thousands of satisfied MapLab users worldwide</p>
+@if (Model.Articles != null && Model.Articles.Any())
+{
+    <section class="latest-news-section py-5 bg-dark text-light">
+        <div class="container py-4">
+            <div class="row justify-content-center mb-5" data-aos="fade-up">
+                <div class="col-lg-8 text-center">
+                    <h2 class="display-5 fw-bold mb-3">Latest News</h2>
+                    <p class="lead text-light-muted">Stay updated with the latest developments at MapLab</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                @foreach (var newsArticle in Model.Articles)
+                {
+                    <div class="col-md-4" data-aos="fade-up" data-aos-delay="@(100 * (Model.Articles.IndexOf(newsArticle) + 1))">
+                        <partial name="_NewsArticleCardPartial" model="@newsArticle" />
+                    </div>
+                }
+            </div>
+            <div class="text-center mt-5">
+                <a asp-controller="News"
+                   asp-action="Index"
+                   class="btn btn-outline-primary btn-lg">
+                    View All News
+                    <i class="bi bi-newspaper ms-2"></i>
+                </a>
             </div>
         </div>
-
-        <div class="row g-4">
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="100">
-                <div class="card testimonial-card h-100 bg-dark-surface border-0 shadow-lg rounded-4 p-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-4">
-                            <i class="bi bi-quote text-primary display-4 me-3"></i>
-                            <div>
-                                <h5 class="mb-1">Sarah Johnson</h5>
-                                <p class="mb-0 text-light-muted">Urban Planner</p>
-                            </div>
-                        </div>
-                        <p class="card-text text-light-muted">"MapLab transformed how I present urban development proposals. The interactive features make stakeholder engagement so much more effective!"</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="200">
-                <div class="card testimonial-card h-100 bg-dark-surface border-0 shadow-lg rounded-4 p-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-4">
-                            <i class="bi bi-quote text-primary display-4 me-3"></i>
-                            <div>
-                                <h5 class="mb-1">David Chen</h5>
-                                <p class="mb-0 text-light-muted">Data Analyst</p>
-                            </div>
-                        </div>
-                        <p class="card-text text-light-muted">"The data visualization capabilities are incredible. I can import complex datasets and transform them into clear, compelling visual stories in minutes."</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-md-4" data-aos="fade-up" data-aos-delay="300">
-                <div class="card testimonial-card h-100 bg-dark-surface border-0 shadow-lg rounded-4 p-4">
-                    <div class="card-body">
-                        <div class="d-flex align-items-center mb-4">
-                            <i class="bi bi-quote text-primary display-4 me-3"></i>
-                            <div>
-                                <h5 class="mb-1">Maria Rodriguez</h5>
-                                <p class="mb-0 text-light-muted">Travel Blogger</p>
-                            </div>
-                        </div>
-                        <p class="card-text text-light-muted">"I use MapLab to create interactive travel guides for my blog. My audience loves being able to explore destinations through these dynamic maps!"</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
+    </section>
+}
 
 <section class="cta-section py-5 bg-primary text-white position-relative overflow-hidden">
     <div class="container py-5 position-relative z-1">

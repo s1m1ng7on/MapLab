@@ -141,10 +141,8 @@ img {
 }
 
 .sidebar {
-    width: 280px;
     background-color: #343a40;
     color: white;
-    transition: width 0.3s;
 }
 
 .sidebar .nav-link {

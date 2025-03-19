@@ -1,10 +1,5 @@
 ﻿using AutoMapper;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace MapLab.Services.Mapping
 {
@@ -35,7 +30,7 @@ namespace MapLab.Services.Mapping
                     {
                         configuration.CreateMap(map.Source, map.Destination)
                             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) =>
-                                srcMember is not string || !string.IsNullOrWhiteSpace((string)srcMember)));
+                                srcMember != null && !IsDefaultValue(srcMember)));
                     }
 
                     // IMapTo<>
@@ -43,7 +38,7 @@ namespace MapLab.Services.Mapping
                     {
                         configuration.CreateMap(map.Source, map.Destination)
                             .ForAllMembers(opt => opt.Condition((src, dest, srcMember) =>
-                                srcMember is not string || !string.IsNullOrWhiteSpace((string)srcMember)));
+                                srcMember != null && !IsDefaultValue(srcMember)));
                     }
 
                     // IHaveCustomMappings
@@ -53,6 +48,21 @@ namespace MapLab.Services.Mapping
                     }
                 });
             MapperInstance = new Mapper(new MapperConfiguration(config));
+        }
+
+        // Helper function to check for default values
+        private static bool IsDefaultValue(object value)
+        {
+            if (value == null)
+                return true;
+
+            var type = value.GetType();
+            if (type.IsValueType)
+            {
+                return Activator.CreateInstance(type).Equals(value);
+            }
+
+            return false; // For reference types (strings, arrays, etc.), null check suffices
         }
 
         private static IEnumerable<TypesMap> GetFromMaps(IEnumerable<Type> types)

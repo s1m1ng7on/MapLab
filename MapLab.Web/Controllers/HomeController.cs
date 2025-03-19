@@ -1,5 +1,9 @@
+using AutoMapper;
 using MapLab.Services.Contracts;
+using MapLab.Services.Models;
 using MapLab.Web.Models;
+using MapLab.Web.Models.Home;
+using MapLab.Web.Models.News;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -8,17 +12,23 @@ namespace MapLab.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-        private readonly IMapsService _mapService;
+        private readonly INewsService _newsService;
+        private readonly IMapper _mapper;
 
-        public HomeController(ILogger<HomeController> logger, IMapsService mapService)
+        public HomeController(ILogger<HomeController> logger, INewsService newsService, IMapper mapper)
         {
             _logger = logger;
-            _mapService = mapService;
+            _newsService = newsService;
+            _mapper = mapper;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            var newsArticles = await _newsService.GetNewsAsync(1, 3);
+
+            var homeIndexViewModel = _mapper.Map<NewsPaginationDto, HomeIndexViewModel>(newsArticles);
+
+            return View(homeIndexViewModel);
         }
 
         [Route("about")]

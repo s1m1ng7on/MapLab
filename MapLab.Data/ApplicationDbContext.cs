@@ -1,5 +1,6 @@
 ﻿using MapLab.Data.Entities;
 using MapLab.Data.Models.Enums;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System.Reflection.Emit;
@@ -11,6 +12,7 @@ namespace MapLab.Data
         public DbSet<Map> Maps { get; set; }
         public DbSet<MapTemplate> MapTemplates { get; set; }
         public DbSet<MapView> MapViews { get; set; }
+        public DbSet<NewsArticle> News { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -20,6 +22,14 @@ namespace MapLab.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            builder.Entity<Profile>().ToTable("Profiles");
+            builder.Entity<IdentityRole>().ToTable("Roles");
+            builder.Entity<IdentityUserRole<string>>().ToTable("ProfileRoles");
+            builder.Entity<IdentityUserClaim<string>>().ToTable("ProfileClaims");
+            builder.Entity<IdentityUserLogin<string>>().ToTable("ProfileLogins");
+            builder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
+            builder.Entity<IdentityUserToken<string>>().ToTable("ProfileTokens");
 
             builder.Entity<MapTemplate>()
                 .Property(mt => mt.Region)
