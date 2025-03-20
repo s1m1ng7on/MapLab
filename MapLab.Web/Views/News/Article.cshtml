@@ -2,7 +2,10 @@
 @model NewsArticleViewModel
 @{
     ViewData["Title"] = Model.Title;
+    Layout = "_ContentLayout";
 }
 
-<h1>@Model.Title</h1>
-@Html.Raw(Model.Content)
+<div class="container py-5">
+    <h1>@Model.Title</h1>
+    @Html.Raw(Model.Content)
+</div>

@@ -857,3 +857,17 @@ footer {
     background-color: var(--bs-primary) !important;
     border-color: var(--bs-primary);
 }
+
+.content {
+    box-sizing: border-box;
+    border-left: 10vw solid transparent;
+    border-right: 10vw solid transparent;
+    border-image-source: url('/images/background.png');
+    border-image-slice: 0 50% 0 50%;
+    border-image-width: 0 10vw 0 10vw;
+    border-image-repeat: repeat;
+}
+
+div p:last-child {
+    margin-bottom: 0;
+}

@@ -9,7 +9,7 @@
         <div class="col-12">
             <div class="d-flex justify-content-between align-items-center mb-4">
                 <h2>Manage News</h2>
-                <a class="btn btn-success btn-rounded rounded-pill"
+                <a class="btn btn-primary rounded-pill"
                    asp-controller="News"
                    asp-action="Create">
                     <i class="bi bi-plus-lg me-2"></i>Create Article
@@ -40,7 +40,18 @@
                                             @newsArticle.Title
                                         </a>
                                     </td>
-                                    <td>@newsArticle.ProfileUserName</td>
+                                    <td>
+                                        <a class="text-white"
+                                           asp-area=""
+                                           asp-controller="Profile"
+                                           asp-action="Index"
+                                           asp-route-username="@newsArticle.ProfileUserName">
+                                            <img src="@(newsArticle.ProfileProfilePictureFilePath ?? "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")"
+                                                 class="rounded-pill me-1"
+                                                 width="16"
+                                                 height="16" />@newsArticle.ProfileUserName
+                                        </a>
+                                    </td>
                                     <td class="d-none d-md-table-cell">
                                         <small class="text-muted">
                                             @newsArticle.CreatedOn.ToString("dd/MM/yyyy")
