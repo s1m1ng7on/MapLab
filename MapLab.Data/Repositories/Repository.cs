@@ -19,7 +19,7 @@ namespace MapLab.Data.Repositories
 
         public virtual IQueryable<TEntity> All() => _dbSet;
 
-        public virtual IQueryable<TEntity> AllAsNoTracking() => _dbSet.AsNoTracking();
+        public virtual IQueryable<TEntity> AllAsNoTracking() => All().AsNoTracking();
 
         public virtual async Task<TEntity?> FindAsync(object id) => await _dbSet.FindAsync(id);
 

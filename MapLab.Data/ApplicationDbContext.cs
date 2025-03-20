@@ -1,9 +1,7 @@
 ﻿using MapLab.Data.Entities;
-using MapLab.Data.Models.Enums;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using System.Reflection.Emit;
 
 namespace MapLab.Data
 {

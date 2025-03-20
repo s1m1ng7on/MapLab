@@ -4,35 +4,126 @@
     ViewData["Title"] = "Create News";
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.9.1/summernote-bs5.min.css" rel="stylesheet">
-<form method="post" asp-action="Create" enctype="multipart/form-data">
-    <label asp-for="Title">Title</label>
-    <input asp-for="Title" class="form-control" required />
+<div class="container py-5">
+    <form method="post" asp-action="Create" enctype="multipart/form-data">
 
-    <label asp-for="Thumbnail">Thumbnail</label>
-    <input asp-for="Thumbnail" class="form-control" type="file" />
+        <div class="form-floating mb-3">
+            <input asp-for="Title" class="form-control form-control-lg rounded-pill bg-dark-alt text-white border-secondary focus-ring focus-ring-primary" aria-required="true" placeholder="My Article" required />
+            <label asp-for="Title" class="form-label text-light-muted">Title</label>
+            <span asp-validation-for="Title" class="text-danger"></span>
+        </div>
 
-    <label asp-for="Content">Content</label>
-    <textarea asp-for="Content" id="editor"></textarea>
+        <label asp-for="Thumbnail">Thumbnail</label>
+        <input asp-for="Thumbnail" class="form-control" type="file" />
 
-    <button type="submit" class="btn btn-primary">Save</button>
-</form>
+        <label asp-for="Content">Content</label>
+        <textarea asp-for="Content" id="editor"></textarea>
+
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.9.1/summernote-bs5.min.js"></script>
+<style>
+    /* Dark theme for Summernote */
+    .note-editor.note-frame {
+        background-color: #212529;
+        border-color: #495057;
+    }
+
+        .note-editor.note-frame .note-editing-area .note-editable {
+            background-color: #2c3034;
+            color: #e9ecef;
+            border-color: #495057;
+        }
+
+    .note-toolbar {
+        background-color: #343a40 !important;
+        border-color: #495057 !important;
+    }
+
+    .note-btn {
+        background-color: #495057;
+        color: #e9ecef;
+        border-color: #6c757d;
+    }
+
+        .note-btn:hover {
+            background-color: #6c757d;
+            color: #fff;
+        }
+
+    .note-dropdown-menu {
+        background-color: #343a40;
+        border-color: #495057;
+    }
+
+    .note-dropdown-item {
+        color: #e9ecef;
+    }
+
+        .note-dropdown-item:hover {
+            background-color: #495057 !important;
+            color: #fff !important;
+        }
+
+    .note-modal-content {
+        background-color: #343a40;
+        color: #e9ecef;
+        border-color: #495057;
+    }
+
+    .note-modal-header {
+        border-color: #495057;
+    }
+
+    .note-modal-footer {
+        border-color: #495057;
+    }
+
+    .note-form-label {
+        color: #e9ecef;
+    }
+
+    .note-form-control {
+        background-color: #2c3034;
+        color: #e9ecef;
+        border-color: #495057;
+    }
+
+    .note-modal-title {
+        color: #e9ecef;
+    }
+
+    .close {
+        color: #e9ecef;
+    }
+</style>
 <script>
     $(document).ready(function() {
         $('#editor').summernote({
             height: 300,
+            disableResizeEditor: true,
             toolbar: [
                 ['style', ['bold', 'italic', 'underline', 'strikethrough']], // Text formatting
-                ['para', ['style']], // H1, H2
+                ['para', ['style', 'ul', 'ol', 'paragraph']], // H1, H2, lists and alignment
+                ['table', ['table']], // Tables
+                ['insert', ['link', 'picture']], // Links and images
                 ['misc', ['undo', 'redo']] // Undo & Redo
             ],
             styleTags: [
-                { title: 'Heading 1', tag: 'h1', className: '', value: 'h1' },
-                { title: 'Heading 2', tag: 'h2', className: '', value: 'h2' }
+                { title: 'Heading 1', tag: 'h1', value: 'h1' },
+                { title: 'Heading 2', tag: 'h2', value: 'h2' },
+                { title: 'Paragraph', tag: 'p', value: 'p' }
             ],
             fontNames: ['Exo 2'],
-            fontNamesIgnoreCheck: ['Exo 2'] // Forces Exo 2 even if not in default list
+            fontNamesIgnoreCheck: ['Exo 2'],
+            callbacks: {
+                onInit: function() {
+                    // Force dark theme on initialization
+                    $('.note-editor').addClass('dark-theme');
+                }
+            }
         });
     });
 </script>

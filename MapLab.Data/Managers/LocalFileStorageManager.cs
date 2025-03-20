@@ -21,10 +21,13 @@ namespace MapLab.Data.Managers
         }
 
         public async Task<string> SaveFileAsync(IFormFile file, string tableName, string propertyName, string entityId)
-            => await SaveFileAsync(file.OpenReadStream(), tableName, propertyName, entityId, Path.GetExtension(file.Name));
+            => await SaveFileAsync(file.OpenReadStream(), tableName, propertyName, entityId, Path.GetExtension(file.FileName));
 
         public async Task<string> SaveFileAsync(IBrowserFile file, string tableName, string propertyName, string entityId)
             => await SaveFileAsync(file.OpenReadStream(), tableName, propertyName, entityId, Path.GetExtension(file.Name));
+
+        public async Task<string> SaveFileAsync(string base64String, string tableName, string propertyName, string entityId, string fileExtension)
+            => await SaveFileAsync(new MemoryStream(Convert.FromBase64String(base64String)), tableName, propertyName, entityId, fileExtension);
 
         public async Task<string> SaveJsonFileAsync(string json, string tableName, string propertyName, string entityId)
             => await SaveFileAsync(new MemoryStream(Encoding.UTF8.GetBytes(json)), tableName, propertyName, entityId, ".json");

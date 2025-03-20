@@ -826,6 +826,7 @@ footer {
 
 .form-control, .form-check-input {
     background-color: transparent !important;
+    color: white !important;
 }
 
 .form-check-input {

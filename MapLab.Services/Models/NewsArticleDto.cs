@@ -1,5 +1,6 @@
 ﻿using MapLab.Data.Entities;
 using MapLab.Services.Mapping;
+using Microsoft.AspNetCore.Http;
 
 namespace MapLab.Services.Models
 {
@@ -7,6 +8,8 @@ namespace MapLab.Services.Models
     {
         public string? Id { get; set; }
         public string? Title { get; set; }
+        public IFormFile? Thumbnail { get; set; }
+        public string? ThumbnailFilePath { get; set; }
         public string? Content { get; set; }
         public string? ProfileId { get; set; }
         public string? ProfileUserName { get; set; }

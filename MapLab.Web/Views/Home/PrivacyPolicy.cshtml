@@ -3,17 +3,19 @@
 }
 <style>
     .privacy {
-        background-image: url('/images/background.png');
-        background-size: 100% auto;
-        background-position: top center;
-        background-repeat: repeat-y;
-        padding-left: 15rem;
-        padding-right: 15rem;
+        box-sizing: border-box;
+        border-left: 10vw solid transparent;
+        border-right: 10vw solid transparent;
+        border-image-source: url('/images/background1.png');
+        border-image-slice: 0 50 0 50;
+        border-image-width: 0 10vw 0 10vw;
+        border-image-repeat: stretch;
     }
+
 </style>
-<div class="privacy">
+<div class="privacy container">
     <h1>@ViewData["Title"]</h1>
-    <div class="text-xl">
+    <div>
         <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum nec bibendum sem. Nullam euismod volutpat tortor, vel imperdiet neque porttitor quis. Nam imperdiet interdum tempor. Sed in metus sed magna vulputate elementum id ac ligula. Vivamus a ullamcorper elit. Aenean auctor nibh sit amet tincidunt laoreet. Integer quis venenatis justo. Aliquam consectetur mi eu hendrerit efficitur. Donec ornare vulputate tellus quis pulvinar. Quisque sed massa sem. Integer pretium magna vitae mauris gravida interdum. Duis mollis eros id sem tincidunt sodales.</p>
         <p>Nullam consectetur metus quis neque tincidunt ullamcorper. Cras vehicula ut sem sed interdum. Mauris iaculis, tellus eget facilisis mattis, erat turpis cursus risus, ut varius dui felis eu purus. Sed sed arcu diam. Morbi ultricies ullamcorper est sit amet dignissim. Praesent cursus sodales lacus, sit amet bibendum purus vehicula a. Suspendisse non arcu vehicula, efficitur nisl eu, cursus augue. Quisque non tellus imperdiet, blandit purus non, dapibus orci. Phasellus dignissim velit ac molestie mattis. Nam porttitor tellus odio, sed viverra ex varius et. Vestibulum eleifend felis at purus malesuada efficitur. Phasellus malesuada in felis eu ultrices. Pellentesque mi dui, euismod eget malesuada sit amet, consequat vel dolor. Integer vitae pulvinar arcu, eu lobortis nibh.</p>
         <p>Nulla sed ligula rutrum, dictum risus vitae, egestas ex. Duis sit amet justo congue, ornare augue id, efficitur velit. Nam nec mattis lectus. Pellentesque magna neque, ultrices at ullamcorper at, semper tincidunt tellus. Nam consectetur libero condimentum nunc maximus, sed malesuada urna auctor. Suspendisse ut cursus libero. Sed posuere nunc lectus, at pellentesque massa euismod in. Donec risus metus, egestas et mollis eu, lobortis quis tortor. Curabitur ut faucibus quam. Fusce vel ex luctus, pharetra dui cursus, blandit est. Vivamus nec sagittis tortor. Donec et enim dictum, auctor enim quis, tempus dolor. Morbi suscipit, diam a dictum viverra, massa est accumsan arcu, et vestibulum libero mi ut arcu.</p>
