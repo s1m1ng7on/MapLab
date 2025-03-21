@@ -10,6 +10,7 @@ using MapLab.Services.Contracts;
 using MapLab.Services.Mapping;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Localization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
@@ -58,7 +59,7 @@ namespace MapLab
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            builder.Services.AddControllersWithViews()
+            builder.Services.AddControllersWithViews(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddRazorRuntimeCompilation();
             builder.Services.AddServerSideBlazor();

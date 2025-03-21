@@ -1,12 +1,20 @@
-﻿@using MapLab.Web.Areas.Admin.Models.News
-@model NewsArticleEditViewModel
+﻿@using MapLab.Common.Enums
+@using MapLab.Web.Areas.Admin.Models.News
+@model NewsArticleUpsertViewModel
 @{
-    ViewData["Title"] = "Create News";
+    ViewData["Title"] = $"{(Model.CrudOperation == CrudOperation.Create ? "Create" : "Edit")} News Article";
 }
 <link href="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.9.1/summernote-bs5.min.css" rel="stylesheet">
 <div class="container py-5">
-    <form method="post" asp-action="Create" enctype="multipart/form-data">
+    <h1>@ViewData["Title"]</h1>
+    <form method="post" asp-action="@(Model.CrudOperation == CrudOperation.Create ? "Create" : "Edit")" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
 
+        @if (Model.CrudOperation == CrudOperation.Update)
+        {
+            <input type="hidden" asp-for="Id" />
+        }
+        
         <div class="form-floating mb-3">
             <input asp-for="Title" class="form-control form-control-lg rounded-pill bg-dark-alt text-white border-secondary focus-ring focus-ring-primary" aria-required="true" placeholder="My Article" required />
             <label asp-for="Title" class="form-label text-light-muted">Title</label>

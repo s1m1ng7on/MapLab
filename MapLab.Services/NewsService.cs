@@ -82,6 +82,58 @@ namespace MapLab.Services
             await _newsArticleRepository.SaveChangesAsync();
         }
 
+        public async Task EditNewsArticleAsync(NewsArticleDto newsArticleDto, string oldContent)
+        {
+            var newsArticle = await _newsArticleRepository.FindAsync(newsArticleDto.Id);
+
+            if (newsArticle == null || newsArticle.ProfileId != _profileService.GetProfileId())
+                throw new UnauthorizedAccessException("You do not have permission to edit this article.");
+
+            string imgSrcPattern = @"<img.*?src=""((\/[^\s]+|\/[^\s]+|[a-zA-Z0-9_-]+(?:\/[^\s]*)?)|data:image\/(png|jpg|jpeg|gif);base64,([^\s]+))""/gm";
+
+            var oldContentUrlMatches = Regex.Matches(oldContent, imgSrcPattern)
+                .Cast<Match>()
+                .Select(match => match.Groups[2].Value);
+
+            var (newContentUrlMatches, newContentBase64Matches) = Regex.Matches(newsArticleDto.Content, imgSrcPattern)
+                .Cast<Match>()
+                .Aggregate(
+                (base64: new List<string>(), urls: new List<string>()),
+                (acc, match) =>
+                {
+                    // Group 1: base64 data URIs (if available)
+                    var base64Match = match.Groups[1].Value;
+                    if (!string.IsNullOrEmpty(base64Match))
+                    {
+                        acc.base64.Add(base64Match);
+                    }
+
+                    // Group 2: URLs or relative paths (if available)
+                    var urlMatch = match.Groups[2].Value;
+                    if (!string.IsNullOrEmpty(urlMatch))
+                    {
+                        acc.urls.Add(urlMatch);
+                    }
+
+                    return acc;
+                }
+            );
+
+            //TO DO: Add new images to the file storage
+
+            var removedUrls = oldContentUrlMatches.Except(newContentUrlMatches).ToList();
+
+            foreach (var removedUrl in removedUrls)
+            {
+                await _fileStorageManager.DeleteFileAsync(removedUrl);
+            }
+
+            _mapper.Map(newsArticleDto, newsArticle);
+
+            _newsArticleRepository.Update(newsArticle);
+            await _newsArticleRepository.SaveChangesAsync();
+        }
+
         public async Task DeleteNewsArticleAsync(string id)
         {
             var newsArticle = await _newsArticleRepository.All()

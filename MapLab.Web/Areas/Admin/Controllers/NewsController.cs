@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using MapLab.Common.Enums;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
 using MapLab.Web.Areas.Admin.Models.News;
@@ -28,16 +29,49 @@ namespace MapLab.Web.Areas.Admin.Controllers
 
         public IActionResult Create()
         {
-            var newsArticle = new NewsArticleEditViewModel();
-            return View(newsArticle);
+            var newsArticle = new NewsArticleUpsertViewModel()
+            {
+                CrudOperation = CrudOperation.Create
+            };
+
+            return View("Upsert", newsArticle);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(NewsArticleEditViewModel newsArticle)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Create(NewsArticleUpsertViewModel newsArticle)
         {
-            var newsArticleDto = _mapper.Map<NewsArticleEditViewModel, NewsArticleDto>(newsArticle);
+            var newsArticleDto = _mapper.Map<NewsArticleUpsertViewModel, NewsArticleDto>(newsArticle);
             await _newsService.CreateNewsArticleAsync(newsArticleDto);
 
+            return RedirectToAction("Index", new { area = "Admin" });
+        }
+
+        public async Task<IActionResult> Edit(string id)
+        {
+            var newsArticle = await _newsService.GetNewsArticleAsync(id);
+            var newsArticleViewModel = _mapper.Map<NewsArticleDto, NewsArticleUpsertViewModel>(newsArticle);
+
+            TempData["NewsArticleOldContent"] = newsArticle.Content;
+
+            newsArticleViewModel.CrudOperation = CrudOperation.Update;
+
+            return View("Upsert", newsArticleViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(NewsArticleUpsertViewModel newsArticle)
+        {
+            // Map ViewModel to DTO
+            var newsArticleDto = _mapper.Map<NewsArticleUpsertViewModel, NewsArticleDto>(newsArticle);
+
+            var oldContent = TempData["NewsArticleOldContent"] as string;
+
+            // Call service to update the article
+            await _newsService.EditNewsArticleAsync(newsArticleDto, oldContent);
+
+            // Redirect to the index page after successful update
             return RedirectToAction("Index", new { area = "Admin" });
         }
 

@@ -1,7 +1,6 @@
 ﻿using MapLab.Data.Managers.Contracts;
 using Microsoft.AspNetCore.Components.Forms;
 using Microsoft.AspNetCore.Http;
-using System.Net.Http.Json;
 using System.Text;
 
 namespace MapLab.Data.Managers
@@ -51,5 +50,27 @@ namespace MapLab.Data.Managers
             var relativePath = filePath.Replace("wwwroot", string.Empty);
             return relativePath;
         }
+
+        public async Task<bool> DeleteFileAsync(string filePath)
+        {
+            if (string.IsNullOrEmpty(filePath))
+                return false;
+
+            filePath = $"wwwroot{filePath}";
+
+            try
+            {
+                if (!File.Exists(filePath))
+                    return false;
+
+                File.Delete(filePath);
+                return true;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
     }
 }
