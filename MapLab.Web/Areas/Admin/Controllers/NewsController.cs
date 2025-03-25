@@ -52,6 +52,7 @@ namespace MapLab.Web.Areas.Admin.Controllers
             var newsArticle = await _newsService.GetNewsArticleAsync(id);
             var newsArticleViewModel = _mapper.Map<NewsArticleDto, NewsArticleUpsertViewModel>(newsArticle);
 
+            TempData["EditingArticleId"] = newsArticle.Id;
             TempData["NewsArticleOldContent"] = newsArticle.Content;
 
             newsArticleViewModel.CrudOperation = CrudOperation.Update;
@@ -63,8 +64,14 @@ namespace MapLab.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(NewsArticleUpsertViewModel newsArticle)
         {
+            if (!ModelState.IsValid)
+                return View(newsArticle);
+
+            var originalId = TempData["EditingArticleId"].ToString();
+
             // Map ViewModel to DTO
             var newsArticleDto = _mapper.Map<NewsArticleUpsertViewModel, NewsArticleDto>(newsArticle);
+            newsArticleDto.Id = originalId;
 
             var oldContent = TempData["NewsArticleOldContent"] as string;
 
