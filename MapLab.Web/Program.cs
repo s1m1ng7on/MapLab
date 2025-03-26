@@ -70,10 +70,10 @@ namespace MapLab
             {
                 var supportedCultures = new[]
                 {
-                    new CultureInfo("en-US"),
+                    new CultureInfo("en"),
                     new CultureInfo("bg"),
                 };
-                options.DefaultRequestCulture = new RequestCulture("en-US");
+                options.DefaultRequestCulture = new RequestCulture("en");
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });

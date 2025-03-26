@@ -1,0 +1,130 @@
+﻿@page "/settings/preferences"
+@model MapLab.Web.Areas.Identity.Pages.Account.Manage.PreferencesModel
+@{
+    ViewData["Title"] = "Language";
+}
+
+<div class="container py-4">
+    <h2 class="mb-4">Language</h2>
+
+    <form method="post">
+        <div class="language-options">
+            @foreach (var (languageName, languageNativeName) in Model.AvailableLanguages!)
+            {
+                <label class="language-option @(languageName == Model.SelectedLanguage ? "selected" : "")">
+                    <input type="radio"
+                           name="selectedLanguage"
+                           value="@languageName"
+                    @(languageName == Model.SelectedLanguage ? "checked" : "") />
+                    <div class="language-label">
+                        @languageNativeName
+                    </div>
+                    <div class="language-name">
+                        @languageName
+                    </div>
+                    <div class="language-flag">
+                        <img src="/images/flags/@(languageName).png" alt="@languageName flag" />
+                    </div>
+                </label>
+            }
+        </div>
+        <button type="submit" class="save-button">Save</button>
+    </form>
+</div>
+
+<style>
+    .language-settings {
+        background-color: #2b2d31;
+        color: #ffffff;
+        padding: 20px;
+        font-family: 'Whitney', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        max-width: 700px;
+        border-radius: 8px;
+    }
+
+        .language-settings h1 {
+            font-size: 20px;
+            font-weight: 600;
+            margin-bottom: 20px;
+        }
+
+    .language-options {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+        max-height: 500px;
+        overflow-y: auto;
+    }
+
+    .language-option {
+        display: flex;
+        align-items: center;
+        background-color: #1e1f22;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        position: relative;
+    }
+
+        .language-option.selected {
+            background-color: #404249;
+        }
+
+        .language-option:hover {
+            background-color: #35373c;
+        }
+
+        .language-option input[type="radio"] {
+            opacity: 0;
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            margin: 0;
+            cursor: pointer;
+        }
+
+    .language-label {
+        flex: 1;
+        font-weight: 500;
+        margin-right: 10px;
+    }
+
+    .language-name {
+        color: #b5bac1;
+        font-size: 14px;
+        margin-right: 10px;
+    }
+
+    .language-flag {
+        width: 24px;
+        height: 16px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+        .language-flag img {
+            max-width: 24px;
+            max-height: 16px;
+            object-fit: contain;
+        }
+
+    .save-button {
+        margin-top: 20px;
+        background-color: #5865f2;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        padding: 8px 16px;
+        font-size: 14px;
+        font-weight: 500;
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+
+        .save-button:hover {
+            background-color: #4752c4;
+        }
+</style>

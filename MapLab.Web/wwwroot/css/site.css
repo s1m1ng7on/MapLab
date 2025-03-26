@@ -140,11 +140,6 @@ img {
     display: block;
 }
 
-.sidebar {
-    background-color: #343a40;
-    color: white;
-}
-
 .sidebar .nav-link {
     color: #adb5bd;
 }

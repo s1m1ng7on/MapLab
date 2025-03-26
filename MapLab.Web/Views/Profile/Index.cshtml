@@ -1,37 +1,237 @@
 ﻿@using MapLab.Web.Models.Profile
+@using MapLab.Web.Utilities
 @using Microsoft.AspNetCore.Identity
 @model ProfileViewModel
 @{
     ViewData["Title"] = Model.IsCurrentProfile ? "My Profile" : Model.UserName;
 }
 
-<div class="row justify-content-center">
-    <div class="col-md-8 text-center bg-light p-4 rounded shadow">
+<div class="profile-hero bg-primary text-white py-5 mb-4 position-relative overflow-hidden">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-10 text-center">
+                <div class="position-relative d-inline-block mb-4">
+                    <img src="@(Model.ProfilePictureFilePath ?? StaticFilePaths.DefaultProfilePicture)"
+                         class="rounded-circle border border-3 border-white shadow"
+                         alt="Profile Picture"
+                         width="160"
+                         height="160"
+                         style="object-fit: cover;"
+                         asp-append-version="true" />
+                </div>
+
+                <h1 class="display-5 fw-bold mb-2 d-flex align-items-center justify-content-center">
+                    @if (Model.IsAdmin)
+                    {
+                        <i class="bi bi-star-fill text-warning me-2" title="Admin"></i>
+                    }
+                    @Model.UserName
+                    @if (Model.IsCurrentProfile)
+                    {
+                        <a asp-area="Identity"
+                           asp-page="/Account/Manage/Index"
+                           class="ms-2 text-white"
+                           data-bs-toggle="tooltip"
+                           title="Edit Profile">
+                            <i class="bi bi-gear-fill fs-4"></i>
+                        </a>
+                    }
+                </h1>
+                <p class="lead mb-0">Mapping since @Model.CreatedOn.ToString("d/M/yyyy")</p>
+
+                @if (!string.IsNullOrEmpty(Model.Bio))
+                {
+                    <p class="mt-3 mb-0 col-md-8 mx-auto">@Model.Bio</p>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Decorative shapes -->
+    <div class="shape shape-1 position-absolute bg-white opacity-10"></div>
+    <div class="shape shape-2 position-absolute bg-white opacity-10"></div>
+</div>
+
+<!-- Stats Section -->
+<div class="container mb-5">
+    <div class="row g-4 justify-content-center">
+        <div class="col-md-4">
+            <div class="card bg-dark h-100 border-0 shadow-sm rounded-4 text-center p-4">
+                <div class="display-4 text-primary mb-2">
+                    <i class="bi bi-map"></i>
+                </div>
+                <h3 class="fw-bold mb-1">13</h3>
+                @* <h3 class="fw-bold mb-1">@Model.MapsCount</h3> *@
+                <p class="text-muted mb-0">Maps Created</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4">
+                <div class="display-4 text-primary mb-2">
+                    <i class="bi bi-star"></i>
+                </div>
+                <h3 class="fw-bold mb-1">@* @Model.FavoritesCount *@4</h3>
+                <p class="text-muted mb-0">Favorite Maps</p>
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4">
+                <div class="display-4 text-primary mb-2">
+                    <i class="bi bi-layout-wtf"></i>
+                </div>
+                <h3 class="fw-bold mb-1">@* @Model.TemplatesCount *@2</h3>
+                <p class="text-muted mb-0">Templates Created</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Maps Section -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            <i class="bi bi-map-fill text-primary me-2"></i>
+            Maps
+        </h2>
+
         @if (Model.IsCurrentProfile)
         {
-            <a asp-area="Identity"
-               asp-page="/Account/Manage/Index">
-                <i class="bi bi-gear-fill"></i>
+            <a asp-controller="Maps" asp-action="Create" class="btn btn-primary rounded-pill">
+                <i class="bi bi-plus-circle me-2"></i>
+                Create New Map
             </a>
         }
-        <img src="@(Model.ProfilePictureFilePath ?? "/images/default-profile-picture.png")"
-             class="rounded-circle border shadow-sm mb-3"
-             alt="Profile Picture"
-             width="150"
-             height="150"
-             asp-append-version="true" />
-        <h1 class="fw-bold">
-            @if (Model.IsAdmin)
+    </div>
+
+    @if (Model.Maps != null && Model.Maps.Any())
+    {
+        <div class="row g-4">
+            @foreach (var map in Model.Maps.Take(3))
             {
-                <i class="bi bi-star-fill text-warning" title="Admin"></i>
+                <div class="col-md-4">
+                    <div class="card map-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                        <img src="@(map.ThumbnailFilePath)"
+                             class="card-img-top"
+                             alt="@map.Name"
+                             style="height: 180px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@map.Name</h5>
+                            <p class="card-text small text-muted">@map.CreatedOn.ToString("MMM dd, yyyy")</p>
+                            <a asp-controller="Maps" asp-action="Details" asp-route-id="@map.Id" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
             }
-            @Model.UserName
-        </h1>
-        <p class="text-muted">Mapping since @Model.CreatedOn.ToString("MMM d, yyyy")</p>
-    </div>
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="Maps" asp-action="UserMaps" asp-route-username="@Model.UserName" class="btn btn-outline-primary rounded-pill">
+                View All Maps
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+            <div class="text-muted">
+                <i class="bi bi-map-fill fs-1 mb-3 text-light"></i>
+                <p class="mb-0">No maps created yet.</p>
+            </div>
+        </div>
+    }
 </div>
-<div class="row mt-4">
-    <div class="col-12">
-        <!-- Additional content sections go here -->
+
+<!-- Templates Section -->
+<div class="container mb-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2 class="fw-bold mb-0">
+            <i class="bi bi-grid-fill text-primary me-2"></i>
+            Templates
+        </h2>
+
+        @if (Model.IsCurrentProfile)
+        {
+            <a asp-controller="Templates" asp-action="Create" class="btn btn-primary rounded-pill">
+                <i class="bi bi-plus-circle me-2"></i>
+                Create Template
+            </a>
+        }
     </div>
-</div>
+
+    @* @if (Model.Templates != null && Model.Templates.Any())
+    {
+        <div class="row g-4">
+            @foreach (var template in Model.Templates.Take(3))
+            {
+                <div class="col-md-4">
+                    <div class="card template-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                        <img src="@(template.ThumbnailFilePath ?? StaticFilePaths.DefaultTemplateThumbnail)"
+                             class="card-img-top"
+                             alt="@template.Title"
+                             style="height: 180px; object-fit: cover;">
+                        <div class="card-body">
+                            <h5 class="card-title fw-bold">@template.Title</h5>
+                            <p class="card-text small text-muted">@template.CreatedOn.ToString("MMM dd, yyyy")</p>
+                            <a asp-controller="Templates" asp-action="Details" asp-route-id="@template.Id" class="stretched-link"></a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <div class="text-center mt-4">
+            <a asp-controller="Templates" asp-action="UserTemplates" asp-route-username="@Model.UserName" class="btn btn-outline-primary rounded-pill">
+                View All Templates
+                <i class="bi bi-arrow-right ms-2"></i>
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
+            <div class="text-muted">
+                <i class="bi bi-grid-fill fs-1 mb-3 text-light"></i>
+                <p class="mb-0">No templates created yet.</p>
+            </div>
+        </div>
+    }
+</div> *@
+
+@section Scripts {
+    <script>
+        // Initialize tooltips
+        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl)
+        })
+    </script>
+}
+
+<style>
+    .profile-hero {
+        background: linear-gradient(135deg, var(--bs-primary) 0%, #1e88e5 100%);
+    }
+
+    .shape {
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+    }
+
+    .shape-1 {
+        width: 300px;
+        height: 300px;
+        top: -100px;
+        right: -50px;
+        transform: rotate(45deg);
+    }
+
+    .shape-2 {
+        width: 200px;
+        height: 200px;
+        bottom: -50px;
+        left: -50px;
+        transform: rotate(25deg);
+    }
+</style>

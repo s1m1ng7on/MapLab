@@ -2,15 +2,12 @@
 // The .NET Foundation licenses this file to you under the MIT license.
 #nullable disable
 
-using System;
-using System.ComponentModel.DataAnnotations;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
 using MapLab.Data.Entities;
 using MapLab.Data.Managers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using System.ComponentModel.DataAnnotations;
 
 namespace MapLab.Web.Areas.Identity.Pages.Account.Manage
 {
@@ -32,6 +29,8 @@ namespace MapLab.Web.Areas.Identity.Pages.Account.Manage
         ///     directly from your code. This API may change or be removed in future releases.
         /// </summary>
         public string Username { get; set; }
+
+        public string ProfilePictureFilePath { get; set; }
 
         /// <summary>
         ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
@@ -68,6 +67,7 @@ namespace MapLab.Web.Areas.Identity.Pages.Account.Manage
             var phoneNumber = await _profileManager.GetPhoneNumberAsync(user);
 
             Username = userName;
+            ProfilePictureFilePath = user.ProfilePictureFilePath;
 
             Input = new InputModel
             {
