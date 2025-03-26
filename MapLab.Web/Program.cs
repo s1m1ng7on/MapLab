@@ -100,6 +100,12 @@ namespace MapLab
                     });*/
                 });
 
+            builder.Services.ConfigureApplicationCookie(options =>
+            {
+                options.LoginPath = "/login";
+            });
+
+
             // Data repositories
             builder.Services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(DeletableEntityRepository<>));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));

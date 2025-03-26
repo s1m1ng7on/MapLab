@@ -10,6 +10,7 @@ namespace MapLab.Web.Areas.Admin.Controllers
 {
     [Area("Admin")]
     [Authorize(Roles = "Admin")]
+    [Authorize]
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;

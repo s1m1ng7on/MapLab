@@ -37,6 +37,7 @@ namespace MapLab.Controllers
             return View();
         }
 
+        [Route("[action]")]
         public IActionResult UserGuide()
         {
             return View();

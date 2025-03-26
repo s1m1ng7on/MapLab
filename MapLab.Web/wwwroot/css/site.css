@@ -871,3 +871,9 @@ footer {
 div p:last-child {
     margin-bottom: 0;
 }
+
+.section-header {
+    border-bottom: 2px solid;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
