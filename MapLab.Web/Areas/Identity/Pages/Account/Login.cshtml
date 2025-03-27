@@ -1,10 +1,11 @@
 ﻿@page "/login"
 @model LoginModel
 @{
-    ViewData["Title"] = "Log in";
+    ViewData["Title"] = _localizer["Log in"];
+    ViewData["UseViewportContainer"] = true;
 }
 
-<div class="container my-5">
+<div class="container py-5">
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card bg-dark-surface text-white rounded-4 shadow">
@@ -16,13 +17,13 @@
 
                         <div class="form-floating mb-3">
                             <input asp-for="Input.Identificator" class="form-control form-control-lg rounded-pill bg-dark-alt text-white border-secondary focus-ring focus-ring-primary" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                            <label asp-for="Input.Identificator" class="form-label text-light-muted">Email or username</label>
+                            <label asp-for="Input.Identificator" class="form-label text-light-muted">@_localizer["Email or username"]</label>
                             <span asp-validation-for="Input.Identificator" class="text-danger"></span>
                         </div>
 
                         <div class="form-floating mb-3">
                             <input asp-for="Input.Password" class="form-control form-control-lg rounded-pill bg-dark-alt text-white border-secondary focus-ring focus-ring-primary" autocomplete="current-password" aria-required="true" placeholder="password" />
-                            <label asp-for="Input.Password" class="form-label text-light-muted">Password</label>
+                            <label asp-for="Input.Password" class="form-label text-light-muted">@_localizer["Password"]</label>
                             <span asp-validation-for="Input.Password" class="text-danger"></span>
                         </div>
 
@@ -30,21 +31,21 @@
                             <div class="form-check">
                                 <input class="form-check-input border-secondary" asp-for="Input.RememberMe" />
                                 <label asp-for="Input.RememberMe" class="form-check-label text-light-muted">
-                                    @Html.DisplayNameFor(m => m.Input.RememberMe)
+                                    @_localizer["Remember me?"]
                                 </label>
                             </div>
                             <div>
-                                <a id="forgot-password" asp-page="./ForgotPassword" class="text-primary">Forgot your password?</a>
+                                <a id="forgot-password" asp-page="./ForgotPassword" class="text-primary">@_localizer["Forgot your password?"]</a>
                             </div>
                         </div>
 
                         <div class="d-grid mb-4">
-                            <button id="login-submit" type="submit" class="btn btn-primary btn-lg rounded-pill">Log in</button>
+                            <button id="login-submit" type="submit" class="btn btn-primary btn-lg rounded-pill">@_localizer["Log in"]</button>
                         </div>
 
                         <div class="mb-4">
                             <div class="d-grid">
-                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-outline-light btn-lg rounded-pill">Register</a>
+                                <a asp-page="./Register" asp-route-returnUrl="@Model.ReturnUrl" class="btn btn-outline-light btn-lg rounded-pill">@_localizer["Register"]</a>
                             </div>
                         </div>
 
