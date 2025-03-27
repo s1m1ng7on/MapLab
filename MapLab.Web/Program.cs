@@ -9,6 +9,7 @@ using MapLab.Services;
 using MapLab.Services.Contracts;
 using MapLab.Services.Mapping;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
@@ -80,6 +81,8 @@ namespace MapLab
 
             builder.Services.AddCropper();
 
+            builder.Configuration.AddEnvironmentVariables();
+
             builder.Services.AddSingleton(builder.Configuration);
 
             // Enforce lowercase routes
@@ -112,6 +115,8 @@ namespace MapLab
 
             // File storage manager
             builder.Services.AddTransient<IFileStorageManager, LocalFileStorageManager>();
+
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
 
             builder.Services.AddAutoMapper(typeof(AutoMapperConfiguration).Assembly);
 
