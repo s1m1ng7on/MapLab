@@ -1,8 +1,4 @@
-﻿// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
-using MapLab.Data.Entities;
+﻿using MapLab.Data.Entities;
 using MapLab.Data.Managers;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
@@ -24,13 +20,15 @@ namespace MapLab.Web.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<Profile> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IWebHostEnvironment _env;
 
         public RegisterModel(
             ProfileManager<Profile> profileManager,
             IUserStore<Profile> userStore,
             SignInManager<Profile> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IWebHostEnvironment env)
         {
             _profileManager = profileManager;
             _userStore = userStore;
@@ -38,71 +36,42 @@ namespace MapLab.Web.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _env = env;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [StringLength(50, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [Display(Name = "Username")]
             public string Username { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
             public string ConfirmPassword { get; set; }
-        }
 
+            [Required(ErrorMessage = "You must agree to the Terms of Service.")]
+            public bool AgreeToTerms { get; set; }
+        }
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -114,7 +83,8 @@ namespace MapLab.Web.Areas.Identity.Pages.Account
         {
             returnUrl ??= Url.Content("~/");
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
-            if (ModelState.IsValid)
+
+            if (ModelState.IsValid && Input.AgreeToTerms)
             {
                 var user = CreateUser();
 
@@ -150,8 +120,16 @@ namespace MapLab.Web.Areas.Identity.Pages.Account
                         values: new { area = "Identity", userId = userId, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
-                    await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
-                        $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    if (_env.IsDevelopment()) // If the environment is Development, confirm the email automatically
+                    {
+                        await _profileManager.ConfirmEmailAsync(user, code); // Automatically confirm email
+                        _logger.LogInformation("Email confirmed in development environment.");
+                    }
+                    else
+                    {
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+                    }
 
                     if (_profileManager.Options.SignIn.RequireConfirmedAccount)
                     {
@@ -163,13 +141,13 @@ namespace MapLab.Web.Areas.Identity.Pages.Account
                         return LocalRedirect(returnUrl);
                     }
                 }
+
                 foreach (var error in result.Errors)
                 {
                     ModelState.AddModelError(string.Empty, error.Description);
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 
@@ -182,8 +160,7 @@ namespace MapLab.Web.Areas.Identity.Pages.Account
             catch
             {
                 throw new InvalidOperationException($"Can't create an instance of '{nameof(Profile)}'. " +
-                    $"Ensure that '{nameof(Profile)}' is not an abstract class and has a parameterless constructor, or alternatively " +
-                    $"override the register page in /Areas/Identity/Pages/Account/Register.cshtml");
+                    $"Ensure that '{nameof(Profile)}' is not an abstract class and has a parameterless constructor.");
             }
         }
 

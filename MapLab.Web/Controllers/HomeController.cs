@@ -4,6 +4,7 @@ using MapLab.Services.Models;
 using MapLab.Web.Models;
 using MapLab.Web.Models.Home;
 using MapLab.Web.Models.News;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
@@ -61,16 +62,34 @@ namespace MapLab.Controllers
             return View();
         }
 
-        [Route("NotFound")]
+        [Route("notfound")]
         public IActionResult NotFound()
         {
             return View();
         }
 
+        [Route("error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var statusCode = HttpContext.Response.StatusCode;
+
+            if (statusCode >= 200 && statusCode < 300)
+                return NotFound();
+
+            var errorViewModel = new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                StatusCode = statusCode
+            };
+
+            _logger.LogError($"Error occurred with Status Code: {statusCode}, RequestId: {errorViewModel.RequestId}");
+
+            var exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
+            if (exception != null)
+                _logger.LogError(exception, exception.Message);
+
+            return View(errorViewModel);
         }
     }
 }

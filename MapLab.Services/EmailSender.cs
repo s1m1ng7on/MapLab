@@ -13,7 +13,7 @@ namespace MapLab.Services
 
         public EmailSender(IConfiguration configuration)
         {
-            _apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY") ?? configuration["SendGrid:ApiKey"];
+            _apiKey = Environment.GetEnvironmentVariable("SENDGRID_API_KEY");
             _senderEmail = configuration["SendGrid:SenderEmail"];
             _senderName = configuration["SendGrid:SenderName"];
         }

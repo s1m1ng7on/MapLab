@@ -47,6 +47,14 @@ namespace MapLab.Web.Areas.Identity.Pages.Account
             public string Email { get; set; }
         }
 
+        public void OnGet(string email = null)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                Input = new InputModel { Email = email };
+            }
+        }
+
         public async Task<IActionResult> OnPostAsync()
         {
             if (ModelState.IsValid)

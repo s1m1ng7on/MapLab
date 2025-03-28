@@ -40,10 +40,11 @@
                         </div>
 
                         <div class="form-check mb-3">
-                            <input class="form-check-input border-secondary" type="checkbox" id="termsCheckbox" required>
+                            <input asp-for="Input.AgreeToTerms" class="form-check-input border-secondary" type="checkbox" id="termsCheckbox" />
                             <label class="form-check-label text-light-muted" for="termsCheckbox">
                                 I agree to the <a asp-controller="Home" asp-action="TermsOfService" class="text-primary">Terms of Service</a>.
                             </label>
+                            <span asp-validation-for="Input.AgreeToTerms" class="text-danger"></span>
                         </div>
 
                         <div class="d-grid mb-4">
@@ -51,7 +52,7 @@
                         </div>
                     </form>
 
-                    <div class="mb-4 text-center">
+                    <div class="text-center">
                         <span class="text-light-muted">Already a mapper?</span>
                         <a asp-page="./Login" class="text-primary">Log in</a>
                     </div>
