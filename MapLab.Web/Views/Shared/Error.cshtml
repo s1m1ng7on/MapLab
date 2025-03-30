@@ -3,33 +3,30 @@
     ViewData["Title"] = "Error";
     ViewData["UseViewportContainer"] = true;
 }
-<div class="position-relative error-page">
-    <div class="row align-items-center">
-        <!-- Left Column - Illustration -->
-        <div class="col-12 col-md-6 text-center">
+
+<div class="error-page h-100">
+    <div class="row">
+        <div class="col-12 col-md-6 d-flex align-items-end justify-content-center">
             <img src="~/images/home/ruslan1.png"
-                 class="img-fluid error-illustration"
-                 alt="Error illustration"
-                 style="max-height: 400px;" />
+                 class="error-illustration"
+                 alt="Error illustration" />
         </div>
-        <!-- Right Column - Error Details -->
-        <div class="col-12 col-md-6 error-details position-relative">
-            <!-- Large ERROR text in background -->
-            <div class="position-absolute top-0 start-0 display-1 text-danger error-background-text">
-                ERROR
-            </div>
+        <div class="col-12 col-md-6 error-details d-flex flex-column justify-content-center">
             <div class="container py-5 ps-0 position-relative">
+                <div class="error-background-text">
+                    ERROR
+                </div>
                 <div class="mb-4">
-                    <h2 class="mb-3">Well, this wasn't supposed to happen...</h2>
-                    <p class="fs-5 text-muted">Error Code: <code>@Model.StatusCode</code></p>
+                    <h1 class="display-3 mb-3">Well, this wasn't supposed to happen...</h1>
+                    <p class="fs-4 text-muted">Error Code: <code>@Model.StatusCode</code></p>
                     @if (Model.ShowRequestId)
                     {
-                        <p class="fs-5 text-muted">
+                        <p class="fs-4 text-muted">
                             Request ID: <code id="requestId">@Model.RequestId</code>
                         </p>
                     }
                 </div>
-                <p class="text mb-4">
+                <p class="fs-4 mb-4">
                     An unexpected error occurred on our end. We have been notified about it, and will work to fix it as soon as possible. Once resolved, you can continue from where you left off on the map.
                 </p>
                 <div class="d-flex gap-3">
@@ -47,22 +44,35 @@
         </div>
     </div>
 </div>
+
 <style>
     .error-page {
         display: flex;
-        align-items: center;
     }
 
     .error-background-text {
-        font-size: 15rem;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        font-size: 18rem;
         font-weight: bold;
         z-index: -1;
         user-select: none;
-        opacity: 0.25 !important;
+        opacity: 0.2 !important;
         line-height: 1;
+        color: red;
+        transform: translate(-50%, -50%);
+        font-size: clamp(4rem, 15vw, 18rem);
+    }
+
+    .error-illustration {
+        max-height: 100%;
+        max-width: 100%;
+        object-fit: contain;
     }
 
     .error-details {
-        overflow: hidden;
+        position: relative;
+        padding: 2rem;
     }
 </style>

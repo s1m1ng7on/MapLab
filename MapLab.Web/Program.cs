@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
+using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -84,6 +85,7 @@ namespace MapLab
             builder.Configuration.AddEnvironmentVariables();
 
             builder.Services.AddSingleton(builder.Configuration);
+            //builder.Services.AddSingleton<TempDataSerializer>();
 
             // Enforce lowercase routes
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
@@ -113,10 +115,13 @@ namespace MapLab
             builder.Services.AddScoped(typeof(IDeletableEntityRepository<>), typeof(DeletableEntityRepository<>));
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
 
+            builder.Services.AddTransient<IViewRenderService, ViewRenderService>();
+
             // File storage manager
             builder.Services.AddTransient<IFileStorageManager, LocalFileStorageManager>();
 
             builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddTransient<INotifierService, NotifierService>();
 
             builder.Services.AddAutoMapper(typeof(AutoMapperConfiguration).Assembly);
 

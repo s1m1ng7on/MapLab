@@ -3,7 +3,6 @@ using MapLab.Services.Contracts;
 using MapLab.Services.Models;
 using MapLab.Web.Models;
 using MapLab.Web.Models.Home;
-using MapLab.Web.Models.News;
 using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
@@ -15,12 +14,14 @@ namespace MapLab.Controllers
         private readonly ILogger<HomeController> _logger;
         private readonly INewsService _newsService;
         private readonly IMapper _mapper;
+        private readonly INotifierService _notifierService;
 
-        public HomeController(ILogger<HomeController> logger, INewsService newsService, IMapper mapper)
+        public HomeController(ILogger<HomeController> logger, INewsService newsService, IMapper mapper, INotifierService notifierService)
         {
             _logger = logger;
             _newsService = newsService;
             _mapper = mapper;
+            _notifierService = notifierService;
         }
 
         public async Task<IActionResult> Index()
@@ -70,12 +71,12 @@ namespace MapLab.Controllers
 
         [Route("error")]
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
+        public async Task<IActionResult> Error()
         {
             var statusCode = HttpContext.Response.StatusCode;
 
             if (statusCode >= 200 && statusCode < 300)
-                return NotFound();
+                return base.NotFound();
 
             var errorViewModel = new ErrorViewModel
             {
@@ -87,7 +88,10 @@ namespace MapLab.Controllers
 
             var exception = HttpContext.Features.Get<IExceptionHandlerFeature>()?.Error;
             if (exception != null)
+            {
                 _logger.LogError(exception, exception.Message);
+                await _notifierService.NotifyAdminsAboutError(exception, HttpContext);
+            }
 
             return View(errorViewModel);
         }
