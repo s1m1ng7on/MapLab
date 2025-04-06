@@ -169,11 +169,11 @@
     display: none;
 }
 
-    .icon-option input[type="checkbox"]:checked + .icon-preview {
-        background-color: #0d6efd;
-        color: white;
-        border-color: #0d6efd;
-    }
+.icon-option input[type="checkbox"]:checked + .icon-preview {
+    background-color: #0d6efd;
+    color: white;
+    border-color: #0d6efd;
+}
 
 .icon-preview:hover {
     background-color: #f8f9fa;

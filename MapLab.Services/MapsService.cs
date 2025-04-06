@@ -18,15 +18,17 @@ namespace MapLab.Services
     {
         private readonly IDeletableEntityRepository<Map> _mapRepository;
         private readonly IDeletableEntityRepository<MapTemplate> _mapTemplateRepository;
+        private readonly IRepository<MapView> _mapViewsRepository;
         private readonly IDeletableEntityRepository<Like<Map>> _mapLikesRepository;
         private readonly IFileStorageManager _fileStorageManager;
         private readonly IProfileService _profileService;
         private readonly IMapper _mapper;
 
-        public MapsService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IDeletableEntityRepository<Like<Map>> mapLikesRepository, IFileStorageManager fileStorageManager, IProfileService profileService, IMapper mapper)
+        public MapsService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IRepository<MapView> mapViewsRepository, IDeletableEntityRepository<Like<Map>> mapLikesRepository, IFileStorageManager fileStorageManager, IProfileService profileService, IMapper mapper)
         {
             _mapRepository = mapRepository;
             _mapTemplateRepository = mapTemplateRepository;
+            _mapViewsRepository = mapViewsRepository;
             _mapLikesRepository = mapLikesRepository;
             _fileStorageManager = fileStorageManager;
             _profileService = profileService;
@@ -49,36 +51,55 @@ namespace MapLab.Services
         {
             var map = await _mapRepository.All()
                 .Include(m => m.Template)
+                .Include(m => m.Profile)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             return _mapper.Map<MapDto>(map);
         }
 
-        public async Task<(string, JObject)> GetMapJsonAsync(MapDto map)
+        public async Task<(MapDto, string, string)> OpenMapAsync(string id)
+        {
+            var map = await GetMapAsync(id);
+
+            var mapView = new MapView()
+            {
+                MapId = map.Id,
+                ProfileId = _profileService.GetProfileId()
+            };
+
+            await _mapViewsRepository.AddAsync(mapView);
+            await _mapViewsRepository.SaveChangesAsync();
+
+            var (mapTemplateJson, mapJson) = await GetMapJsonAsync(map);
+
+            return (map, mapTemplateJson, mapJson);
+        }
+
+        public async Task<(string, string)> GetMapJsonAsync(MapDto map)
         {
             var templateFile = await _fileStorageManager.GetFileAsync(map?.Template?.FilePath);
             var mapFile = await _fileStorageManager.GetFileAsync(map?.FilePath);
 
             string templateJson = Encoding.UTF8.GetString(templateFile!);
-
-            JObject mapJsonObject;
+            string mapJson;
 
             try
             {
-                string mapJson = Encoding.UTF8.GetString(mapFile!);
-                mapJsonObject = JObject.Parse(mapJson);
+                mapJson = Encoding.UTF8.GetString(mapFile!);
             }
             catch
             {
-                mapJsonObject = new JObject
+                JObject mapJsonObject = new JObject
                 {
                     ["type"] = "FeatureCollection",
                     ["legend"] = new JArray(),
                     ["features"] = new JArray(),
                 };
+
+                mapJson = mapJsonObject.ToString();
             }
 
-            return (templateJson, mapJsonObject);
+            return (templateJson, mapJson);
         }
 
         public async Task CreateMapAsync(string name, string mapTemplateId, bool isPublic)

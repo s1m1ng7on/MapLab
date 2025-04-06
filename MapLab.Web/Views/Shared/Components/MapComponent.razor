@@ -1,4 +1,5 @@
 ﻿@using MapLab.Services.Contracts
+@using MapLab.Services.Models
 @using MapLab.Web.Models.Maps
 @using Newtonsoft.Json.Linq
 @inject IMapsService _mapsService
@@ -10,11 +11,11 @@
         <!-- Map will be loaded here -->
     </div>
 
-    @if (CanEdit)
+    @if (Map.CanEdit)
     {
         <Toolbar @bind-SelectedTool="SelectedTool"
-        OnUndo="Undo"
-        OnRedo="Redo" />
+                 OnUndo="Undo"
+                 OnRedo="Redo" />
 
         @if (SelectedTool == ToolType.Pinpoint)
         {
@@ -26,12 +27,14 @@
         }
     }
 
-    <Legend Title="@Title"
-    Data="@(MapJsonObject?["legend"] as JArray)"
-    CanEdit="CanEdit" />
+    <Legend Title="@Map.Name"
+            Profile="@((Map.ProfileId, Map.ProfileUserName, Map.ProfileProfilePictureFilePath))"
+            MapTemplate="@((Map.TemplateId, Map.TemplateName))"
+            Data="@(MapJsonObject?["legend"] as JArray)"
+            CanEdit="Map.CanEdit" />
 
-    <Controls CanEdit="CanEdit"
-    OnSaveMap="Save" />
+    <Controls CanEdit="Map.CanEdit"
+              OnSaveMap="Save" />
 </div>
 
 @code {
@@ -39,15 +42,13 @@
 
     private TaskCompletionSource<bool> _initializationCompleted = new TaskCompletionSource<bool>();
 
-    [Parameter] public string? Id { get; set; }
-
-    public string? Title { get; set; }
+    [Parameter] public MapComponentViewModel? Map { get; set; }
 
     public string? MapTemplateJson { get; set; }
 
-    public JObject? MapJsonObject { get; set; }
+    public string? MapJson { get; set; }
 
-    public bool CanEdit { get; set; }
+    public JObject? MapJsonObject { get; set; }
 
     private ToolType _selectedTool;
     public ToolType SelectedTool
@@ -93,11 +94,8 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var map = await _mapsService.GetMapAsync(Id);
-
-        (MapTemplateJson, MapJsonObject) = await _mapsService.GetMapJsonAsync(map);
-        Title = map.Name;
-        CanEdit = map.ProfileId == _profileService.GetProfileId();
+        (MapTemplateJson, MapJson) = (Map.MapTemplateJson, Map.MapJson);
+        MapJsonObject = JObject.Parse(MapJson!);
         SelectedTool = ToolType.View;
 
         lock (_lock)
@@ -114,7 +112,7 @@
 
             if (MapTemplateJson != null && MapJsonObject != null)
             {
-                await _js.InvokeVoidAsync("mapInterop.loadMap", DotNetObjectReference.Create(this), MapTemplateJson, MapJsonObject.ToString(), CanEdit, SelectedTool.ToString(), FillColor);
+                await _js.InvokeVoidAsync("mapInterop.loadMap", DotNetObjectReference.Create(this), MapTemplateJson, MapJson, Map.CanEdit, SelectedTool.ToString(), FillColor);
             }
         }
     }
@@ -272,6 +270,6 @@
     [JSInvokable]
     public async Task Save()
     {
-        await _mapsService.SaveMapAsync(Id, MapJsonObject.ToString());
+        await _mapsService.SaveMapAsync(Map.Id, MapJsonObject.ToString());
     }
 }

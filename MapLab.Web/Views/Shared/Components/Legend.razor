@@ -1,7 +1,28 @@
 ﻿@using Newtonsoft.Json.Linq
 
 <div class="legend">
-    <h1 class="fw-bold mb-3">@Title</h1>
+    <h1 class="fw-bold">@Title</h1>
+    <div class="d-flex gap-3 mb-3 align-items-center justify-content-between">
+        <div class="d-flex gap-1">
+            <span class="badge bg-secondary bg-opacity-25 rounded-pill px-3 py-1">
+                <a href="@($"/template/{MapTemplate.Item1}")"
+                   class="text-light text-decoration-none">
+                    <i class="bi bi-grid me-1"></i>@MapTemplate.Item2
+                </a>
+            </span>
+        </div>
+        <div class="d-flex align-items-center">
+            <a href="@($"/profile/{Profile.Item2}")"
+               class="text-light text-decoration-none d-flex align-items-center">
+                <img class="rounded-circle shadow-sm me-1"
+                     src="@Profile.Item3"
+                     alt="@Profile.Item2"
+                     width="16"
+                     height="16" />
+                <span class="small">@Profile.Item2</span>
+            </a>
+        </div>
+    </div>
     @if (Data != null && Data.Count > 0)
     {
         var regions = Data.Where(d => d["type"].ToString() == "Region").ToList();
@@ -86,6 +107,8 @@
 
 @code {
     [Parameter] public string? Title { get; set; }
+    [Parameter] public (string, string, string) Profile { get; set; }
+    [Parameter] public (string, string) MapTemplate { get; set; }
     [Parameter] public JArray? Data { get; set; }
     [Parameter] public bool CanEdit { get; set; }
 

@@ -1,16 +1,23 @@
 ﻿@using MapLab.Services.Contracts
-@model string
+@using MapLab.Services.Models
+@using MapLab.Web.Models.Maps
+@using Newtonsoft.Json.Linq
+@model MapComponentViewModel
 @inject IMapsService _mapsService;
 @{
     Layout = "_MapLayout";
-    ViewData["Title"] = "Map";
+    ViewData["Title"] = Model.Name;
 }
 
-<head>
+<component type="typeof(MapComponent)"
+           render-mode="ServerPrerendered"
+           param-Map="Model" />
+
+@section Styles {
     <link rel="stylesheet" href="~/css/map.css" asp-append-version="true" />
-</head>
-<body>
+}
+
+@section Scripts {
     <script src="~/lib/d3/d3.js" asp-append-version="true"></script>
     <script src="~/js/d3/map.js" asp-append-version="true"></script>
-    <component type="typeof(Map)" render-mode="ServerPrerendered" param-Id="Model" />
-</body>
+}

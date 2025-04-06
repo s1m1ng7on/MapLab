@@ -2,6 +2,10 @@
     Layout = "_LayoutShared";
 }
 
+@section Styles {
+    @await RenderSectionAsync("Styles", false)
+}
+
 <header>
     <nav class="navbar sticky-top glassy-navbar">
         <div class="container">
@@ -15,3 +19,5 @@
     </nav>
 </header>
 @RenderBody()
+
+@await RenderSectionAsync("Scripts", false)

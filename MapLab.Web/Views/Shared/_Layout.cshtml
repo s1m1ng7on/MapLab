@@ -3,7 +3,7 @@
 }
 
 @section Styles {
-    @RenderSection("Styles", false)
+    @await RenderSectionAsync("Styles", false)
 }
 
 <content-wrapper wrap="@(((bool?)ViewData["UseViewportContainer"] ?? false) || ((bool?)ViewData["UseViewportCenteredContainer"] ?? false))">
@@ -106,4 +106,4 @@
     </div>
 </footer>
 
-@await RenderSectionAsync("Scripts", required: false)
+@await RenderSectionAsync("Scripts", false)

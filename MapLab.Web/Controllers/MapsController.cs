@@ -51,9 +51,14 @@ namespace MapLab.Web.Controllers
         }
 
         [Route("map/{id}")]
-        public IActionResult View(string id)
+        public async Task<IActionResult> View(string id)
         {
-            return View("BlazorView", id);
+            var map = await _mapsService.OpenMapAsync(id);
+            var mapViewModel = _mapper.Map<MapComponentViewModel>(map.Item1);
+            mapViewModel.CanEdit = map.Item1.ProfileId == _profileService.GetProfileId();
+            (mapViewModel.MapTemplateJson, mapViewModel.MapJson) = (map.Item2, map.Item3);
+
+            return View("BlazorView", mapViewModel);
         }
 
         [Route("map/[action]/{id}")]
