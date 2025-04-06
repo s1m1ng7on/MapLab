@@ -1,53 +1,162 @@
-﻿@using MapLab.Web.Models.Maps
+﻿@using MapLab.Services.Contracts
+@using MapLab.Web.Models.Maps
+@inject IProfileService _profileService
 @model MapViewModel
-<div class="card map-card border-dark bg-dark text-white h-100 shadow-lg">
-    <a asp-controller="Maps"
-    asp-action="View"
-    asp-route-Id="@Model.Id"
-    class="text-decoration-none text-white">
-        <div class="card-header d-flex justify-content-between align-items-center bg-dark border-secondary">
-            <h5 class="card-title mb-0 text-truncate">
-                @Model.Name
-            </h5>
-            <div class="dropdown">
-                <button class="btn btn-dark btn-sm" type="button" id="mapOptionsDropdown-@Model.Id" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i class="bi bi-three-dots-vertical"></i>
+
+<div class="card map-card h-100 shadow-lg border-0 rounded-3 overflow-hidden">
+    <div class="position-relative">
+        <a asp-controller="Maps" asp-action="View" asp-route-Id="@Model.Id" class="map-link">
+            <div class="position-relative">
+                <img class="card-img-top map-thumbnail"
+                     src="@(Model.ThumbnailFilePath ?? "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=")"
+                     alt="@Model.Name Thumbnail">
+                <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-dark opacity-50"></div>
+            </div>
+        </a>
+
+        <div class="position-absolute top-0 w-100 d-flex justify-content-between p-2">
+            <div onclick="event.stopPropagation();">
+                <button type="button"
+                        class="btn btn-dark btn-sm like-button rounded-pill opacity-75 fixed-width-likes"
+                        data-id="@Model.Id"> 
+                    <div class="d-flex align-items-center gap-2">
+                        @if (Model.IsLikedByCurrentProfile)
+                        {
+                            <i class="bi bi-heart-fill text-danger"></i>
+                        }
+                        else
+                        {
+                            <i class="bi bi-heart text-white"></i>
+                        }
+                        <span class="like-count" data-id="@Model.Id">@Model.LikesCount</span>
+                    </div>
                 </button>
-                <ul class="dropdown-menu dropdown-menu-dark" aria-labelledby="mapOptionsDropdown-@Model.Id">
-                    <li>
-                        <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#share-map-modal">
-                            <i class="bi bi-share-fill me-2"></i>Share
-                        </button>
-                    </li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
-                    <li>
-                        <form asp-area=""
-                        asp-controller="Maps"
-                        asp-action="DeleteMap"
-                        asp-route-Id="@Model.Id"
-                        method="post">
-                            <button class="dropdown-item text-danger" type="submit">
-                                <i class="bi bi-trash-fill me-2"></i>Delete
+            </div>
+            <div>
+                <div class="dropdown">
+                    <button class="btn btn-dark btn-sm rounded-circle opacity-75" type="button" id="mapOptionsDropdown-@Model.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                        <i class="bi bi-three-dots-vertical"></i>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="mapOptionsDropdown-@Model.Id">
+                        <li>
+                            <a asp-controller="Maps"
+                               asp-action="Info"
+                               asp-route-id="@Model.Id"
+                               class="dropdown-item">
+                                <i class="bi bi-info-lg me-2"></i>Info
+                            </a>
+                        </li>
+                        <li>
+                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#share-map-modal">
+                                <i class="bi bi-share-fill me-2"></i>Share
                             </button>
-                        </form>
-                    </li>
-                </ul>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <a asp-controller="Maps"
+                               asp-action="Edit"
+                               asp-route-id="@Model.Id"
+                               class="dropdown-item text-warning">
+                                <i class="bi bi-pencil-fill me-2"></i>Edit
+                            </a>
+                        </li>
+                        <li>
+                            <form asp-area=""
+                                  asp-controller="Maps"
+                                  asp-action="DeleteMap"
+                                  asp-route-Id="@Model.Id"
+                                  method="post">
+                                <button class="dropdown-item text-danger" type="submit">
+                                    <i class="bi bi-trash-fill me-2"></i>Delete
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
-        <img class="card-img-top map-thumbnail"
-        src="@(Model.ThumbnailFilePath ?? "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=")"
-        alt="@Model.Name Thumbnail">
+    </div>
 
-        <div class="card-body">
-            <h6 class="card-subtitle text-muted">@Model.TemplateName</h6>
-            @if (!Model.IsPublic)
-            {
-                <span class="badge rounded-pill bg-primary">
-                    <i class="bi bi-lock-fill"></i>
+    <!-- Card body with title and details -->
+    <div class="card-body bg-dark text-white">
+        <h3 class="card-title fs-5 mb-2 text-truncate">@Model.Name</h3>
+
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex gap-1">
+                <span class="badge bg-secondary bg-opacity-25 rounded-pill px-3 py-1">
+                    <a asp-controller="Templates"
+                       asp-action="Info"
+                       asp-route-Id="@Model.TemplateId"
+                       class="text-light text-decoration-none">
+                        <i class="bi bi-grid me-1"></i>@Model.TemplateName
+                    </a>
                 </span>
+                @if (!Model.IsPublic)
+                {
+                    <span class="badge rounded-pill bg-primary bg-opacity-75 d-flex align-items-center px-2 py-1">
+                        <i class="bi bi-lock-fill"></i>
+                    </span>
+                }
+            </div>
+
+            <!-- Profile info -->
+            @if (Model.ProfileId == _profileService.GetProfileId())
+            {
+                <div class="d-flex align-items-center">
+                    <a asp-controller="Profile"
+                       asp-action="Index"
+                       asp-route-username="@Model.ProfileUserName"
+                       class="text-light text-decoration-none d-flex align-items-center">
+                        <img class="rounded-circle shadow-sm me-1"
+                             src="@Model.ProfileProfilePictureFilePath"
+                             alt="@Model.ProfileUserName"
+                             width="16"
+                             height="16" />
+                        <span class="small">@Model.ProfileUserName</span>
+                    </a>
+                </div>
             }
         </div>
-    </a>
+    </div>
 </div>
+
+<style>
+    /* Custom styles for the map card */
+    .map-card {
+        transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+    }
+
+        .map-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 1rem 3rem rgba(0,0,0,.5) !important;
+        }
+
+    .map-thumbnail {
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .bg-gradient-dark {
+        background: linear-gradient(180deg, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 40%, rgba(0,0,0,0.6) 100%);
+    }
+
+    .heart-container {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+    }
+
+    .like-button:hover .bi-heart {
+        color: #ff6b6b !important;
+    }
+
+    .like-button {
+        transition: transform 0.2s;
+    }
+
+        .like-button:active {
+            transform: scale(1.2);
+        }
+</style>

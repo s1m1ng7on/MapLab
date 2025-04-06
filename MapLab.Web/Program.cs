@@ -128,7 +128,7 @@ namespace MapLab
             // You can also explicitly register your AutoMapper configuration class like so:
             builder.Services.AddSingleton(provider =>
             {
-                AutoMapperConfiguration.RegisterMappings(AppDomain.CurrentDomain.GetAssemblies()); // Register mappings from all assemblies
+                AutoMapperConfiguration.RegisterMappings(provider, AppDomain.CurrentDomain.GetAssemblies());
                 return AutoMapperConfiguration.MapperInstance;
             });
 

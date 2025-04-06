@@ -18,7 +18,10 @@
                        asp-action="Index">
                         @_localizer["Start Mapping"] <i class="bi bi-arrow-right ms-2"></i>
                     </a>
-                    <a href="#" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                    <a class="btn btn-outline-light btn-lg px-4 rounded-pill"
+                       data-bs-toggle="modal"
+                       data-bs-target="#youtubeModal"
+                       data-video="https://www.youtube.com/embed/dQw4w9WgXcQ">
                         <i class="bi bi-play-fill me-2"></i> @_localizer["Watch Demo"]
                     </a>
                 </div>
@@ -199,31 +202,22 @@
     </div>
 </section>
 
+<div class="modal fade" id="youtubeModal" tabindex="-1" aria-labelledby="youtubeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content bg-dark">
+            <div class="modal-header">
+                <h5 class="modal-title" id="youtubeModalLabel">Watch Demo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-0">
+                <div class="ratio ratio-16x9">
+                    <iframe id="youtubeIframe" src="" title="YouTube video" allowfullscreen></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
-    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            AOS.init();
-
-            // Initialize any additional scripts
-            const heroImage = document.querySelector('.floating-animation');
-            if (heroImage) {
-                heroImage.addEventListener('mousemove', function(e) {
-                    const rect = heroImage.getBoundingClientRect();
-                    const x = e.clientX - rect.left;
-                    const y = e.clientY - rect.top;
-
-                    const moveX = (x - rect.width / 2) / 20;
-                    const moveY = (y - rect.height / 2) / 20;
-
-                    heroImage.style.transform = `translate(${moveX}px, ${moveY}px)`;
-                });
-
-                heroImage.addEventListener('mouseleave', function() {
-                    heroImage.style.transform = 'translate(0, 0)';
-                    heroImage.style.transition = 'transform 0.5s ease';
-                });
-            }
-        });
-    </script>
+    <script src="~/js/views/home/index.js"></script>
 }

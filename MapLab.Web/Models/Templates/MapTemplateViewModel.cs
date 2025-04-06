@@ -13,6 +13,7 @@ namespace MapLab.Web.Models.Templates
         public string? ProfileId { get; set; }
         public string? ProfileUserName { get; set; }
         public string? ProfileProfilePictureFilePath { get; set; }
+        public int LikesCount { get; set; }
         public DateTime CreatedOn { get; set; }
     }
 }

@@ -3,7 +3,8 @@
 @using MapLab.Shared.Models.FilterModels
 @using MapLab.Web.Models.Templates
 @using Microsoft.AspNetCore.Components.Forms
-@inject MapLab.Services.Contracts.IMapsService _mapService
+@using MapLab.Services.Contracts
+@inject ITemplatesService _mapTemplatesService
 @inject AutoMapper.IMapper _mapper
 
 <div class="container">
@@ -37,7 +38,7 @@
 
 @if (string.IsNullOrEmpty(filters.SearchQuery))
 {
-    var recentMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapService.GetRecentMapTemplates());
+        var recentMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetRecentMapTemplates());
     if (recentMapTemplates.Count > 0)
     {
         <h3 class="pt-4 pb-2 fs-4">Recents</h3>
@@ -139,16 +140,16 @@ else
 
     protected override void OnInitialized()
     {
-        var templateEntities = _mapService.GetMapTemplates();
+        var templateEntities = _mapTemplatesService.GetMapTemplates();
         templates = _mapper.Map<List<MapTemplateViewModel>>(templateEntities);
-        mapLabMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapService.GetMapTemplates(new MapTemplateFiltersModel() { ByMapLab = true }).OrderBy(mt => mt.Region));
-        featuredMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapService.GetFeaturedMapTemplates());
+        mapLabMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetMapTemplates(new MapTemplateFiltersModel() { ByMapLab = true }).OrderBy(mt => mt.Region));
+        featuredMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetFeaturedMapTemplates());
     }
 
     private void OnSearch(ChangeEventArgs e)
     {
         filters.SearchQuery = e.Value?.ToString();
-        var templateEntities = _mapService.GetMapTemplates(filters);
+        var templateEntities = _mapTemplatesService.GetMapTemplates(filters);
         templates = _mapper.Map<List<MapTemplateViewModel>>(templateEntities);
     }
 

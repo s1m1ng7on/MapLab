@@ -1,7 +1,11 @@
-﻿using MapLab.Data.Entities;
+﻿using MapLab.Data.Configurations;
+using MapLab.Data.Entities;
+using MapLab.Data.Models.Entities;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
+using System.Reflection.Emit;
 
 namespace MapLab.Data
 {
@@ -11,6 +15,8 @@ namespace MapLab.Data
         public DbSet<MapTemplate> MapTemplates { get; set; }
         public DbSet<MapView> MapViews { get; set; }
         public DbSet<NewsArticle> News { get; set; }
+        public DbSet<Like<Map>> MapLikes { get; set; }
+        public DbSet<Like<MapTemplate>> MapTemplateLikes { get; set; }
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -20,6 +26,8 @@ namespace MapLab.Data
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
+
+            GlobalFilters.ConfigureDeletableEntityFilters(builder);
 
             builder.Entity<Profile>().ToTable("Profiles");
             builder.Entity<IdentityRole>().ToTable("Roles");
@@ -50,6 +58,28 @@ namespace MapLab.Data
                 .WithMany(m => m.Maps)
                 .HasForeignKey(m => m.TemplateId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            builder.Entity<Like<Map>>(ml =>
+            {
+                ml.Property(ml => ml.EntityId)
+                    .HasColumnName("MapId");
+
+                ml.HasOne(e => e.Profile)
+                    .WithMany()
+                    .HasForeignKey(e => e.ProfileId)
+                    .OnDelete(DeleteBehavior.Restrict);
+            });
+
+            builder.Entity<Like<MapTemplate>>(mtl =>
+            {
+                mtl.Property(mtl => mtl.EntityId)
+                    .HasColumnName("MapTemplateId");
+
+                mtl.HasOne(e => e.Profile)
+                    .WithMany()
+                    .HasForeignKey(e => e.ProfileId)
+                .OnDelete(DeleteBehavior.Restrict);
+            });
         }
     }
 }

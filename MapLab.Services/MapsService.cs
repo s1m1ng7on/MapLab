@@ -1,12 +1,15 @@
-﻿using MapLab.Data.Entities;
+﻿using AutoMapper;
+using MapLab.Data.Entities;
 using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
+using MapLab.Services.Models;
 using MapLab.Shared.Models.FilterModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
+using SendGrid.Helpers.Mail;
 using System.Text;
 
 namespace MapLab.Services
@@ -15,45 +18,47 @@ namespace MapLab.Services
     {
         private readonly IDeletableEntityRepository<Map> _mapRepository;
         private readonly IDeletableEntityRepository<MapTemplate> _mapTemplateRepository;
-
-        private readonly IMemoryCache _memoryCache;
-
+        private readonly IDeletableEntityRepository<Like<Map>> _mapLikesRepository;
         private readonly IFileStorageManager _fileStorageManager;
-
         private readonly IProfileService _profileService;
+        private readonly IMapper _mapper;
 
-        private const string FeaturedMapTemplatesCacheKey = "FeaturedMapTemplates";
-
-        public MapsService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IMemoryCache memoryCache, IFileStorageManager fileStorageManager, IProfileService profileService)
+        public MapsService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IDeletableEntityRepository<Like<Map>> mapLikesRepository, IFileStorageManager fileStorageManager, IProfileService profileService, IMapper mapper)
         {
             _mapRepository = mapRepository;
             _mapTemplateRepository = mapTemplateRepository;
-
-            _memoryCache = memoryCache;
-
+            _mapLikesRepository = mapLikesRepository;
             _fileStorageManager = fileStorageManager;
-
             _profileService = profileService;
+            _mapper = mapper;
         }
 
-        public IEnumerable<Map>? GetMapsForProfile(string profileId, bool isCurrentProfile)
-            => _mapRepository.All()
+        public IEnumerable<MapDto>? GetMapsForProfile(string profileId, bool isCurrentProfile)
+        {
+            var maps = _mapRepository.All()
                     .Where(m => m.ProfileId == profileId && (isCurrentProfile || m.IsPublic))
                     .Include(m => m.Profile)
-                    .Include(m => m.Template);
+                    .Include(m => m.Template)
+                    .Include(m => m.Views)
+                    .Include(m => m.Likes);
 
-        public async Task<Map?> GetMapAsync(string id)
-            => await _mapRepository.All()
+            return _mapper.Map<IEnumerable<MapDto>>(maps);
+        }
+
+        public async Task<MapDto?> GetMapAsync(string id)
+        {
+            var map = await _mapRepository.All()
                 .Include(m => m.Template)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
-        public async Task<(string, JObject)> GetMapJsonAsync(Map map)
+            return _mapper.Map<MapDto>(map);
+        }
+
+        public async Task<(string, JObject)> GetMapJsonAsync(MapDto map)
         {
-            // Load template and map files
             var templateFile = await _fileStorageManager.GetFileAsync(map?.Template?.FilePath);
             var mapFile = await _fileStorageManager.GetFileAsync(map?.FilePath);
 
-            // Convert files to strings
             string templateJson = Encoding.UTF8.GetString(templateFile!);
 
             JObject mapJsonObject;
@@ -76,49 +81,6 @@ namespace MapLab.Services
             return (templateJson, mapJsonObject);
         }
 
-
-        public IQueryable<MapTemplate> GetMapTemplates(MapTemplateFiltersModel? filters = null)
-        {
-            var query = _mapTemplateRepository.All()
-                .Include(mt => mt.Profile)
-                .AsQueryable();
-
-            if (filters != null)
-            {
-                query = query.Where(mt =>
-                    (string.IsNullOrEmpty(filters.SearchQuery) || EF.Functions.Like(mt.Name, $"%{filters.SearchQuery}%")) &&
-                    (!filters.Region.HasValue || mt.Region == filters.Region) &&
-                    (!filters.ByMapLab || mt.Profile!.UserName == "MapLab")
-                );
-            }
-
-            return query;
-        }
-
-        public IEnumerable<MapTemplate> GetRecentMapTemplates()
-            => _mapTemplateRepository.All()
-                .Include(mt => mt.Maps)
-                .Where(mt => mt.Maps.Any(m => m.ProfileId == _profileService.GetProfileId()))
-                .OrderByDescending(mt => mt.CreatedOn);
-
-        public IEnumerable<MapTemplate> GetFeaturedMapTemplates()
-        {
-            if (!_memoryCache.TryGetValue(FeaturedMapTemplatesCacheKey, out IEnumerable<MapTemplate> cachedMapTemplates))
-            {
-                //TO BE CHANGED
-                cachedMapTemplates = GetMapTemplates().ToList();
-
-                var nextMonday = DateTime.Now.AddDays(((int)DayOfWeek.Monday - (int)DateTime.Now.DayOfWeek + 7) % 7).Date;
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions()
-                    .SetAbsoluteExpiration(nextMonday);
-
-                _memoryCache.Set(FeaturedMapTemplatesCacheKey, cachedMapTemplates, cacheEntryOptions);
-            }
-
-            return cachedMapTemplates;
-        }
-
         public async Task CreateMapAsync(string name, string mapTemplateId, bool isPublic)
         {
             Map newMap = new Map()
@@ -135,15 +97,15 @@ namespace MapLab.Services
 
         public async Task DeleteMapAsync(string id)
         {
-            var map = await GetMapAsync(id);
-            _mapRepository.Delete(map);
+            var map = await _mapRepository.FindAsync(id);
+            _mapRepository.Delete(map!);
             await _mapRepository.SaveChangesAsync();
         }
 
-        public async Task SaveMapAsync(string Id, string updatedMapJson)
+        public async Task SaveMapAsync(string id, string updatedMapJson)
         {
-            var map = await GetMapAsync(Id);
-            map.FilePath = await _fileStorageManager.SaveJsonFileAsync(updatedMapJson, "Maps", "File", Id);
+            var map = await _mapRepository.FindAsync(id);
+            map.FilePath = await _fileStorageManager.SaveJsonFileAsync(updatedMapJson, "Maps", "File", id);
             await _mapTemplateRepository.SaveChangesAsync();
         }
 
@@ -152,6 +114,37 @@ namespace MapLab.Services
             mapTemplate.FilePath = await _fileStorageManager.SaveFileAsync(file, "MapTemplates", "File", mapTemplate.Id!);
             await _mapTemplateRepository.AddAsync(mapTemplate);
             await _mapTemplateRepository.SaveChangesAsync();
+        }
+
+        public async Task<(int likesCount, bool isLiked)> ToggleLikeDislikeMapAsync(string profileId, string mapId)
+        {
+            var existingLike = await _mapLikesRepository.All()
+                .FirstOrDefaultAsync(ml => ml.ProfileId == profileId && ml.EntityId == mapId);
+
+            if (existingLike != null)
+            {
+                _mapLikesRepository.Delete(existingLike);
+            }
+            else
+            {
+                var newLike = new Like<Map>
+                {
+                    EntityId = mapId,
+                    ProfileId = profileId
+                };
+
+                await _mapLikesRepository.AddAsync(newLike);
+            }
+
+            await _mapLikesRepository.SaveChangesAsync();
+
+            var likesCount = await _mapLikesRepository.All()
+                .CountAsync(ml => ml.EntityId == mapId);
+
+            var isLiked = await _mapLikesRepository.All()
+                .AnyAsync(ml => ml.ProfileId == profileId && ml.EntityId == mapId);
+
+            return (likesCount, isLiked);
         }
     }
 }

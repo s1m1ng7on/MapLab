@@ -1,6 +1,126 @@
 ﻿@{
     ViewData["Title"] = "Terms of Service";
+    Layout = "_ContentLayout";
+    var effectiveDate = new DateTime(2025, 4, 4);
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's Terms of Service.</p>
+<div class="container py-5">
+    <h1>@ViewData["Title"]</h1>
+    <p><strong>Effective Date:</strong> @effectiveDate.ToString("d MMM yyyy")</p>
+
+    <section class="mb-5">
+        <p>Welcome to MapLab, a web-based application for creating, editing, and sharing maps. These Terms of Service ("Terms") govern your access to and use of the MapLab platform ("MapLab", "we", "us", or "our"). By accessing or using MapLab, you agree to these Terms.</p>
+        <p>If you do not agree with these Terms, do not use MapLab.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">1. Overview</h2>
+        <p>MapLab is operated by Simeon Gunev as part of a school graduation project. The platform is intended primarily for educational and recreational use by students, teachers, professors, and geography enthusiasts.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">2. Use of the Platform</h2>
+        <p>You may use MapLab without creating an account. However, to create, edit, and share maps, a user profile is required.</p>
+        <p>There are two types of profiles:</p>
+        <ul>
+            <li><strong>Regular User:</strong> Can create and share maps.</li>
+            <li><strong>Admin:</strong> Can edit other users’ maps, promote or demote admins, manage users, upload official map templates, and view analytics.</li>
+        </ul>
+        <p>There is currently no age restriction for account creation. However, by creating an account, you confirm that you have the legal capacity to agree to these Terms or have permission from a parent or guardian if you are underage.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">3. User-Generated Content</h2>
+        <p>Users can create maps using templates provided by MapLab or other users. They may also upload a profile picture.</p>
+        <p>Maps can be set as:</p>
+        <ul>
+            <li><strong>Public:</strong> Featured on the Community page and visible on the user's profile.</li>
+            <li><strong>Private:</strong> Accessible only via direct link and hidden from the profile and Community page.</li>
+        </ul>
+        <p>By uploading or creating content on MapLab, you retain ownership but grant MapLab a non-exclusive, royalty-free, worldwide license to use, display, reproduce, and distribute your content in connection with the platform.</p>
+        <p>Other users can view but not edit or interact with your maps.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">4. Data Collection and Privacy</h2>
+        <p>When creating a profile, we collect:</p>
+        <ul>
+            <li>Username</li>
+            <li>Email address</li>
+            <li>Phone number</li>
+        </ul>
+        <p>Passwords are securely hashed. No third-party tracking or analytics tools are used.</p>
+        <p>See our <a asp-action="PrivacyPolicy">Privacy Policy</a> for more information.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">5. Payments and Fees</h2>
+        <p>MapLab is currently free to use. We reserve the right to introduce paid features or subscriptions in the future. Users will be notified if any such changes occur.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">6. User Conduct</h2>
+        <p>You agree not to:</p>
+        <ul>
+            <li>Upload or create maps with illegal, hateful, or offensive content.</li>
+            <li>Impersonate other users or misrepresent your identity.</li>
+            <li>Attempt to access admin-only features or unauthorized content.</li>
+            <li>Disrupt or interfere with platform functionality.</li>
+            <li>Upload malware or attempt to compromise platform security.</li>
+        </ul>
+        <p>We reserve the right to remove content or suspend accounts that violate these Terms.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">7. Intellectual Property</h2>
+        <p>All platform content, features, and functionality (excluding user-generated content) are the property of Simeon Gunev. This includes UI components, code, templates, and other original works.</p>
+        <p>You may not copy, modify, distribute, or create derivative works without express permission.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">8. Third-Party Resources</h2>
+        <p>MapLab includes map templates sourced from the <a href="https://github.com/codeforgermany/click_that_hood/tree/main/public/data" target="_blank">Click That 'Hood</a> project by Code for Germany, used under its applicable license.</p>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">9. Account Termination</h2>
+        <p>You can delete your account at any time via <strong>Profile > Delete Account</strong>.</p>
+        <p>We may suspend or terminate your account if you:</p>
+        <ul>
+            <li>Violate these Terms or applicable laws.</li>
+            <li>Abuse features or upload inappropriate content.</li>
+            <li>Disrupt platform functionality or security.</li>
+            <li>Receive credible complaints or legal action against your use of MapLab.</li>
+        </ul>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">10. Legal and Liability</h2>
+        <p>These Terms are governed by the laws of the Republic of Bulgaria.</p>
+        <p>MapLab is provided “as is” without warranties of any kind. We disclaim responsibility for:</p>
+        <ul>
+            <li>Loss of content or data</li>
+            <li>Service outages</li>
+            <li>Unauthorized access</li>
+            <li>Errors in third-party data or templates</li>
+        </ul>
+    </section>
+
+    <section class="mb-5">
+        <h2 class="section-header">11. Future Features and Modifications</h2>
+        <p>We may update MapLab and these Terms from time to time. You will be notified of major changes. Continued use after changes means you accept the updated Terms.</p>
+    </section>
+
+    <section>
+        <h2 class="section-header">12. Contact</h2>
+        <p>For support or legal inquiries, please contact:</p>
+        <p>
+            <strong>Simeon Gunev</strong><br>
+            @{
+                var email = "simganev@gmail.com";
+            }
+            Email: <a href="mailto:@email">@email</a><br>
+            Location: Republic of Bulgaria
+        </p>
+    </section>
+</div>

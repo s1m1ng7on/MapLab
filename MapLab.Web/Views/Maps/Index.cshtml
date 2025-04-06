@@ -3,20 +3,13 @@
 @model MapsIndexViewModel
 @{
     ViewData["Title"] = Model.IsCurrentProfile ? _localizer["My Maps"] : _localizer["Profile's Maps", Model.ProfileUserName];
+    ViewData["UseViewportContainer"] = true;
 }
+
+@Html.AntiForgeryToken()
 <div class="container py-5">
     <div class="row align-items-center mb-4">
-        <div class="col-12 col-md-6">
-            <h1 class="display-6 text-white mb-3 animate__animated animate__fadeIn">@ViewData["Title"]</h1>
-        </div>
-        @if (Model.IsCurrentProfile)
-        {
-            <div class="col-12 col-md-6 text-md-end">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#createMapModal">
-                    <i class="bi bi-plus-lg me-2"></i>Create New Map
-                </button>
-            </div>
-        }
+        <h1 class="display-6 text-white mb-3 animate__animated animate__fadeIn">@ViewData["Title"]</h1>
     </div>
     @if (Model.Maps == null || !Model.Maps.Any())
     {
@@ -48,8 +41,17 @@
 {
     string modalId = $"modal-{Guid.NewGuid().ToString()}";
 
-    <button type="button" class="btn btn-primary floating-button" data-bs-toggle="modal" data-bs-target="#@modalId">
+    <button type="button" class="btn btn-primary floating-button floating" data-bs-toggle="modal" data-bs-target="#@modalId">
         <i class="bi bi-plus-lg"></i>
     </button>
     <component type="typeof(CreateMapModal)" render-mode="ServerPrerendered" param-Id="@modalId" />
+}
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/views/maps/index.css" asp-append-version="true"/>
+}
+
+@section Scripts {
+    <script src="~/js/views/maps/index.js" asp-append-version="true"></script>
+    <script src="~/js/mapCard.js" asp-append-version="true"></script>
 }

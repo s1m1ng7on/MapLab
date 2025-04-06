@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 
 namespace MapLab.Services.Mapping
@@ -9,7 +10,7 @@ namespace MapLab.Services.Mapping
 
         public static IMapper MapperInstance { get; set; }
 
-        public static void RegisterMappings(params Assembly[] assemblies)
+        public static void RegisterMappings(IServiceProvider services, params Assembly[] assemblies)
         {
             if (initialized)
             {
@@ -44,7 +45,7 @@ namespace MapLab.Services.Mapping
                     // IHaveCustomMappings
                     foreach (var map in GetCustomMappings(types))
                     {
-                        map.CreateMappings(configuration);
+                        map.CreateMappings(configuration, services);
                     }
                 });
             MapperInstance = new Mapper(new MapperConfiguration(config));

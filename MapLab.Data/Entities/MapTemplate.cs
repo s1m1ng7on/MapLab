@@ -15,13 +15,16 @@ namespace MapLab.Data.Entities
 
         public string? ThumbnailFilePath { get; set; }
 
+        [Required]
         public string? FilePath { get; set; }
 
         [ForeignKey(nameof(Profile))]
+        [Required]
         public string? ProfileId { get; set; }
 
         public virtual Profile? Profile { get; set; }
 
         public virtual ICollection<Map>? Maps { get; set; }
+        public virtual ICollection<Like<MapTemplate>>? Likes { get; set; }
     }
 }

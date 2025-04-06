@@ -1,0 +1,43 @@
+﻿@using MapLab.Web.Models.Templates
+@model MapTemplateViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<div class="container mt-5">
+    <div class="card shadow rounded">
+        <div class="row g-0">
+            <div class="col-md-4">
+                <img src="@Model.ThumbnailFilePath" alt="@Model.Name" class="img-fluid rounded-start w-100 h-100 object-fit-cover" />
+            </div>
+
+            <div class="col-md-8">
+                <div class="card-body">
+                    <h3 class="card-title">@Model.Name</h3>
+
+                    <p class="card-text mb-1">
+                        <strong>Region:</strong> @Model.Region?.ToString() ?? "Unknown"
+                    </p>
+
+                    <p class="card-text mb-1">
+                        <strong>Created By:</strong>
+                        <img src="@Model.ProfileProfilePictureFilePath" alt="@Model.ProfileUserName" class="rounded-circle me-2" style="width: 32px; height: 32px; object-fit: cover;" />
+                        @Model.ProfileUserName
+                    </p>
+
+                    <p class="card-text mb-1">
+                        <strong>Likes:</strong> @Model.LikesCount
+                    </p>
+
+                    <p class="card-text mb-1">
+                        <strong>Created On:</strong> @Model.CreatedOn.ToString("yyyy-MM-dd")
+                    </p>
+
+                    <p class="card-text">
+                        <strong>Profile ID:</strong> @Model.ProfileId
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+﻿@using MapLab.Web.Models.Maps
+@model MapViewModel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<h1>@Model.Name</h1>
+
+<img src="@Model.ThumbnailFilePath" alt="@Model.Name" style="max-width: 300px;" />
+
+<h2>Template: @Model.TemplateName</h2>
+
+<div>
+    <p><strong>Public:</strong> @(Model.IsPublic ? "Yes" : "No")</p>
+    <p><strong>Created By:</strong> @Model.ProfileUserName</p>
+    <p><strong>Likes:</strong> @Model.LikesCount</p>
+    <p>
+        <strong>You Liked This:</strong>
+        @(Model.IsLikedByCurrentProfile ? "Yes" : "No")
+    </p>
+</div>
