@@ -8,8 +8,8 @@ namespace MapLab.Web.Models.Maps
         public string? Id { get; set; }
         public string? Name { get; set; }
         public bool CanEdit { get; set; }
-        public string? TemplateId { get; set; }
-        public string? TemplateName { get; set; }
+        public string? MapTemplateId { get; set; }
+        public string? MapTemplateName { get; set; }
         public string? ProfileId { get; set; }
         public string? ProfileUserName { get; set; }
         public string? ProfileProfilePictureFilePath { get; set; }

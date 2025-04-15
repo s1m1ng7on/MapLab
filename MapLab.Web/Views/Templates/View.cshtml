@@ -1,6 +1,18 @@
 ﻿@using MapLab.Web.Models.Templates
-@model MapTemplateViewModel
+@model MapTemplateComponentViewModel
 @{
     ViewData["Title"] = Model.Name;
 }
 
+<component type="typeof(MapTemplateComponent)"
+           render-mode="ServerPrerendered"
+           param-Id="Model.Id" />
+
+@section Styles {
+    <link rel="stylesheet" href="~/css/map.css" asp-append-version="true" />
+}
+
+@section Scripts {
+    <script src="~/lib/d3/d3.js" asp-append-version="true"></script>
+    <script src="~/js/d3/map.js" asp-append-version="true"></script>
+}

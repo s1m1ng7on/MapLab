@@ -42,7 +42,7 @@ namespace MapLab.Web.Areas.Admin.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(NewsArticleUpsertViewModel newsArticle)
         {
-            var newsArticleDto = _mapper.Map<NewsArticleUpsertViewModel, NewsArticleDto>(newsArticle);
+            var newsArticleDto = _mapper.Map<NewsArticleDto>(newsArticle);
             await _newsService.CreateNewsArticleAsync(newsArticleDto);
 
             return RedirectToAction("Index", new { area = "Admin" });
@@ -51,7 +51,7 @@ namespace MapLab.Web.Areas.Admin.Controllers
         public async Task<IActionResult> Edit(string id)
         {
             var newsArticle = await _newsService.GetNewsArticleAsync(id);
-            var newsArticleViewModel = _mapper.Map<NewsArticleDto, NewsArticleUpsertViewModel>(newsArticle);
+            var newsArticleViewModel = _mapper.Map<NewsArticleUpsertViewModel>(newsArticle);
 
             TempData["EditingArticleId"] = newsArticle.Id;
             TempData["NewsArticleOldContent"] = newsArticle.Content;
@@ -68,18 +68,12 @@ namespace MapLab.Web.Areas.Admin.Controllers
             if (!ModelState.IsValid)
                 return View(newsArticle);
 
-            var originalId = TempData["EditingArticleId"].ToString();
-
-            // Map ViewModel to DTO
-            var newsArticleDto = _mapper.Map<NewsArticleUpsertViewModel, NewsArticleDto>(newsArticle);
-            newsArticleDto.Id = originalId;
+            var newsArticleDto = _mapper.Map<NewsArticleDto>(newsArticle);
 
             var oldContent = TempData["NewsArticleOldContent"] as string;
 
-            // Call service to update the article
             await _newsService.EditNewsArticleAsync(newsArticleDto, oldContent);
 
-            // Redirect to the index page after successful update
             return RedirectToAction("Index", new { area = "Admin" });
         }
 

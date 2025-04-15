@@ -86,8 +86,8 @@ namespace MapLab.Services
         {
             var newsArticle = await _newsArticleRepository.FindAsync(newsArticleDto.Id);
 
-            /*if (newsArticle == null || newsArticle.ProfileId != _profileService.GetProfileId())
-                throw new UnauthorizedAccessException("You do not have permission to edit this article.");*/
+            if (newsArticle == null || newsArticle.ProfileId != _profileService.GetProfileId())
+                throw new UnauthorizedAccessException("You are not authorized to edit this article.");
 
             string imgSrcPattern = @"<img.*?src=""((\/[^\s]+|\/[^\s]+|[a-zA-Z0-9_-]+(?:\/[^\s]*)?)|data:image\/(png|jpg|jpeg|gif);base64,([^\s]+))""/gm";
 

@@ -43,13 +43,13 @@
 
   <ItemGroup>
     <ProjectReference Include="..\MapLab.Data\MapLab.Data.csproj" />
+    <ProjectReference Include="..\MapLab.Seeding\MapLab.Seeding.csproj" />
     <ProjectReference Include="..\MapLab.Services\MapLab.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Properties\PublishProfiles\" />
     <Folder Include="wwwroot\images\layout\" />
-    <Folder Include="wwwroot\uploads\" />
   </ItemGroup>
 
 </Project>

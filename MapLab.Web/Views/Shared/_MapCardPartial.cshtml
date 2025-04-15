@@ -1,15 +1,17 @@
 ﻿@using MapLab.Services.Contracts
 @using MapLab.Web.Models.Maps
+@using MapLab.Common.Extensions
+@using MapLab.Web.Utilities
 @inject IProfileService _profileService
 @model MapViewModel
 
-<div class="card map-card h-100 shadow-lg border-0 rounded-3 overflow-hidden">
+<div class="card map-card h-100 shadow-lg border-0 rounded-4 overflow-hidden">
     <div class="position-relative">
         <a asp-controller="Maps" asp-action="View" asp-route-Id="@Model.Id" class="map-link">
             <div class="position-relative">
                 <img class="card-img-top map-thumbnail"
-                     src="@(Model.ThumbnailFilePath ?? "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=")"
-                     alt="@Model.Name Thumbnail">
+                src="@(Model.ThumbnailFilePath ?? "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=")"
+                alt="@Model.Name Thumbnail">
                 <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-dark opacity-50"></div>
             </div>
         </a>
@@ -17,8 +19,8 @@
         <div class="position-absolute top-0 w-100 d-flex justify-content-between p-2">
             <div onclick="event.stopPropagation();">
                 <button type="button"
-                        class="btn btn-dark btn-sm like-button rounded-pill opacity-75 fixed-width-likes"
-                        data-id="@Model.Id">
+                class="btn btn-dark btn-sm like-button rounded-pill opacity-75 fixed-width-likes"
+                data-id="@Model.Id">
                     <div class="d-flex align-items-center gap-2">
                         @if (Model.IsLikedByCurrentProfile)
                         {
@@ -33,46 +35,55 @@
                 </button>
             </div>
             <div>
-                <div class="dropdown">
-                    <button class="btn btn-dark btn-sm rounded-circle opacity-75" type="button" id="mapOptionsDropdown-@Model.Id" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="dropdown position-relative">
+                    <button class="btn btn-dark btn-sm rounded-circle opacity-75"
+                    type="button"
+                    id="mapOptionsDropdown-@Model.Id"
+                    data-bs-toggle="dropdown"
+                    aria-expanded="false">
                         <i class="bi bi-three-dots-vertical"></i>
                     </button>
-                    <ul class="dropdown-menu dropdown-menu-dark shadow" aria-labelledby="mapOptionsDropdown-@Model.Id">
+                    <ul class="dropdown-menu dropdown-menu-end shadow-lg mt-2 bg-dark text-light rounded-4"
+                    aria-labelledby="mapOptionsDropdown-@Model.Id"
+                    style="min-width: 220px;">
                         <li>
                             <a asp-controller="Maps"
-                               asp-action="Info"
-                               asp-route-id="@Model.Id"
-                               class="dropdown-item">
+                            asp-action="Info"
+                            asp-route-id="@Model.Id"
+                            class="dropdown-item text-light py-2 hover-light">
                                 <i class="bi bi-info-lg me-2"></i>Info
                             </a>
                         </li>
                         <li>
-                            <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#share-map-modal">
+                            <button class="dropdown-item text-light py-2 hover-light"
+                            data-bs-toggle="modal"
+                            data-bs-target="#share-map-modal">
                                 <i class="bi bi-share-fill me-2"></i>Share
                             </button>
                         </li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li>
-                            <a asp-controller="Maps"
-                               asp-action="Edit"
-                               asp-route-id="@Model.Id"
-                               class="dropdown-item text-warning">
-                                <i class="bi bi-pencil-fill me-2"></i>Edit
-                            </a>
-                        </li>
-                        <li>
-                            <form asp-area=""
-                                  asp-controller="Maps"
-                                  asp-action="DeleteMap"
-                                  asp-route-Id="@Model.Id"
-                                  method="post">
-                                <button class="dropdown-item text-danger" type="submit">
+                        @if (Model.IsByCurrentProfile)
+                        {
+                            <li>
+                                <hr class="dropdown-divider border-secondary my-1">
+                            </li>
+                            <li>
+                                <a asp-controller="Maps"
+                                   asp-action="Edit"
+                                   asp-route-id="@Model.Id"
+                                   class="dropdown-item text-warning py-2 hover-warning">
+                                    <i class="bi bi-pencil-fill me-2"></i>Edit
+                                </a>
+                            </li>
+                            <li>
+                                <button class="dropdown-item text-danger py-2 hover-danger"
+                                        data-id="@Model.Id"
+                                        data-name="@Model.Name"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteMapModal">
                                     <i class="bi bi-trash-fill me-2"></i>Delete
                                 </button>
-                            </form>
-                        </li>
+                            </li>
+                        }
                     </ul>
                 </div>
             </div>
@@ -84,13 +95,19 @@
 
         <div class="d-flex align-items-center justify-content-between">
             <div class="d-flex gap-1">
-                <span class="badge bg-secondary bg-opacity-25 rounded-pill px-3 py-1">
+                <span class="badge bg-secondary bg-opacity-25 rounded-pill px-2 py-1">
                     <a asp-controller="Templates"
                        asp-action="Info"
-                       asp-route-Id="@Model.TemplateId"
+                       asp-route-Id="@Model.MapTemplateId"
                        class="text-light text-decoration-none">
-                        <i class="bi bi-grid me-1"></i>@Model.TemplateName
+                        <i class="bi bi-grid me-1"></i>@Model.MapTemplateName
                     </a>
+                </span>
+                <span class="badge rounded-pill bg-primary bg-opacity-75 px-2 py-1">
+                    <i class="bi bi-globe-europe-africa me-1"></i>@Model.MapTemplateRegion?.GetDisplayName()
+                </span>
+                <span class="badge rounded-pill bg-info bg-opacity-75 px-2 py-1">
+                    <i class="bi bi-eye me-1"></i>@Model.ViewsCount views
                 </span>
                 @if (!Model.IsPublic)
                 {
@@ -100,18 +117,16 @@
                 }
             </div>
 
-            @if (Model.ProfileId == _profileService.GetProfileId())
+            @if (Model.IsByCurrentProfile)
             {
                 <div class="d-flex align-items-center">
                     <a asp-controller="Profile"
                        asp-action="Index"
                        asp-route-username="@Model.ProfileUserName"
                        class="text-light text-decoration-none d-flex align-items-center">
-                        <img class="rounded-circle shadow-sm me-1"
-                             src="@Model.ProfileProfilePictureFilePath"
-                             alt="@Model.ProfileUserName"
-                             width="16"
-                             height="16" />
+                        <img class="profile-picture rounded-circle shadow-sm me-1"
+                             src="@(Model.ProfileProfilePictureFilePath ?? StaticFilePaths.DefaultProfilePicture)"
+                             alt="@Model.ProfileUserName" />
                         <span class="small">@Model.ProfileUserName</span>
                     </a>
                 </div>

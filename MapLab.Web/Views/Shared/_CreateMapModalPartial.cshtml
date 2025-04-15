@@ -1,0 +1,288 @@
+﻿@using MapLab.Web.Models.Maps
+@model MapCreateViewModel
+
+<div id="createMapModal" class="modal fade" tabindex="-1" aria-labelledby="createMapModalLabel" aria-hidden="true" data-multistep>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content bg-dark text-white border-0 rounded-4 shadow-lg">
+            <form id="createMapForm"
+                  method="post"
+                  asp-controller="Maps"
+                  asp-action="Create">
+                @Html.AntiForgeryToken()
+
+                <div class="modal-header border-0 pb-2">
+                    <h2 class="modal-title fs-3 fw-bold" id="createMapModalLabel"></h2>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+
+                <div class="modal-body px-4">
+                    <div id="step1" class="step active" data-title="Choose a Map Template">
+                        <div class="step-icon-circle mx-auto mb-4">
+                            <i class="bi bi-grid-3x3-gap-fill text-primary step-icon"></i>
+                        </div>
+
+                        <p class="text-center text-white-50 mb-4">Select a template to customize for your new map</p>
+
+                        <div class="container py-3 gap-4">
+                            @if (Model.RecentMapTemplates.Any())
+                            {
+                                <div class="mb-4">
+                                    <h3 class="pb-2 border-bottom border-secondary">Recents</h3>
+                                    <div class="card-wrapper row flex-nowrap overflow-auto py-2">
+                                        <ul class="list-unstyled d-flex gap-3 position-relative">
+                                            @foreach (var template in Model.RecentMapTemplates)
+                                            {
+                                                <li class="d-inline-block">
+                                                    <div class="position-relative">
+                                                        <partial name="_MapTemplateCardPartial" model="@template" />
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.MapLabMapTemplates.Any())
+                            {
+                                <div class="mb-4">
+                                    <h3 class="pb-2 border-bottom border-secondary">By MapLab</h3>
+                                    <div class="card-wrapper row flex-nowrap overflow-auto py-2">
+                                        <ul class="list-unstyled d-flex gap-3">
+                                            @foreach (var template in Model.MapLabMapTemplates)
+                                            {
+                                                <li class="d-inline-block">
+                                                    <div class="position-relative">
+                                                        <partial name="_MapTemplateCardPartial" model="@template" />
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                            @if (Model.FeaturedMapTemplates.Any())
+                            {
+                                <div class="mb-4">
+                                    <h3 class="pb-2 border-bottom border-secondary">Featured</h3>
+                                    <div class="card-wrapper row flex-nowrap overflow-auto py-2">
+                                        <ul class="list-unstyled d-flex gap-3">
+                                            @foreach (var template in Model.FeaturedMapTemplates)
+                                            {
+                                                <li class="d-inline-block">
+                                                    <div class="position-relative">
+                                                        <partial name="_MapTemplateCardPartial" model="@template" />
+                                                    </div>
+                                                </li>
+                                            }
+                                        </ul>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                        <input type="hidden" name="MapTemplateId" id="SelectedMapTemplateId" value="@Model.MapTemplateId" />
+                    </div>
+
+                    <div id="step2" class="step" style="display:none;" data-title="Name Your Map">
+                        <div class="text-center mb-4">
+                            <div class="step-icon-circle mx-auto mb-4">
+                                <i class="bi bi-pencil-fill text-primary step-icon"></i>
+                            </div>
+
+                            <h3 class="fs-4 mb-3">Customize Your Map</h3>
+                            <p class="text-white-50 mb-4">Give your map a name and choose its visibility</p>
+                        </div>
+
+                        <div class="container py-2">
+                            <div class="row g-4">
+                                <!-- Selected Template Card - Left Side -->
+                                <div class="col-md-5">
+                                    <div class="selected-template-container p-3 rounded-4 bg-dark bg-opacity-50">
+                                        <h4 class="fs-5 mb-3 border-bottom border-secondary pb-2">Selected Template</h4>
+                                        <div id="selectedTemplatePreview" class="d-flex justify-content-center">
+                                            <!-- Template will be cloned here via JavaScript -->
+                                            <div class="text-center text-white-50">
+                                                <i class="bi bi-exclamation-circle fs-1 mb-2"></i>
+                                                <p>No template selected</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Map Details Form - Right Side -->
+                                <div class="col-md-7">
+                                    <div class="form-floating mb-4">
+                                        <input asp-for="Name" class="form-control bg-dark text-white border-secondary" id="mapNameInput" placeholder="Map Name">
+                                        <label for="mapNameInput" class="text-white-50">Map Name</label>
+                                    </div>
+                                    <span asp-validation-for="Name" class="text-danger small d-block mt-2"></span>
+
+                                    <div class="p-3 rounded-3 bg-dark bg-opacity-50 d-flex justify-content-between align-items-center mb-3">
+                                        <div>
+                                            <h4 class="fs-5 mb-1">Map Visibility</h4>
+                                            <p class="text-white-50 small mb-0">
+                                                Make your map visible to everyone
+                                            </p>
+                                        </div>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" name="IsPublic" type="checkbox" id="publicSwitch">
+                                            <label class="form-check-label" for="publicSwitch">
+                                                <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Public maps are visible to other profiles and may be featured on the MapLab Community page. Private maps are accessible only via a shared link."></i>
+                                            </label>
+                                        </div>
+                                    </div>
+
+                                    <div class="alert alert-primary bg-primary bg-opacity-10 border-0">
+                                        <div class="d-flex">
+                                            <i class="bi bi-info-circle-fill text-primary me-2 fs-5"></i>
+                                            <div>
+                                                <p class="mb-0">Your map will be based on the selected template. You can customize it after creation.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <span asp-validation-for="MapTemplateId" class="text-danger small d-block mt-2"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-footer border-0 justify-content-center py-4">
+                    <div class="progress w-50 position-relative mb-3" style="height: 4px;">
+                        <div class="progress-bar bg-primary" role="progressbar" id="step-progress" style="width: 50%"></div>
+                    </div>
+                    <div class="d-flex gap-3">
+                        <button type="button" class="btn btn-outline-light px-4" id="prevBtn" style="display: none;">
+                            <i class="bi bi-arrow-left me-2"></i>Previous
+                        </button>
+                        <button type="button" class="btn btn-primary px-4" id="nextBtn">
+                            Next<i class="bi bi-arrow-right ms-2"></i>
+                        </button>
+                        <button type="submit" class="btn btn-primary px-4" id="finishBtn" style="display: none;">
+                            <i class="bi bi-check2 me-2"></i>Create Map
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .step-icon-circle {
+        width: 70px;
+        height: 70px;
+        background-color: rgba(13, 110, 253, 0.15);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .step-icon {
+        font-size: 2rem;
+    }
+
+    .modal-content {
+        overflow: hidden;
+    }
+
+    /* Selected template container */
+    .selected-template-container {
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        height: 100%;
+    }
+
+    #selectedTemplatePreview .card {
+        width: 100% !important;
+        max-width: 280px;
+        transition: none;
+        transform: none !important;
+    }
+
+        #selectedTemplatePreview .card:hover {
+            transform: none !important;
+            box-shadow: none !important;
+        }
+
+    /* Form styling */
+    .form-control, .form-control:focus {
+        background-color: #2a2a2a;
+        border-color: #444;
+        color: white;
+    }
+
+    .form-floating label {
+        color: #aaa;
+    }
+
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #aaa;
+        transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
+    }
+
+    /* Animations */
+    @@keyframes fadeIn {
+        from
+
+    {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    }
+
+    .step {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    /* Progress styling */
+    .progress {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+    }
+
+    /* Button hover effects */
+    #createMapModal .btn-primary:hover {
+        box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+    }
+
+    #createMapModal .btn-outline-light:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+    }
+
+    /* Card selection effect */
+    .selectable-card {
+        transition: all 0.2s ease;
+        border: 2px solid transparent;
+    }
+
+        .selectable-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .selectable-card.selected {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
+        }
+
+    /* Scrollbar styling */
+    .overflow-auto::-webkit-scrollbar {
+        height: 6px;
+    }
+
+    .overflow-auto::-webkit-scrollbar-thumb {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 3px;
+    }
+
+    .overflow-auto::-webkit-scrollbar-track {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+</style>

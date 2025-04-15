@@ -1,0 +1,25 @@
+﻿@page "/register/confirm"
+@using System.Text.Encodings.Web
+@model RegisterConfirmationModel
+@{
+    ViewData["Title"] = _localizer["Register Confirmation"];
+    ViewData["UseViewportCenteredContainer"] = true;
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card bg-dark-surface text-white rounded-4 shadow">
+                <div class="card-body">
+                    <h1 class="text-center mb-4">@ViewData["Title"]</h1>
+                    <p class="text-center">
+                        @Html.Raw(string.Format(_localizer["ConfirmationMessage"].Value, HtmlEncoder.Default.Encode(Model.Email)))
+                    </p>
+                    <p class="text-center">@_localizer["CompleteRegistrationInstructionsMessage"]</p>
+                    <p class="text-center">@Html.Raw(_localizer["EmailNotReceivedMessage"].Value)</p>
+                    <p class="text-center">@Html.Raw(_localizer["ThankYouMessage"].Value)</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

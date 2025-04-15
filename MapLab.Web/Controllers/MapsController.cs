@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
-using MapLab.Data;
 using MapLab.Data.Managers;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
+using MapLab.Shared.Models.FilterModels;
 using MapLab.Web.Models.Maps;
+using MapLab.Web.Models.Templates;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Profile = MapLab.Data.Entities.Profile;
@@ -15,12 +16,14 @@ namespace MapLab.Web.Controllers
         private readonly IProfileService _profileService;
         private readonly ProfileManager<Profile> _profileManager;
         private readonly IMapsService _mapsService;
+        private readonly ITemplatesService _mapTemplatesService;
         private readonly IMapper _mapper;
-        public MapsController(IProfileService profileService, ProfileManager<Profile> profileManager, IMapsService mapsService, IMapper mapper)
+        public MapsController(IProfileService profileService, ProfileManager<Profile> profileManager, IMapsService mapsService, ITemplatesService mapTemplatesService, IMapper mapper)
         {
             _profileService = profileService;
             _profileManager = profileManager;
             _mapsService = mapsService;
+            _mapTemplatesService = mapTemplatesService;
             _mapper = mapper;
         }
 
@@ -42,9 +45,22 @@ namespace MapLab.Web.Controllers
 
             var mapsIndexViewModel = new MapsIndexViewModel()
             {
-                Maps = maps?.Select(_mapper.Map<MapDto, MapViewModel>).ToList(),
+                Maps = maps?.Select(map =>
+                {
+                    var mapCardViewModel = _mapper.Map<MapDto, MapViewModel>(map);
+                    mapCardViewModel.IsByCurrentProfile = isCurrentProfile;
+                    return mapCardViewModel;
+                }),
                 ProfileUserName = profileUserName,
-                IsCurrentProfile = isCurrentProfile
+                IsCurrentProfile = isCurrentProfile,
+                MapCreateViewModel = isCurrentProfile
+                    ? new MapCreateViewModel()
+                    {
+                        RecentMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetRecentMapTemplates()),
+                        MapLabMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetMapTemplates(new MapTemplateFiltersModel() { ByMapLab = true })),
+                        FeaturedMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetFeaturedMapTemplates())
+                    }
+                    : null
             };
 
             return View(mapsIndexViewModel);
@@ -72,6 +88,18 @@ namespace MapLab.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
+        [Route("[controller]/[action]")]
+        [Authorize]
+        public async Task<IActionResult> Create(MapCreateViewModel mapCreateViewModel)
+        {
+            var mapDto = _mapper.Map<MapDto>(mapCreateViewModel);
+            await _mapsService.CreateMapAsync(mapDto);
+
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
         [Route("map/[action]/{id}")]
         [Authorize]
         public async Task<IActionResult> Like([FromRoute] string id)
@@ -89,10 +117,23 @@ namespace MapLab.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DeleteMap(string id)
+        [ValidateAntiForgeryToken]
+        [Route("map/[action]/{id}")]
+        public async Task<IActionResult> Delete([FromRoute] string id)
         {
-            await _mapsService.DeleteMapAsync(id);
-            return RedirectToAction("Index");
+            try
+            {
+                await _mapsService.DeleteMapAsync(id);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
         }
     }
 }

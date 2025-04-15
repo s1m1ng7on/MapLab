@@ -1,0 +1,20 @@
+﻿@using MapLab.Web.Models.Templates
+@inject IJSRuntime _js
+
+<div id="map-template">
+    <div id="map-container">
+        <!-- Map will be loaded here -->
+    </div>
+</div>
+
+@code {
+    [Parameter] public MapTemplateComponentViewModel? MapTemplate { get; set; }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await _js.InvokeVoidAsync("mapInterop.loadMapTemplate", MapTemplate?.MapTemplateJson);
+        }
+    }
+}

@@ -54,9 +54,9 @@ namespace MapLab.Data
                 .OnDelete(DeleteBehavior.SetNull);
 
             builder.Entity<Map>()
-                .HasOne(m => m.Template)
+                .HasOne(m => m.MapTemplate)
                 .WithMany(m => m.Maps)
-                .HasForeignKey(m => m.TemplateId)
+                .HasForeignKey(m => m.MapTemplateId)
                 .OnDelete(DeleteBehavior.Cascade);
 
             builder.Entity<Like<Map>>(ml =>

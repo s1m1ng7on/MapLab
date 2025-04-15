@@ -3,6 +3,7 @@ using MapLab.Data.Entities;
 using MapLab.Services.Contracts;
 using MapLab.Services.Mapping;
 using MapLab.Services.Models;
+using MapLab.Data.Models.Enums;
 
 namespace MapLab.Web.Models.Maps
 {
@@ -11,12 +12,15 @@ namespace MapLab.Web.Models.Maps
         public string? Id { get; set; }
         public string? Name { get; set; }
         public string? ThumbnailFilePath { get; set; }
-        public string? TemplateId { get; set; }
-        public string? TemplateName { get; set; }
+        public string? MapTemplateId { get; set; }
+        public string? MapTemplateName { get; set; }
+        public Region? MapTemplateRegion { get; set; }
         public bool IsPublic { get; set; }
         public string? ProfileId { get; set; }
         public string? ProfileUserName { get; set; }
         public string? ProfileProfilePictureFilePath { get; set; }
+        public bool IsByCurrentProfile { get; set; } = false;
+        public int ViewsCount { get; set; }
         public int LikesCount { get; set; }
         public bool IsLikedByCurrentProfile { get; set; }
 

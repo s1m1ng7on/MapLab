@@ -1,0 +1,39 @@
+﻿@using MapLab.Common.Extensions
+@using MapLab.Web.Models.Templates
+@using MapLab.Web.Utilities
+@model MapTemplateViewModel
+
+<div class="card bg-dark selectable-card"
+     style="width: 18rem;"
+     data-map-template-id="@Model.Id">
+    @if (Model.ProfileUserName == "MapLab")
+    {
+        <div class="position-absolute top-0 end-0 m-2">
+            <img src="/images/logo/logo32.png" alt="By MapLab" />
+        </div>
+    }
+
+    <img class="card-img-top"
+         src="@(Model.ThumbnailFilePath ?? "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=")"
+         alt="@Model.Name Thumbnail" />
+
+    <div class="card-body align-items-center">
+        <h5 class="card-title">@Model.Name</h5>
+
+        <div class="d-flex justify-content-between mb-2">
+            <h6 class="card-subtitle text-muted">@Model.Region?.GetDisplayName()</h6>
+
+            @if (Model.ProfileUserName != "MapLab")
+            {
+                <a class="d-flex card-link text-muted gap-1"
+                   asp-controller="Profile"
+                   asp-action="Index"
+                   asp-route-username="@(Model.ProfileUserName ?? StaticFilePaths.DefaultProfilePicture)">
+                    <img src="@Model.ProfileProfilePictureFilePath"
+                         class="rounded-pill" width="16" height="16" />
+                    <h6>@Model.ProfileUserName</h6>
+                </a>
+            }
+        </div>
+    </div>
+</div>

@@ -13,9 +13,9 @@ namespace MapLab.Data.Entities
 
         public string? FilePath { get; set; }
 
-        [ForeignKey(nameof(Template))]
+        [ForeignKey(nameof(MapTemplate))]
         [Required]
-        public string? TemplateId { get; set; }
+        public string? MapTemplateId { get; set; }
 
         [Required]
         public bool IsPublic { get; set; }
@@ -24,7 +24,7 @@ namespace MapLab.Data.Entities
         [Required]
         public string? ProfileId { get; set; }
 
-        public virtual MapTemplate? Template { get; set; }
+        public virtual MapTemplate? MapTemplate { get; set; }
 
         public virtual Profile? Profile { get; set; }
         public virtual ICollection<MapView>? Views { get; set; }

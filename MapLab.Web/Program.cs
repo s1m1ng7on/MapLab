@@ -4,7 +4,7 @@ using MapLab.Data.Entities;
 using MapLab.Data.Managers;
 using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
-using MapLab.Data.Seeding;
+using MapLab.Seeding;
 using MapLab.Services;
 using MapLab.Services.Contracts;
 using MapLab.Services.Mapping;
@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Razor;
-using Microsoft.AspNetCore.Mvc.ViewFeatures.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using System.Globalization;
 
@@ -45,7 +44,6 @@ namespace MapLab
             {
                 if (builder.Environment.IsDevelopment())
                 {
-                    options.SignIn.RequireConfirmedAccount = false;
                     options.Password.RequireDigit = false;
                     options.Password.RequiredLength = 6;
                     options.Password.RequireNonAlphanumeric = false;
@@ -53,10 +51,8 @@ namespace MapLab
                     options.Password.RequireLowercase = false;
                     options.Lockout.MaxFailedAccessAttempts = 10;
                 }
-                else
-                {
-                    options.SignIn.RequireConfirmedAccount = true;
-                }
+
+                options.SignIn.RequireConfirmedAccount = true;
             })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -64,7 +60,13 @@ namespace MapLab
             builder.Services.AddControllersWithViews(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddRazorRuntimeCompilation();
-            builder.Services.AddServerSideBlazor();
+
+            builder.Services.AddServerSideBlazor()
+                .AddHubOptions(options =>
+                {
+                    options.MaximumReceiveMessageSize = null;
+                    options.EnableDetailedErrors = true;
+                });
 
             builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 
@@ -89,21 +91,6 @@ namespace MapLab
 
             // Enforce lowercase routes
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
-
-            // Modify Identity route to use "/Auth" instead of "/Identity/Account"
-            builder.Services.AddRazorPages()
-                .AddRazorPagesOptions(options =>
-                {
-                    /*options.Conventions.AuthorizeAreaFolder("Identity", "/Account");
-                    options.Conventions.AddAreaFolderRouteModelConvention("Identity", "/Account", model =>
-                    {
-                        foreach (var selector in model.Selectors)
-                        {
-                            selector.AttributeRouteModel.Template = selector.AttributeRouteModel.Template
-                                .Replace("Identity/Account/", string.Empty);
-                        }
-                    });*/
-                });
 
             builder.Services.ConfigureApplicationCookie(options =>
             {
@@ -146,7 +133,12 @@ namespace MapLab
             {
                 var context = serviceScope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
                 context.Database.Migrate();
-                new ApplicationDbContextSeeder().SeedAsync(context, serviceScope.ServiceProvider).GetAwaiter().GetResult();
+
+                if (app.Environment.IsDevelopment())
+                {
+                    var seeder = new ApplicationDbContextSeeder();
+                    seeder.SeedAsync(context, serviceScope.ServiceProvider).GetAwaiter().GetResult();
+                }
             }
 
             // Configure the HTTP request pipeline.

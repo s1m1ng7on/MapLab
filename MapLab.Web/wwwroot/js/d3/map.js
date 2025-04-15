@@ -10,6 +10,120 @@
     let dotNetReference;
     let svg;
 
+    const loadMapTemplate = async (mapTemplateJson) => {
+        const width = window.innerWidth;
+        const height = window.innerHeight - document.querySelector('nav.navbar').offsetHeight;
+
+        svg = d3
+            .select('#map-container')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height)
+            .call(
+                d3.zoom()
+                    .scaleExtent([1, 15])
+                    .on('start', () => { isDragging = true; })
+                    .on('zoom', (e) => {
+                        const currentTransform = e.transform;
+                        if (currentTransform.k !== previousTransform.k) {
+                            isDragging = false;
+                        }
+                        if (isDragging) {
+                            tooltip.style('visibility', 'hidden');
+                        }
+                        g.attr('transform', currentTransform);
+                        previousTransform = { ...currentTransform };
+                    })
+                    .on('end', () => {
+                        isDragging = false;
+                        tooltip.style('visibility', 'visible');
+                    })
+            );
+
+        const g = svg.append('g');
+
+        const tooltip = d3
+            .select('body')
+            .append('div')
+            .attr('class', 'map-tooltip')
+            .style('visibility', 'hidden');
+
+        const map = JSON.parse(mapTemplateJson);
+        mapJsonObj = JSON.parse(mapJson);
+
+        const bounds = d3.geoBounds(map);
+        const centerLongitude = (bounds[0][0] + bounds[1][0]) / 2;
+        const centerLatitude = (bounds[0][1] + bounds[1][1]) / 2;
+
+        const scaleX = width / (bounds[1][0] - bounds[0][0]);
+        const scaleY = height / (bounds[1][1] - bounds[0][1]);
+        const scale = Math.min(scaleX, scaleY);
+
+        const projection = d3.geoMercator()
+            .scale(scale * 40)
+            .center([centerLongitude, centerLatitude])
+            .translate([width / 2, height / 2]);
+
+        const path = d3.geoPath().projection(projection);
+
+        g.selectAll('path')
+            .data(map.features)
+            .enter()
+            .append('path')
+            .attr('d', path)
+            .attr('fill', d => {
+                const feature = mapJsonObj.features.find(f => f.type === 'Feature' && f.properties.name === d.properties.name);
+                const legendItem = mapJsonObj.legend.find(l => l.type === 'Region' && l.id === feature?.properties.id);
+                return legendItem?.fill || defaultFill;
+            })
+            .attr('stroke', 'black')
+            .attr('stroke-width', 0.5);
+
+        g.on('mousemove', (e) => {
+            if (!e.target.matches('path')) return;
+            const tooltipWidth = tooltip.node().offsetWidth;
+            const tooltipHeight = tooltip.node().offsetHeight;
+            const padding = 10;
+            let top = e.pageY + padding;
+            let left = e.pageX + padding;
+            if (top + tooltipHeight > window.innerHeight) top = e.pageY - tooltipHeight - padding;
+            if (left + tooltipWidth > window.innerWidth) left = e.pageX - tooltipWidth - padding;
+            tooltip.style('top', `${top}px`).style('left', `${left}px`);
+        });
+
+        g.on('mouseenter', (e) => {
+            if (!e.target.matches('path')) return;
+            d3.select(e.target)
+                .style('filter', 'brightness(85%)')
+                .style('transition', 'filter 0.1s ease-in-out');
+
+            if (!isDragging) {
+                const regionName = e.target.__data__.properties.name;
+                const feature = mapJsonObj.features.find(f => f.properties.name === regionName);
+
+                // Ensure the feature and legend are valid before accessing properties
+                const regionLegendName = feature
+                    ? mapJsonObj.legend.find(l => l.type === 'Region' && l.id === feature.properties.id)?.name
+                    : null;
+
+                // Display tooltip with conditional <h2>
+                tooltip.style('visibility', 'visible').html(`
+                    <h1>${regionName}</h1>
+                    ${regionLegendName ? `<h2>${regionLegendName}</h2>` : ''}
+                `);
+            }
+
+        }, true);
+
+        g.on('mouseout', (e) => {
+            if (!e.target.matches('path')) return;
+            d3.select(e.target)
+                .style('filter', 'none')
+                .style('transition', 'filter 0.1s ease-in-out');
+            tooltip.style('visibility', 'hidden');
+        }, true);
+    }
+
     const loadMap = async (_dotNetReference, mapTemplateJson, mapJson, editPermission, selectedTool, fillColor) => {
         dotNetReference = _dotNetReference;
         canEdit = editPermission;
@@ -371,6 +485,7 @@
     });
 
     window.mapInterop = {
+        loadMapTemplate,
         loadMap,
         shareMap,
         updateSelectedTool,

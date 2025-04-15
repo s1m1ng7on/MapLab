@@ -112,15 +112,15 @@ namespace Data.Migrations
                     b.Property<bool>("IsPublic")
                         .HasColumnType("bit");
 
+                    b.Property<string>("MapTemplateId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ProfileId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(450)");
-
-                    b.Property<string>("TemplateId")
                         .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
@@ -132,9 +132,9 @@ namespace Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("ProfileId");
+                    b.HasIndex("MapTemplateId");
 
-                    b.HasIndex("TemplateId");
+                    b.HasIndex("ProfileId");
 
                     b.ToTable("Maps");
                 });
@@ -466,7 +466,7 @@ namespace Data.Migrations
             modelBuilder.Entity("MapLab.Data.Entities.Like<MapLab.Data.Entities.Map>", b =>
                 {
                     b.HasOne("MapLab.Data.Entities.Map", "Entity")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("EntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -485,7 +485,7 @@ namespace Data.Migrations
             modelBuilder.Entity("MapLab.Data.Entities.Like<MapLab.Data.Entities.MapTemplate>", b =>
                 {
                     b.HasOne("MapLab.Data.Entities.MapTemplate", "Entity")
-                        .WithMany()
+                        .WithMany("Likes")
                         .HasForeignKey("EntityId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -503,21 +503,21 @@ namespace Data.Migrations
 
             modelBuilder.Entity("MapLab.Data.Entities.Map", b =>
                 {
+                    b.HasOne("MapLab.Data.Entities.MapTemplate", "MapTemplate")
+                        .WithMany("Maps")
+                        .HasForeignKey("MapTemplateId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.HasOne("MapLab.Data.Entities.Profile", "Profile")
                         .WithMany("Maps")
                         .HasForeignKey("ProfileId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("MapLab.Data.Entities.MapTemplate", "Template")
-                        .WithMany("Maps")
-                        .HasForeignKey("TemplateId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("MapTemplate");
 
                     b.Navigation("Profile");
-
-                    b.Navigation("Template");
                 });
 
             modelBuilder.Entity("MapLab.Data.Entities.MapTemplate", b =>
@@ -534,7 +534,7 @@ namespace Data.Migrations
             modelBuilder.Entity("MapLab.Data.Entities.MapView", b =>
                 {
                     b.HasOne("MapLab.Data.Entities.Map", "Map")
-                        .WithMany("MapViews")
+                        .WithMany("Views")
                         .HasForeignKey("MapId");
 
                     b.HasOne("MapLab.Data.Entities.Profile", "Profile")
@@ -610,11 +610,15 @@ namespace Data.Migrations
 
             modelBuilder.Entity("MapLab.Data.Entities.Map", b =>
                 {
-                    b.Navigation("MapViews");
+                    b.Navigation("Likes");
+
+                    b.Navigation("Views");
                 });
 
             modelBuilder.Entity("MapLab.Data.Entities.MapTemplate", b =>
                 {
+                    b.Navigation("Likes");
+
                     b.Navigation("Maps");
                 });
 

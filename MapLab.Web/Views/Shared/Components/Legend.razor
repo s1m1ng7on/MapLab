@@ -2,7 +2,7 @@
 
 <div class="legend">
     <h1 class="fw-bold">@Title</h1>
-    <div class="d-flex gap-3 mb-3 align-items-center justify-content-between">
+    <div class="d-flex gap-3 align-items-center justify-content-between">
         <div class="d-flex gap-1">
             <span class="badge bg-secondary bg-opacity-25 rounded-pill px-3 py-1">
                 <a href="@($"/template/{MapTemplate.Item1}")"
@@ -99,9 +99,9 @@
             }
         </div>
     }
-    else
+    else if (CanEdit)
     {
-        <span>Start by editing the map.</span>
+        <span class="mt-3 d-inline-block">Start by editing the map.</span>
     }
 </div>
 

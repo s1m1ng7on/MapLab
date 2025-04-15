@@ -1,21 +1,412 @@
-﻿@using MapLab.Web.Models.Maps
+﻿@using MapLab.Services.Contracts
+@using MapLab.Web.Models.Maps
+@using MapLab.Web.Utilities
+@inject IProfileService _profileService
 @model MapViewModel
-@{
-    ViewData["Title"] = Model.Name;
+
+<!-- Main container with map thumbnail background -->
+<div class="container-fluid map-header-bg p-0" style="background-image: url('@(Model.ThumbnailFilePath ?? StaticFilePaths.DefaultMapThumbnail)')">
+    <div class="map-gradient-overlay">
+        <!-- Map header content -->
+        <div class="container py-5">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h1 class="text-white display-5 fw-bold">@Model.Name</h1>
+
+                <div class="d-flex gap-2">
+                    <div class="d-flex align-items-center me-2">
+                        <button type="button"
+                                class="btn btn-dark like-button rounded-pill px-3"
+                                data-id="@Model.Id">
+                            <div class="d-flex align-items-center gap-2">
+                                @if (Model.IsLikedByCurrentProfile)
+                                {
+                                    <i class="bi bi-heart-fill text-danger"></i>
+                                }
+                                else
+                                {
+                                    <i class="bi bi-heart"></i>
+                                }
+                                <span class="ms-1 like-count" data-id="@Model.Id">@Model.LikesCount likes</span>
+                            </div>
+                        </button>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-dark rounded-circle" type="button" id="mapOptionsDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-three-dots-vertical"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end shadow" aria-labelledby="mapOptionsDropdown">
+                            <li>
+                                <a asp-controller="Maps"
+                                   asp-action="Info"
+                                   asp-route-id="@Model.Id"
+                                   class="dropdown-item">
+                                    <i class="bi bi-info-lg me-2"></i>Info
+                                </a>
+                            </li>
+                            <li>
+                                <button class="dropdown-item" data-bs-toggle="modal" data-bs-target="#share-map-modal">
+                                    <i class="bi bi-share-fill me-2"></i>Share
+                                </button>
+                            </li>
+                            @if (Model.ProfileId == _profileService.GetProfileId())
+                            {
+                                <li>
+                                    <hr class="dropdown-divider">
+                                </li>
+                                <li>
+                                    <a asp-controller="Maps"
+                                       asp-action="Edit"
+                                       asp-route-id="@Model.Id"
+                                       class="dropdown-item text-warning">
+                                        <i class="bi bi-pencil-fill me-2"></i>Edit
+                                    </a>
+                                </li>
+                                <li>
+                                    <form asp-area=""
+                                          asp-controller="Maps"
+                                          asp-action="DeleteMap"
+                                          asp-route-Id="@Model.Id"
+                                          method="post">
+                                        <button class="dropdown-item text-danger" type="submit">
+                                            <i class="bi bi-trash-fill me-2"></i>Delete
+                                        </button>
+                                    </form>
+                                </li>
+                            }
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <div class="map-info-bar d-flex flex-wrap justify-content-between align-items-center mb-4">
+                <a asp-controller="Profile"
+                   asp-action="Index"
+                   asp-route-username="@Model.ProfileUserName"
+                   class="text-light text-decoration-none d-flex align-items-center">
+                    <img class="profile-picture rounded-circle shadow-sm me-2"
+                         src="@(Model.ProfileProfilePictureFilePath ?? StaticFilePaths.DefaultProfilePicture)"
+                         alt="@Model.ProfileUserName" />
+                    <span class="me-3">@Model.ProfileUserName</span>
+                </a>
+
+                <div class="d-flex gap-2">
+                    <span class="badge bg-dark bg-opacity-75 rounded-pill px-3 py-2">
+                        <a asp-controller="Templates"
+                           asp-action="Info"
+                           asp-route-Id="@Model.MapTemplateId"
+                           class="text-light text-decoration-none">
+                            <i class="bi bi-grid me-1"></i>@Model.MapTemplateName
+                        </a>
+                    </span>
+                    @if (!Model.IsPublic)
+                    {
+                        <span class="badge rounded-pill bg-primary bg-opacity-75 d-flex align-items-center px-3 py-2">
+                            <i class="bi bi-lock-fill me-1"></i>Private
+                        </span>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Main content in container -->
+<div class="container">
+    <!-- Related Maps Section with peek view -->
+    <div class="related-maps-section">
+        <h2 class="text-white mb-4 border-bottom pb-2">Related Maps</h2>
+        <div class="related-maps-container">
+            
+        </div>
+    </div>
+</div>
+
+<!-- Share Map Modal -->
+<div class="modal fade" id="share-map-modal" tabindex="-1" aria-labelledby="shareMapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-0">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="shareMapModalLabel">Share Map</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="shareMapLink" class="form-label">Copy link</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-dark text-white border-secondary" id="shareMapLink" value="@($"{Context.Request.Scheme}://{Context.Request.Host}/Maps/View/{Model.Id}")" readonly>
+                        <button class="btn btn-outline-primary" type="button" id="copyLinkBtn">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 justify-content-center mt-4">
+                    <a href="https://twitter.com/intent/tweet?url=@($"{Context.Request.Scheme}://{Context.Request.Host}/Maps/View/{Model.Id}")&text=Check out this map: @Model.Name"
+                       target="_blank" class="btn btn-outline-light btn-social">
+                        <i class="bi bi-twitter"></i>
+                    </a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=@($"{Context.Request.Scheme}://{Context.Request.Host}/Maps/View/{Model.Id}")"
+                       target="_blank" class="btn btn-outline-light btn-social">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="mailto:?subject=Check out this map: @Model.Name&body=I thought you might be interested in this map: @($"{Context.Request.Scheme}://{Context.Request.Host}/Maps/View/{Model.Id}")"
+                       class="btn btn-outline-light btn-social">
+                        <i class="bi bi-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function() {
+            // Like button functionality
+            $('.like-button').click(function(e) {
+                e.preventDefault();
+
+                const mapId = $(this).data('id');
+                const heartIcon = $(this).find('i');
+                const likeCount = $(`.like-count[data-id="${mapId}"]`);
+                const currentCount = parseInt(likeCount.text());
+
+                $.ajax({
+                    url: '/Maps/ToggleLike',
+                    type: 'POST',
+                    data: { mapId: mapId },
+                    success: function(response) {
+                        if (response.liked) {
+                            heartIcon.removeClass('bi-heart').addClass('bi-heart-fill text-danger');
+                            likeCount.text(currentCount + 1 + ' likes');
+                        } else {
+                            heartIcon.removeClass('bi-heart-fill text-danger').addClass('bi-heart');
+                            likeCount.text(currentCount - 1 + ' likes');
+                        }
+                    }
+                });
+            });
+
+            // Copy link functionality
+            $('#copyLinkBtn').click(function() {
+                const linkInput = document.getElementById('shareMapLink');
+                linkInput.select();
+                document.execCommand('copy');
+
+                // Show copied tooltip
+                $(this).tooltip({
+                    title: 'Copied!',
+                    trigger: 'manual',
+                    placement: 'top'
+                }).tooltip('show');
+
+                setTimeout(() => {
+                    $(this).tooltip('hide');
+                }, 1500);
+            });
+
+            // Play button functionality
+            $('.play-btn').click(function() {
+                // Add functionality to launch the map here
+                console.log('Launch map with ID: @Model.Id');
+                // Increment view count
+                $.ajax({
+                    url: '/Maps/IncrementViewCount',
+                    type: 'POST',
+                    data: { mapId: '@Model.Id' },
+                    success: function(response) {
+                        if (response.success) {
+                            $('.views-count').text(response.newViewCount + ' views');
+                        }
+                    }
+                });
+            });
+
+            // Modified scroll behavior - removed references to mapInfoSection
+            $(window).scroll(function() {
+                const scrollPosition = $(this).scrollTop();
+                const windowHeight = $(window).height();
+
+                // Reveal more of the related maps as user scrolls
+                $('.related-maps-peek').css('transform', `translateY(${Math.max(-150, -scrollPosition/2)}px)`);
+            });
+        });
+    </script>
 }
 
-<h1>@Model.Name</h1>
+@section Styles {
+    <style>
+        body {
+            background-color: #121212;
+            color: #e9e9e9;
+        }
 
-<img src="@Model.ThumbnailFilePath" alt="@Model.Name" style="max-width: 300px;" />
+        /* Map header with background image */
+        .map-header-bg {
+            position: relative;
+            background-size: cover;
+            background-position: center;
+            overflow: hidden;
+        }
 
-<h2>Template: @Model.TemplateName</h2>
+        .map-gradient-overlay {
+            background: linear-gradient(to bottom, rgba(18, 18, 18, 0.7) 0%, rgba(18, 18, 18, 0.9) 85%, rgba(18, 18, 18, 1) 100%);
+            min-height: 450px; /* Increased height for longer fade */
+            width: 100%;
+            padding: 2rem 0;
+        }
 
-<div>
-    <p><strong>Public:</strong> @(Model.IsPublic ? "Yes" : "No")</p>
-    <p><strong>Created By:</strong> @Model.ProfileUserName</p>
-    <p><strong>Likes:</strong> @Model.LikesCount</p>
-    <p>
-        <strong>You Liked This:</strong>
-        @(Model.IsLikedByCurrentProfile ? "Yes" : "No")
-    </p>
-</div>
+        /* Play button container */
+        .map-play-container {
+            height: 400px;
+            background-image: url('@(Model.ThumbnailFilePath ?? "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=")');
+            background-size: cover;
+            background-position: center;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .map-play-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            transition: background 0.3s ease;
+        }
+
+            .map-play-overlay:hover {
+                background: rgba(0, 0, 0, 0.6);
+                cursor: pointer;
+            }
+
+        .play-btn {
+            width: 80px;
+            height: 80px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 0;
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.3);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+            .play-btn:hover {
+                transform: scale(1.1);
+                box-shadow: 0 0.75rem 1.5rem rgba(0, 0, 0, 0.4);
+            }
+
+            .play-btn i {
+                margin-left: 6px;
+            }
+
+        /* Related maps section with peek view */
+        .related-maps-section {
+            position: relative;
+            overflow: hidden;
+            padding-bottom: 100px;
+            margin-top: 30px; /* Added space after extended gradient */
+        }
+
+        .related-maps-container {
+            position: relative;
+            height: 300px;
+            overflow: hidden;
+        }
+
+        .related-maps-peek {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            transition: transform 0.5s ease-out;
+        }
+
+        .related-map-card {
+            width: calc(33.333% - 14px);
+            height: 200px;
+            background-color: #1e1e1e;
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease;
+        }
+
+            .related-map-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            }
+
+        .related-map-thumbnail {
+            height: 120px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .related-map-info {
+            padding: 12px;
+        }
+
+        /* Small screens */
+        @@media (max-width: 767px) {
+            .related-map-card
+
+        {
+            width: calc(50% - 10px);
+        }
+
+        }
+
+        /* Extra small screens */
+        @@media (max-width: 575px) {
+            .related-map-card
+
+        {
+            width: 100%;
+        }
+
+        }
+
+        /* Social sharing buttons */
+        .btn-social {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+            .btn-social:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 5px 15px rgba(255, 255, 255, 0.1);
+            }
+
+        /* Like button animation */
+        .like-button {
+            transition: transform 0.2s;
+            padding-left: 1rem;
+            padding-right: 1rem;
+        }
+
+            .like-button:active {
+                transform: scale(1.2);
+            }
+
+            .like-button:hover .bi-heart {
+                color: #ff6b6b !important;
+            }
+
+        .profile-picture {
+            width: 32px;
+            height: 32px;
+        }
+
+        .badge {
+            height: 32px;
+            align-items: center;
+        }
+    </style>
+}

@@ -25,7 +25,7 @@ namespace MapLab.Data.Repositories
 
         public Task AddAsync(TEntity entity)
         {
-            if (entity is IOwnable auditInfo)
+            if (entity is IOwnable auditInfo && string.IsNullOrEmpty(auditInfo.ProfileId))
             {
                 auditInfo.ProfileId = GetCurrentUserId();
             }

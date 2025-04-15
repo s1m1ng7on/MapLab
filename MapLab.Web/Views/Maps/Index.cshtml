@@ -39,12 +39,14 @@
 
 @if (Model.IsCurrentProfile)
 {
-    string modalId = $"modal-{Guid.NewGuid().ToString()}";
-
-    <button type="button" class="btn btn-primary floating-button floating" data-bs-toggle="modal" data-bs-target="#@modalId">
+    <button type="button"
+            class="btn btn-primary floating-button floating"
+            data-bs-toggle="modal"
+            data-bs-target="#createMapModal">
         <i class="bi bi-plus-lg"></i>
     </button>
-    <component type="typeof(CreateMapModal)" render-mode="ServerPrerendered" param-Id="@modalId" />
+    <partial name="_CreateMapModalPartial" model="@Model.MapCreateViewModel" />
+    <partial name="_DeleteMapModalPartial" />
 }
 
 @section Styles {
@@ -54,4 +56,69 @@
 @section Scripts {
     <script src="~/js/views/maps/index.js" asp-append-version="true"></script>
     <script src="~/js/mapCard.js" asp-append-version="true"></script>
+    <script>
+        $(document).ready(function () {
+            $('#createMapModal').on('show.bs.modal', function () {
+                let currentStep = 1;
+                const totalSteps = $('.step').length;
+
+                function showStep(step) {
+                    $('.step').hide();
+                    $('#step' + step).show();
+
+                    const stepTitle = $('#step' + step).attr('data-title');
+                    $('.modal-header .modal-title').text(stepTitle);
+
+                    if (step === 1) {
+                        $('#prevBtn').hide();
+                        $('#nextBtn').show();
+                        $('#finishBtn').hide();
+                    } else if (step === totalSteps) {
+                        $('#prevBtn').show();
+                        $('#nextBtn').hide();
+                        $('#finishBtn').show();
+                    } else {
+                        $('#prevBtn').show();
+                        $('#nextBtn').show();
+                        $('#finishBtn').hide();
+                    }
+                }
+
+                $('#nextBtn').off('click').on('click', function () {
+                    if (currentStep < totalSteps) {
+                        currentStep++;
+                        showStep(currentStep);
+                    }
+                });
+
+                $('#prevBtn').off('click').on('click', function () {
+                    if (currentStep > 1) {
+                        currentStep--;
+                        showStep(currentStep);
+                    }
+                });
+
+                $('#finishBtn').off('click').on('click', function () {
+                    $('#createMapForm').submit();
+                });
+
+                showStep(currentStep);
+            });
+
+            // Logic for Delete Map Modal
+            $('#deleteMapModal').on('show.bs.modal', function (event) {
+                var button = $(event.relatedTarget);
+                var entityId = button.data('id');
+                var entityName = button.data('name');
+
+                var modal = $(this);
+                modal.find('#modal-entity-id').val(entityId);
+                modal.find('#modal-entity-name').text(entityName);
+
+                var form = modal.find('form');
+                var actionUrl = `map/delete/${entityId}`;
+                form.attr('action', actionUrl);
+            });
+        });
+    </script>
 }

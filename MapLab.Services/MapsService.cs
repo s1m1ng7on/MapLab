@@ -4,12 +4,9 @@ using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
-using MapLab.Shared.Models.FilterModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json.Linq;
-using SendGrid.Helpers.Mail;
 using System.Text;
 
 namespace MapLab.Services
@@ -21,16 +18,18 @@ namespace MapLab.Services
         private readonly IRepository<MapView> _mapViewsRepository;
         private readonly IDeletableEntityRepository<Like<Map>> _mapLikesRepository;
         private readonly IFileStorageManager _fileStorageManager;
+        private readonly ITemplatesService _mapTemplatesService;
         private readonly IProfileService _profileService;
         private readonly IMapper _mapper;
 
-        public MapsService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IRepository<MapView> mapViewsRepository, IDeletableEntityRepository<Like<Map>> mapLikesRepository, IFileStorageManager fileStorageManager, IProfileService profileService, IMapper mapper)
+        public MapsService(IDeletableEntityRepository<Map> mapRepository, IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IRepository<MapView> mapViewsRepository, IDeletableEntityRepository<Like<Map>> mapLikesRepository, IFileStorageManager fileStorageManager, ITemplatesService mapTemplatesService, IProfileService profileService, IMapper mapper)
         {
             _mapRepository = mapRepository;
             _mapTemplateRepository = mapTemplateRepository;
             _mapViewsRepository = mapViewsRepository;
             _mapLikesRepository = mapLikesRepository;
             _fileStorageManager = fileStorageManager;
+            _mapTemplatesService = mapTemplatesService;
             _profileService = profileService;
             _mapper = mapper;
         }
@@ -40,9 +39,13 @@ namespace MapLab.Services
             var maps = _mapRepository.All()
                     .Where(m => m.ProfileId == profileId && (isCurrentProfile || m.IsPublic))
                     .Include(m => m.Profile)
-                    .Include(m => m.Template)
+                    .Include(m => m.MapTemplate)
                     .Include(m => m.Views)
-                    .Include(m => m.Likes);
+                    .Include(m => m.Likes)
+                    .OrderByDescending(m => m.Views!
+                        .OrderByDescending(mv => mv.CreatedOn)
+                        .Select(mv => mv.CreatedOn)
+                        .FirstOrDefault());
 
             return _mapper.Map<IEnumerable<MapDto>>(maps);
         }
@@ -50,7 +53,7 @@ namespace MapLab.Services
         public async Task<MapDto?> GetMapAsync(string id)
         {
             var map = await _mapRepository.All()
-                .Include(m => m.Template)
+                .Include(m => m.MapTemplate)
                 .Include(m => m.Profile)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
@@ -77,49 +80,50 @@ namespace MapLab.Services
 
         public async Task<(string, string)> GetMapJsonAsync(MapDto map)
         {
-            var templateFile = await _fileStorageManager.GetFileAsync(map?.Template?.FilePath);
-            var mapFile = await _fileStorageManager.GetFileAsync(map?.FilePath);
+            var templateJson = await _mapTemplatesService.GetMapTemplateJsonAsync(map.MapTemplate!);
 
-            string templateJson = Encoding.UTF8.GetString(templateFile!);
             string mapJson;
-
             try
             {
+                var mapFile = await _fileStorageManager.GetFileAsync(map?.FilePath);
                 mapJson = Encoding.UTF8.GetString(mapFile!);
             }
             catch
             {
-                JObject mapJsonObject = new JObject
+                var emptyMapJsonObject = new JObject
                 {
                     ["type"] = "FeatureCollection",
                     ["legend"] = new JArray(),
                     ["features"] = new JArray(),
                 };
 
-                mapJson = mapJsonObject.ToString();
+                mapJson = emptyMapJsonObject.ToString();
             }
 
             return (templateJson, mapJson);
         }
 
-        public async Task CreateMapAsync(string name, string mapTemplateId, bool isPublic)
+        public async Task CreateMapAsync(MapDto mapDto)
         {
-            Map newMap = new Map()
-            {
-                Name = name,
-                TemplateId = mapTemplateId,
-                IsPublic= isPublic,
-                ProfileId = _profileService.GetProfileId()
-            };
+            var map = _mapper.Map<Map>(mapDto);
 
-            await _mapRepository.AddAsync(newMap);
+            await _mapRepository.AddAsync(map);
             await _mapRepository.SaveChangesAsync();
         }
 
         public async Task DeleteMapAsync(string id)
         {
-            var map = await _mapRepository.FindAsync(id);
-            _mapRepository.Delete(map!);
+            var map = await _mapRepository.All()
+                .Include(m => m.Profile)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (map == null)
+                throw new InvalidOperationException("Map not found.");
+
+            if (map.ProfileId != _profileService.GetProfileId())
+                throw new UnauthorizedAccessException("You are not authorized to delete this map.");
+
+            _mapRepository.Delete(map);
             await _mapRepository.SaveChangesAsync();
         }
 

@@ -1,11 +1,14 @@
 ﻿using AutoMapper;
 using MapLab.Data.Entities;
+using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
 using MapLab.Shared.Models.FilterModels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using System.Text;
 
 namespace MapLab.Services
 {
@@ -15,15 +18,17 @@ namespace MapLab.Services
         private readonly IMapper _mapper;
         private readonly IProfileService _profileService;
         private readonly IMemoryCache _memoryCache;
+        private readonly IFileStorageManager _fileStorageManager;
 
         private const string FeaturedMapTemplatesCacheKey = "FeaturedMapTemplates";
 
-        public TemplatesService(IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IMapper mapper, IProfileService profileService, IMemoryCache memoryCache)
+        public TemplatesService(IDeletableEntityRepository<MapTemplate> mapTemplateRepository, IMapper mapper, IProfileService profileService, IMemoryCache memoryCache, IFileStorageManager fileStorageManager)
         {
             _mapTemplateRepository = mapTemplateRepository;
             _mapper = mapper;
             _profileService = profileService;
             _memoryCache = memoryCache;
+            _fileStorageManager = fileStorageManager;
         }
 
         public async Task<MapTemplateDto> GetMapTemplateAsync(string id)
@@ -80,6 +85,33 @@ namespace MapLab.Services
             }
 
             return cachedMapTemplates;
+        }
+
+        public async Task<string> GetMapTemplateJsonAsync(MapTemplateDto mapTemplate)
+        {
+            try
+            {
+                var templateFile = await _fileStorageManager.GetFileAsync(mapTemplate.FilePath);
+                return Encoding.UTF8.GetString(templateFile!);
+            }
+            catch (FileNotFoundException ex)
+            {
+                throw new InvalidOperationException("Map template not found.", ex);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("An error occurred while retrieving the map template.", ex);
+            }
+        }
+
+        public async Task UploadMapTemplateAsync(MapTemplateDto mapTemplateDto, IFormFile file)
+        {
+            var mapTemplate = _mapper.Map<MapTemplate>(mapTemplateDto);
+
+            mapTemplate.FilePath = await _fileStorageManager.SaveFileAsync(file, "MapTemplates", "File", mapTemplate.Id!);
+            
+            await _mapTemplateRepository.AddAsync(mapTemplate);
+            await _mapTemplateRepository.SaveChangesAsync();
         }
     }
 }
