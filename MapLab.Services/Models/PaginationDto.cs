@@ -1,8 +1,8 @@
 ﻿namespace MapLab.Services.Models
 {
-    public class NewsPaginationDto
+    public class PaginationDto<T>
     {
-        public List<NewsArticleDto>? Articles { get; set; }
+        public List<T>? Items { get; set; }
         public int TotalCount { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }

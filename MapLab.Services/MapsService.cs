@@ -4,6 +4,7 @@ using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
+using MapLab.Shared.Models.FilterModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json.Linq;
@@ -34,7 +35,7 @@ namespace MapLab.Services
             _mapper = mapper;
         }
 
-        public IEnumerable<MapDto>? GetMapsForProfile(string profileId, bool isCurrentProfile)
+        public IEnumerable<MapDto>? GetMapsForProfile(string profileId, bool isCurrentProfile, MapFiltersModel? filters = null)
         {
             var maps = _mapRepository.All()
                     .Where(m => m.ProfileId == profileId && (isCurrentProfile || m.IsPublic))
@@ -45,7 +46,13 @@ namespace MapLab.Services
                     .OrderByDescending(m => m.Views!
                         .OrderByDescending(mv => mv.CreatedOn)
                         .Select(mv => mv.CreatedOn)
-                        .FirstOrDefault());
+                        .FirstOrDefault())
+                    .AsQueryable();
+
+            if (filters?.Region != null)
+            {
+                maps = maps.Where(m => m.MapTemplate!.Region == filters.Region);
+            }
 
             return _mapper.Map<IEnumerable<MapDto>>(maps);
         }

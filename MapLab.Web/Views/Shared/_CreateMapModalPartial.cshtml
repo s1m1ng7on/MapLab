@@ -2,7 +2,7 @@
 @model MapCreateViewModel
 
 <div id="createMapModal" class="modal fade" tabindex="-1" aria-labelledby="createMapModalLabel" aria-hidden="true" data-multistep>
-    <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
         <div class="modal-content bg-dark text-white border-0 rounded-4 shadow-lg">
             <form id="createMapForm"
                   method="post"
@@ -11,78 +11,113 @@
                 @Html.AntiForgeryToken()
 
                 <div class="modal-header border-0 pb-2">
-                    <h2 class="modal-title fs-3 fw-bold" id="createMapModalLabel"></h2>
+                    <h2 class="modal-title fs-3 fw-bold" id="createMapModalLabel">Create Map</h2>
                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
 
                 <div class="modal-body px-4">
-                    <div id="step1" class="step active" data-title="Choose a Map Template">
+                    <div id="step1" class="step active">
                         <div class="step-icon-circle mx-auto mb-4">
-                            <i class="bi bi-grid-3x3-gap-fill text-primary step-icon"></i>
+                            <i class="bi bi-grid text-primary step-icon"></i>
                         </div>
 
-                        <p class="text-center text-white-50 mb-4">Select a template to customize for your new map</p>
+                        <p class="text-center text-white-50 mb-4">Select a template for your new map</p>
 
                         <div class="container py-3 gap-4">
-                            @if (Model.RecentMapTemplates.Any())
-                            {
-                                <div class="mb-4">
-                                    <h3 class="pb-2 border-bottom border-secondary">Recents</h3>
-                                    <div class="card-wrapper row flex-nowrap overflow-auto py-2">
-                                        <ul class="list-unstyled d-flex gap-3 position-relative">
-                                            @foreach (var template in Model.RecentMapTemplates)
-                                            {
-                                                <li class="d-inline-block">
-                                                    <div class="position-relative">
-                                                        <partial name="_MapTemplateCardPartial" model="@template" />
-                                                    </div>
-                                                </li>
-                                            }
-                                        </ul>
+                            <div class="d-flex flex-column flex-md-row gap-3 align-items-center mb-3">
+                                <div class="search-bar col-12 col-md-6 position-relative">
+                                    <input type="text" class="form-control rounded-pill h-100" placeholder="Search" />
+                                    <span class="position-absolute icon-container">
+                                        <i class="bi bi-search"></i>
+                                    </span>
+                                    <button type="button" class="clear-button position-absolute">
+                                        ×
+                                    </button>
+                                </div>
+
+                                <div class="col-12 col-md-3">
+                                    <select class="form-select rounded-pill bg-dark text-white border-secondary" id="continentFilter">
+                                        <option value="">All Continents</option>
+                                        <option value="africa">Africa</option>
+                                        <option value="antarctica">Antarctica</option>
+                                        <option value="asia">Asia</option>
+                                        <option value="australia">Australia/Oceania</option>
+                                        <option value="europe">Europe</option>
+                                        <option value="north-america">North America</option>
+                                        <option value="south-america">South America</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-12 col-md-3 d-flex align-items-center">
+                                    <div class="form-check form-switch">
+                                        <input class="form-check-input" type="checkbox" id="byMapLabSwitch">
+                                        <label class="form-check-label text-white-50" for="byMapLabSwitch">By MapLab</label>
                                     </div>
                                 </div>
-                            }
-                            @if (Model.MapLabMapTemplates.Any())
-                            {
-                                <div class="mb-4">
-                                    <h3 class="pb-2 border-bottom border-secondary">By MapLab</h3>
-                                    <div class="card-wrapper row flex-nowrap overflow-auto py-2">
-                                        <ul class="list-unstyled d-flex gap-3">
-                                            @foreach (var template in Model.MapLabMapTemplates)
-                                            {
-                                                <li class="d-inline-block">
-                                                    <div class="position-relative">
-                                                        <partial name="_MapTemplateCardPartial" model="@template" />
-                                                    </div>
-                                                </li>
-                                            }
-                                        </ul>
+                            </div>
+
+                            <div class="suggested-map-templates">
+                                @if (Model.RecentMapTemplates.Any())
+                                {
+                                    <div class="mb-4">
+                                        <h3 class="pb-2 border-bottom border-secondary">Recents</h3>
+                                        <div class="recent-map-templates card-wrapper row flex-nowrap overflow-auto py-2">
+                                            <ul class="list-unstyled d-flex gap-3 position-relative">
+                                                @foreach (var template in Model.RecentMapTemplates)
+                                                {
+                                                    <li class="d-inline-block">
+                                                        <div class="position-relative">
+                                                            <partial name="_MapTemplateCardPartial" model="@template" />
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            }
-                            @if (Model.FeaturedMapTemplates.Any())
-                            {
-                                <div class="mb-4">
-                                    <h3 class="pb-2 border-bottom border-secondary">Featured</h3>
-                                    <div class="card-wrapper row flex-nowrap overflow-auto py-2">
-                                        <ul class="list-unstyled d-flex gap-3">
-                                            @foreach (var template in Model.FeaturedMapTemplates)
-                                            {
-                                                <li class="d-inline-block">
-                                                    <div class="position-relative">
-                                                        <partial name="_MapTemplateCardPartial" model="@template" />
-                                                    </div>
-                                                </li>
-                                            }
-                                        </ul>
+                                }
+                                @if (Model.MapLabMapTemplates.Any())
+                                {
+                                    <div class="mb-4">
+                                        <h3 class="pb-2 border-bottom border-secondary">By MapLab</h3>
+                                        <div class="by-maplab-map-templates card-wrapper row flex-nowrap overflow-auto py-2">
+                                            <ul class="list-unstyled d-flex gap-3">
+                                                @foreach (var template in Model.MapLabMapTemplates)
+                                                {
+                                                    <li class="d-inline-block">
+                                                        <div class="position-relative">
+                                                            <partial name="_MapTemplateCardPartial" model="@template" />
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
                                     </div>
-                                </div>
-                            }
+                                }
+                                @if (Model.FeaturedMapTemplates.Any())
+                                {
+                                    <div class="mb-4">
+                                        <h3 class="pb-2 border-bottom border-secondary">Featured</h3>
+                                        <div class="featured-map-templates card-wrapper row flex-nowrap overflow-auto py-2">
+                                            <ul class="list-unstyled d-flex gap-3">
+                                                @foreach (var template in Model.FeaturedMapTemplates)
+                                                {
+                                                    <li class="d-inline-block">
+                                                        <div class="position-relative">
+                                                            <partial name="_MapTemplateCardPartial" model="@template" />
+                                                        </div>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+                            <div class="search-results"></div>
                         </div>
                         <input type="hidden" name="MapTemplateId" id="SelectedMapTemplateId" value="@Model.MapTemplateId" />
                     </div>
 
-                    <div id="step2" class="step" style="display:none;" data-title="Name Your Map">
+                    <div id="step2" class="step" style="display:none;">
                         <div class="text-center mb-4">
                             <div class="step-icon-circle mx-auto mb-4">
                                 <i class="bi bi-pencil-fill text-primary step-icon"></i>
@@ -94,12 +129,10 @@
 
                         <div class="container py-2">
                             <div class="row g-4">
-                                <!-- Selected Template Card - Left Side -->
                                 <div class="col-md-5">
                                     <div class="selected-template-container p-3 rounded-4 bg-dark bg-opacity-50">
                                         <h4 class="fs-5 mb-3 border-bottom border-secondary pb-2">Selected Template</h4>
                                         <div id="selectedTemplatePreview" class="d-flex justify-content-center">
-                                            <!-- Template will be cloned here via JavaScript -->
                                             <div class="text-center text-white-50">
                                                 <i class="bi bi-exclamation-circle fs-1 mb-2"></i>
                                                 <p>No template selected</p>
@@ -108,7 +141,6 @@
                                     </div>
                                 </div>
 
-                                <!-- Map Details Form - Right Side -->
                                 <div class="col-md-7">
                                     <div class="form-floating mb-4">
                                         <input asp-for="Name" class="form-control bg-dark text-white border-secondary" id="mapNameInput" placeholder="Map Name">
@@ -124,7 +156,7 @@
                                             </p>
                                         </div>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" name="IsPublic" type="checkbox" id="publicSwitch">
+                                            <input class="form-check-input" asp-for="IsPublic" type="checkbox" id="publicSwitch">
                                             <label class="form-check-label" for="publicSwitch">
                                                 <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Public maps are visible to other profiles and may be featured on the MapLab Community page. Private maps are accessible only via a shared link."></i>
                                             </label>
@@ -182,11 +214,6 @@
         font-size: 2rem;
     }
 
-    .modal-content {
-        overflow: hidden;
-    }
-
-    /* Selected template container */
     .selected-template-container {
         border: 1px solid rgba(255, 255, 255, 0.1);
         height: 100%;
@@ -204,7 +231,6 @@
             box-shadow: none !important;
         }
 
-    /* Form styling */
     .form-control, .form-control:focus {
         background-color: #2a2a2a;
         border-color: #444;
@@ -221,7 +247,6 @@
         transform: scale(0.85) translateY(-0.5rem) translateX(0.15rem);
     }
 
-    /* Animations */
     @@keyframes fadeIn {
         from
 
@@ -271,18 +296,4 @@
             border-color: #0d6efd;
             box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.3);
         }
-
-    /* Scrollbar styling */
-    .overflow-auto::-webkit-scrollbar {
-        height: 6px;
-    }
-
-    .overflow-auto::-webkit-scrollbar-thumb {
-        background-color: rgba(255, 255, 255, 0.2);
-        border-radius: 3px;
-    }
-
-    .overflow-auto::-webkit-scrollbar-track {
-        background-color: rgba(0, 0, 0, 0.1);
-    }
 </style>

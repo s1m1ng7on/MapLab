@@ -9,6 +9,11 @@
     --bs-light-muted: rgba(255, 255, 255, 0.7);
 }
 
+* {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(255, 255, 255, 0.3) transparent;
+}
+
 html {
     font-family: "Exo 2", sans-serif;
     font-size: 14px;
@@ -56,34 +61,6 @@ img {
     width: 100%;
     max-width: none;
 }
-
-::-webkit-scrollbar {
-    width: 8px;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #888;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #555;
-}
-
-::-webkit-scrollbar-track {
-    background: #f1f1f1;
-}
-
-/* For Firefox */
-* {
-    scrollbar-width: thin;
-    scrollbar-color: #888 #f1f1f1;
-}
-
-/*#region Positioning classes*/
-    .position-relative {
-        position: relative;
-    }
-/*#endregion RegionName*/
 
 .hover {
     display: none;
@@ -133,8 +110,8 @@ button img.profile-picture:hover {
     filter: brightness(50%);
 }
 
-.search-bar .icon-container {
-    left: 29px;
+/*.search-bar .icon-container {
+    left: 10%;
     top: 50%;
     transform: translateY(-50%);
     color: #aaa;
@@ -143,6 +120,48 @@ button img.profile-picture:hover {
 .search-bar .form-control {
     padding-left: 3rem;
 }
+
+.search-bar .clear-button {
+    right: 10%;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #aaa;
+}*/
+
+.search-bar {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+    .search-bar .icon-container {
+        position: absolute;
+        left: 1rem; /* More precise positioning */
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        z-index: 3; /* Ensure icon appears above input */
+        pointer-events: none; /* Allow clicks to pass through to input */
+    }
+
+    .search-bar .form-control {
+        padding-left: 2.5rem; /* Adjusted for better spacing with icon */
+        padding-right: 2.5rem; /* Space for clear button */
+    }
+
+    .search-bar .clear-button {
+        position: absolute;
+        display: none;
+        right: 1rem; /* More precise positioning */
+        top: 50%;
+        transform: translateY(-50%);
+        color: #aaa;
+        z-index: 3; /* Ensure button appears above input */
+        cursor: pointer;
+        background: none;
+        border: none;
+        padding: 0.25rem;
+    }
 
 .nav-link::before {
     backface-visibility: hidden;
@@ -213,6 +232,7 @@ footer {
     box-sizing: border-box;
     overflow: hidden;
     animation: fadeIn 1s ease-out;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 @keyframes fadeIn {
@@ -632,12 +652,6 @@ footer {
     transform: translateY(-50%);
 }
 
-/* Footer modifications */
-footer {
-    background-color: var(--bs-dark-alt);
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
-
 /* Card and Button styling */
 .card {
     border-radius: 12px;
@@ -958,16 +972,59 @@ div p:last-child {
         transform: rotate(90deg);
     }
 
+.modal-dialog {
+    height: 80vh;
+    max-height: 80vh;
+    max-width: 80vw;
+}
+
+.modal-content {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    max-height: 80vh;
+    height: 80vh;
+}
+
+.modal-header {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.modal-body {
+    position: relative;
+    flex: 1 1 auto;
+    overflow-y: auto;
+    max-height: calc(80vh - 140px);  Adjust as needed 
+    min-height: 0;
+}
+
+.modal-footer {
+    position: relative;
+    flex: 0 0 auto;
+}
+
+.card img.profile-picture {
+    max-height: 20.5px;
+    max-width: 20.5px;
+    object-fit: cover;
+}
+
+.search-results {
+    display: none;
+}
+
 /*.modal-dialog {
     max-width: 80vw;
     width: auto;
     height: 80vh;
-}*/
+}
 
-/*.modal-content {
+.modal-content {
     display: flex;
+    height: inherit;
     flex-direction: column;
-    height: 100%;
 }
 
 .modal-body {
@@ -975,7 +1032,7 @@ div p:last-child {
     flex-grow: 1;
 }*/
 
-.modal.fade .modal-dialog {
+/*.modal.fade .modal-dialog {
     transform: translateY(8px) scale(0.98);
     transition: transform 0.2s ease, opacity 0.2s ease;
     opacity: 0;
@@ -985,22 +1042,4 @@ div p:last-child {
     transform: translateY(0) scale(1);
     opacity: 1;
 }
-
-.modal-dialog {
-    max-height: 80vh;
-}
-
-.modal-content {
-    height: 100%;
-}
-
-.modal-body {
-    overflow-y: auto;
-    flex-grow: 1;
-}
-
-.card img.profile-picture {
-    max-height: 20.5px;
-    max-width: 20.5px;
-    object-fit: cover;
-}
+*/

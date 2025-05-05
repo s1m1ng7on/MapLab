@@ -1,8 +1,11 @@
 ﻿@using MapLab.Services.Contracts
 @using MapLab.Web.Models.Maps
 @using MapLab.Common.Extensions
+@using MapLab.Web.Resources
 @using MapLab.Web.Utilities
+@using Microsoft.Extensions.Localization
 @inject IProfileService _profileService
+@inject IStringLocalizer<Regions> _regionsLocalizer;
 @model MapViewModel
 
 <div class="card map-card h-100 shadow-lg border-0 rounded-4 overflow-hidden">
@@ -10,7 +13,7 @@
         <a asp-controller="Maps" asp-action="View" asp-route-Id="@Model.Id" class="map-link">
             <div class="position-relative">
                 <img class="card-img-top map-thumbnail"
-                src="@(Model.ThumbnailFilePath ?? "https://media.hswstatic.com/eyJidWNrZXQiOiJjb250ZW50Lmhzd3N0YXRpYy5jb20iLCJrZXkiOiJnaWZcL21hcHMuanBnIiwiZWRpdHMiOnsicmVzaXplIjp7IndpZHRoIjo4Mjh9fX0=")"
+                src="@(Model.ThumbnailFilePath ?? StaticFilePaths.DefaultMapThumbnail)"
                 alt="@Model.Name Thumbnail">
                 <div class="position-absolute top-0 start-0 w-100 h-100 bg-gradient-dark opacity-50"></div>
             </div>

@@ -8,6 +8,7 @@ using MapLab.Seeding;
 using MapLab.Services;
 using MapLab.Services.Contracts;
 using MapLab.Services.Mapping;
+using MapLab.Web.Resources;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Localization;
@@ -59,6 +60,11 @@ namespace MapLab
 
             builder.Services.AddControllersWithViews(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
+                .AddDataAnnotationsLocalization(options =>
+                {
+                    options.DataAnnotationLocalizerProvider = (type, factory) =>
+                        factory.Create(typeof(Regions));
+                })
                 .AddRazorRuntimeCompilation();
 
             builder.Services.AddServerSideBlazor()
@@ -87,7 +93,6 @@ namespace MapLab
             builder.Configuration.AddEnvironmentVariables();
 
             builder.Services.AddSingleton(builder.Configuration);
-            //builder.Services.AddSingleton<TempDataSerializer>();
 
             // Enforce lowercase routes
             builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);

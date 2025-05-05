@@ -25,7 +25,7 @@ namespace MapLab.Services
             _fileStorageManager = fileStorageManager;
         }
 
-        public async Task<NewsPaginationDto> GetNewsAsync(int page, int pageSize)
+        public async Task<PaginationDto<NewsArticleDto>> GetNewsAsync(int page, int pageSize)
         {
             var query = _newsArticleRepository.All()
                 .Include(x => x.Profile)
@@ -39,9 +39,9 @@ namespace MapLab.Services
                 .ProjectTo<NewsArticleDto>(_mapper.ConfigurationProvider)
                 .ToListAsync();
 
-            return new NewsPaginationDto
+            return new PaginationDto<NewsArticleDto>
             {
-                Articles = articles,
+                Items = articles,
                 TotalCount = totalCount,
                 PageNumber = page,
                 PageSize = pageSize,

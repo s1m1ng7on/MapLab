@@ -3,7 +3,7 @@ using MapLab.Services.Models;
 
 namespace MapLab.Web.Areas.Admin.Models.News
 {
-    public class IndexViewModel : IMapFrom<NewsPaginationDto>
+    public class IndexViewModel : IMapFrom<PaginationDto<NewsArticleDto>>
     {
         public List<NewsArticleTableRowViewModel>? Articles { get; set; }
         public int TotalCount { get; set; }

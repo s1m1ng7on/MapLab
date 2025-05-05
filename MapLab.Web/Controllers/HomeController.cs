@@ -28,7 +28,7 @@ namespace MapLab.Controllers
         {
             var newsArticles = await _newsService.GetNewsAsync(1, 3);
 
-            var homeIndexViewModel = _mapper.Map<NewsPaginationDto, HomeIndexViewModel>(newsArticles);
+            var homeIndexViewModel = _mapper.Map<PaginationDto<NewsArticleDto>, HomeIndexViewModel>(newsArticles);
 
             return View(homeIndexViewModel);
         }

@@ -1,5 +1,7 @@
 ﻿using MapLab.Data.Entities;
 using MapLab.Services.Mapping;
+using MapLab.Web.Models.Maps;
+using MapLab.Web.Models.Templates;
 using ProfileEntity = MapLab.Data.Entities.Profile;
 
 namespace MapLab.Web.Models.Profile
@@ -12,7 +14,10 @@ namespace MapLab.Web.Models.Profile
 
         public string? ProfilePictureFilePath { get; set; }
 
-        public ICollection<Map>? Maps { get; set; }
+        public IEnumerable<MapViewModel>? Maps { get; set; }
+        public IEnumerable<MapTemplateViewModel>? MapTemplates { get; set; }
+        public IEnumerable<MapViewModel>? FavoriteMaps { get; set; }
+        public IEnumerable<MapTemplateViewModel>? FavoriteMapTemplates { get; set; }
 
         public DateTime CreatedOn { get; set; }
 

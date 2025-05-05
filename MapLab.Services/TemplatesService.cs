@@ -3,12 +3,14 @@ using MapLab.Data.Entities;
 using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
+using MapLab.Services.Extensions;
 using MapLab.Services.Models;
 using MapLab.Shared.Models.FilterModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace MapLab.Services
 {
@@ -40,7 +42,7 @@ namespace MapLab.Services
             return _mapper.Map<MapTemplateDto>(newsArticle);
         }
 
-        public IEnumerable<MapTemplateDto> GetMapTemplates(MapTemplateFiltersModel? filters = null)
+        public PaginationDto<MapTemplateDto> GetMapTemplates(MapTemplateFiltersModel? filters = null, int page = 1, int pageSize = 10)
         {
             var mapTemplates = _mapTemplateRepository.All()
                 .Include(mt => mt.Profile)
@@ -55,26 +57,27 @@ namespace MapLab.Services
                 );
             }
 
-            return _mapper.Map<IEnumerable<MapTemplateDto>>(mapTemplates);
+            return mapTemplates.ToPaginationDto<MapTemplate, MapTemplateDto>(_mapper, page, pageSize);
         }
 
-        public IEnumerable<MapTemplateDto> GetRecentMapTemplates()
+        public PaginationDto<MapTemplateDto> GetRecentMapTemplates(int page = 1, int pageSize = 10)
         {
             var mapTemplates = _mapTemplateRepository.All()
                 .Include(mt => mt.Maps)
                 .Where(mt => mt.Maps!.Any(m => m.ProfileId == _profileService.GetProfileId()))
                 .OrderByDescending(mt => mt.CreatedOn)
-                .ToList();
+                .AsQueryable();
 
-            return _mapper.Map<IEnumerable<MapTemplateDto>>(mapTemplates);
+            return mapTemplates.ToPaginationDto<MapTemplate, MapTemplateDto>(_mapper, page, pageSize);
         }
 
-        public IEnumerable<MapTemplateDto> GetFeaturedMapTemplates()
+        public async Task<PaginationDto<MapTemplateDto>> GetFeaturedMapTemplates(int page = 1, int pageSize = 10)
         {
             if (!_memoryCache.TryGetValue(FeaturedMapTemplatesCacheKey, out IEnumerable<MapTemplateDto> cachedMapTemplates))
             {
                 //TO BE CHANGED
-                cachedMapTemplates = GetMapTemplates();
+                var mapTemplates = await _mapTemplateRepository.All().ToListAsync();
+                cachedMapTemplates = _mapper.Map<IEnumerable<MapTemplateDto>>(mapTemplates);
 
                 var nextMonday = DateTime.Now.AddDays(((int)DayOfWeek.Monday - (int)DateTime.Now.DayOfWeek + 7) % 7).Date;
 
@@ -84,7 +87,7 @@ namespace MapLab.Services
                 _memoryCache.Set(FeaturedMapTemplatesCacheKey, cachedMapTemplates, cacheEntryOptions);
             }
 
-            return cachedMapTemplates;
+            return cachedMapTemplates.AsQueryable().ToPaginationDto(page, pageSize);
         }
 
         public async Task<string> GetMapTemplateJsonAsync(MapTemplateDto mapTemplate)

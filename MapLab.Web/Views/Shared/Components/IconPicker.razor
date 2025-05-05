@@ -1,4 +1,4 @@
-﻿<div class="color-picker">
+﻿<div class="icon-picker d-flex flex-column gap-3">
     <div class="search-bar col-12 col-md-8 position-relative">
         <input type="text" class="form-control rounded-pill h-100" @oninput="OnSearch" placeholder="Search" />
         <span class="position-absolute icon-container">
@@ -11,19 +11,31 @@
             </button>
         }
     </div>
-    <div class="icon-grid">
-        @foreach (var icon in Icons)
-        {
-            <label class="icon-option">
-                <input type="checkbox" value="@icon" checked="@(SelectedIcon == icon)"
-                       @onchange="() => OnIconSelected(icon)" />
-                <span class="icon-preview">
-                    <i class="@($"bi bi-{icon}")"></i>
-                </span>
-            </label>
-        }
-    </div>
-    <span class="d-block mt-1">Right-click to remove.</span>
+    
+    @if (Icons.Any())
+    {
+        <div class="icon-grid">
+            @foreach (var icon in Icons)
+            {
+                <label class="icon-option">
+                    <input type="checkbox" value="@icon" checked="@(SelectedIcon == icon)"
+                           @onchange="() => OnIconSelected(icon)" />
+                    <span class="icon-preview">
+                        <i class="@($"bi bi-{icon}")"></i>
+                    </span>
+                </label>
+            }
+        </div>
+    }
+    else
+    {
+        <div class="w-100 text-center text-muted d-flex flex-column align-items-center justify-content-center">
+            <i class="bi bi-emoji-frown"></i>
+            <span>No results found</span>
+        </div>
+    }
+    
+    <span>Right-click to remove.</span>
 </div>
 
 @code {
@@ -32,22 +44,32 @@
         "house", "heart", "star", "gear", "person",
         "cart", "envelope", "phone", "lock", "key",
         "bell", "bookmark", "camera", "chat", "cloud",
-        "download", "eye", "flag", "gift", "globe",
-        "hourglass", "image", "inbox", "lightbulb"
+        "gift", "globe", "flag", "map", "calendar",
+        "tree", "sun", "moon", "umbrella", "car-front",
+        "bicycle", "bus-front", "train-front", "airplane", "boat",
+        "building", "shop", "hospital", "school", "park",
+        "mountain", "beach", "forest", "bridge", "tent",
+        "binoculars", "compass", "footprint", "apple", "coffee",
+        "pizza", "ice-cream", "burger", "bed", "chair",
+        "sofa", "lamp", "book", "pencil", "trash",
+        "bag", "basket", "box", "briefcase", "shield",
+        "trophy", "award", "medal", "tools", "hammer",
+        "wrench", "glasses", "clock", "lightbulb", "image",
+        "inbox", "star-fill", "person-circle", "person-fill", "people",
+        "folder", "folder-open", "file", "file-earmark", "file-text",
+        "camera-fill", "camera-video", "camera2", "gift-fill"
     };
 
-    public string[] Icons { get; set; }
+    private IEnumerable<string> Icons =>
+        string.IsNullOrWhiteSpace(searchQuery)
+            ? icons
+            : icons.Where(i => i.Contains(searchQuery, StringComparison.OrdinalIgnoreCase));
 
     private string searchQuery = string.Empty;
 
     [Parameter] public string? SelectedIcon { get; set; }
 
     [Parameter] public EventCallback<string> SelectedIconChanged { get; set; }
-
-    protected override void OnInitialized()
-    {
-        Icons = icons;
-    }
 
     private async Task OnIconSelected(string icon)
     {

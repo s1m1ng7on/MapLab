@@ -1,0 +1,38 @@
+﻿@using MapLab.Web.Models.Maps
+@model ShareMapModalPartialViewModel
+
+<div class="modal fade" id="share-map-modal" tabindex="-1" aria-labelledby="shareMapModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark text-white border-0">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title" id="shareMapModalLabel">Share Map</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label for="shareMapLink" class="form-label">Copy link</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control bg-dark text-white border-secondary" id="shareMapLink" value="@($"{Context.Request.Scheme}://{Context.Request.Host}/Maps/View/{Model.Id}")" readonly>
+                        <button class="btn btn-outline-primary" type="button" id="copyLinkBtn">
+                            <i class="bi bi-clipboard"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="d-flex gap-2 justify-content-center mt-4">
+                    <a href="https://twitter.com/intent/tweet?url=@($"{Context.Request.Scheme}://{Context.Request.Host}/Maps/View/{Model.Id}")&text=Check out this map: @Model.Name"
+                       target="_blank" class="btn btn-outline-light btn-social">
+                        <i class="bi bi-twitter"></i>
+                    </a>
+                    <a href="https://www.facebook.com/sharer/sharer.php?u=@($"{Context.Request.Scheme}://{Context.Request.Host}/Maps/View/{Model.Id}")"
+                       target="_blank" class="btn btn-outline-light btn-social">
+                        <i class="bi bi-facebook"></i>
+                    </a>
+                    <a href="mailto:?subject=Check out this map: @Model.Name&body=I thought you might be interested in this map: @($"{Context.Request.Scheme}://{Context.Request.Host}/Maps/View/{Model.Id}")"
+                       class="btn btn-outline-light btn-social">
+                        <i class="bi bi-envelope"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

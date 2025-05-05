@@ -1,28 +1,42 @@
-﻿@using Newtonsoft.Json.Linq
+﻿@using MapLab.Common.Extensions
+@using MapLab.Web.Models.Maps
+@using Newtonsoft.Json.Linq
 
-<div class="legend">
-    <h1 class="fw-bold">@Title</h1>
-    <div class="d-flex gap-3 align-items-center justify-content-between">
-        <div class="d-flex gap-1">
-            <span class="badge bg-secondary bg-opacity-25 rounded-pill px-3 py-1">
-                <a href="@($"/template/{MapTemplate.Item1}")"
-                   class="text-light text-decoration-none">
-                    <i class="bi bi-grid me-1"></i>@MapTemplate.Item2
+<div class="legend d-flex flex-column gap-3">
+    <div>
+        <h1 class="fw-bold">@Map.Name</h1>
+        <div class="d-flex gap-3 align-items-center justify-content-between">
+            <div class="d-flex gap-1">
+                <span class="badge bg-secondary bg-opacity-25 rounded-pill px-3 py-1">
+                    <a href="@($"/template/view/{Map.MapTemplateId}")"
+                       class="text-light text-decoration-none">
+                        <i class="bi bi-grid me-1"></i>@Map.MapTemplateName
+                    </a>
+                </span>
+                <span class="badge rounded-pill bg-primary bg-opacity-75 px-2 py-1">
+                    <i class="bi bi-globe-europe-africa me-1"></i>@Map.MapTemplateRegion?.GetDisplayName()
+                </span>
+                @if (!Map.IsPublic)
+                {
+                    <span class="badge rounded-pill bg-primary bg-opacity-75 d-flex align-items-center px-2 py-1">
+                        <i class="bi bi-lock-fill"></i>
+                    </span>
+                }
+            </div>
+            <div class="d-flex align-items-center">
+                <a href="@($"/profile/{Map.ProfileUserName}")"
+                   class="text-light text-decoration-none d-flex align-items-center">
+                    <img class="rounded-circle shadow-sm me-1"
+                         src="@Map.ProfileProfilePictureFilePath"
+                         alt="@Map.ProfileUserName"
+                         width="16"
+                         height="16" />
+                    <span class="small">@Map.ProfileUserName</span>
                 </a>
-            </span>
-        </div>
-        <div class="d-flex align-items-center">
-            <a href="@($"/profile/{Profile.Item2}")"
-               class="text-light text-decoration-none d-flex align-items-center">
-                <img class="rounded-circle shadow-sm me-1"
-                     src="@Profile.Item3"
-                     alt="@Profile.Item2"
-                     width="16"
-                     height="16" />
-                <span class="small">@Profile.Item2</span>
-            </a>
+            </div>
         </div>
     </div>
+
     @if (Data != null && Data.Count > 0)
     {
         var regions = Data.Where(d => d["type"].ToString() == "Region").ToList();
@@ -39,11 +53,11 @@
                     <ul class="list-unstyled">
                         @foreach (var region in regions)
                         {
-                            @if (CanEdit || (!CanEdit && region["name"]?.ToString() != string.Empty))
+                            @if (Map.CanEdit || (!Map.CanEdit && region["name"]?.ToString() != string.Empty))
                             {
                                 <li class="d-flex align-items-center mb-2">
                                     <span class="color-switch me-2 d-inline-block" style="background-color: @region["fill"]"></span>
-                                    @if (CanEdit)
+                                    @if (Map.CanEdit)
                                     {
                                         <input type="text"
                                                class="text-white border-0 bg-transparent legend-input"
@@ -72,14 +86,14 @@
                     <ul class="list-unstyled">
                         @foreach (var point in points)
                         {
-                            @if (CanEdit || (!CanEdit && point["name"]?.ToString() != string.Empty))
+                            @if (Map.CanEdit || (!Map.CanEdit && point["name"]?.ToString() != string.Empty))
                             {
                                 <li class="d-flex align-items-center mb-2">
                                     <span class="me-2 d-inline-block text-center"
                                           style="width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;">
                                         <i class="bi bi-@(point["icon"])" style="color: @point["fill"];"></i>
                                     </span>
-                                    @if (CanEdit)
+                                    @if (Map.CanEdit)
                                     {
                                         <input type="text"
                                                class="text-white border-0 bg-transparent legend-input"
@@ -99,18 +113,16 @@
             }
         </div>
     }
-    else if (CanEdit)
+    else if (Map.CanEdit)
     {
-        <span class="mt-3 d-inline-block">Start by editing the map.</span>
+        <span>Start by editing the map.</span>
     }
 </div>
 
 @code {
-    [Parameter] public string? Title { get; set; }
-    [Parameter] public (string, string, string) Profile { get; set; }
-    [Parameter] public (string, string) MapTemplate { get; set; }
-    [Parameter] public JArray? Data { get; set; }
-    [Parameter] public bool CanEdit { get; set; }
+    [Parameter] public MapComponentViewModel Map { get; set; }
+
+    [Parameter] public JArray Data { get; set; }
 
     [CascadingParameter] public Action OnNameChanged { get; set; }
 

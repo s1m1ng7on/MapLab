@@ -1,0 +1,11 @@
+﻿@using MapLab.Web.Models.Templates
+@model IEnumerable<MapTemplateViewModel>
+
+@foreach (var template in Model)
+{
+    <li class="d-inline-block">
+        <div class="position-relative">
+            <partial name="_MapTemplateCardPartial" model="@template" />
+        </div>
+    </li>
+}

@@ -142,7 +142,7 @@ else
     {
         var templateEntities = _mapTemplatesService.GetMapTemplates();
         templates = _mapper.Map<List<MapTemplateViewModel>>(templateEntities);
-        mapLabMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetMapTemplates(new MapTemplateFiltersModel() { ByMapLab = true }).OrderBy(mt => mt.Region));
+        //mapLabMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetMapTemplates(new MapTemplateFiltersModel() { ByMapLab = true }).OrderBy(mt => mt.Region));
         featuredMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetFeaturedMapTemplates());
     }
 

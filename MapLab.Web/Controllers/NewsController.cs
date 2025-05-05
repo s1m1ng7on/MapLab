@@ -21,7 +21,7 @@ namespace MapLab.Web.Controllers
         public async Task<IActionResult> Index()
         {
             var newsArticles = await _newsService.GetNewsAsync(1, 7 * 3);
-            var newsIndexViewModel = _mapper.Map<NewsPaginationDto, NewsSectionViewModel>(newsArticles);
+            var newsIndexViewModel = _mapper.Map<PaginationDto<NewsArticleDto>, NewsSectionViewModel>(newsArticles);
 
             return View(newsIndexViewModel);
         }

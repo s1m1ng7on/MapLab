@@ -28,11 +28,8 @@
         }
     }
 
-    <Legend Title="@Map.Name"
-    Profile="@((Map.ProfileId, Map.ProfileUserName, Map.ProfileProfilePictureFilePath))"
-    MapTemplate="@((Map.MapTemplateId, Map.MapTemplateName))"
-    Data="@(MapJsonObject?["legend"] as JArray)"
-    CanEdit="Map.CanEdit" />
+    <Legend Map="@Map"
+            Data="@(MapJsonObject?["legend"] as JArray)" />
 
     <Controls CanEdit="Map.CanEdit"
     OnSaveMap="SaveMap" />

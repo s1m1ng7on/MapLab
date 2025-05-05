@@ -6,11 +6,13 @@
     ViewData["Title"] = Model.IsCurrentProfile ? "My Profile" : Model.UserName;
 }
 
-<div class="profile-hero bg-primary text-white py-5 mb-4 position-relative overflow-hidden">
+<!-- Profile Header -->
+<section class="profile-header bg-primary text-white py-5 mb-4 position-relative overflow-hidden">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-10 text-center">
-                <div class="position-relative d-inline-block mb-4">
+                <!-- Profile Picture -->
+                <div class="profile-picture mb-4">
                     <img src="@(Model.ProfilePictureFilePath ?? StaticFilePaths.DefaultProfilePicture)"
                          class="rounded-circle border border-3 border-white shadow"
                          alt="Profile Picture"
@@ -20,6 +22,7 @@
                          asp-append-version="true" />
                 </div>
 
+                <!-- Username and Admin Badge -->
                 <h1 class="display-5 fw-bold mb-2 d-flex align-items-center justify-content-center">
                     @if (Model.IsAdmin)
                     {
@@ -33,15 +36,20 @@
                            class="ms-2 text-white"
                            data-bs-toggle="tooltip"
                            title="Edit Profile">
-                            <i class="bi bi-gear-fill fs-4"></i>
+                            <i class="bi bi-gear-fill fs-5"></i>
                         </a>
                     }
                 </h1>
-                <p class="lead mb-0">Mapping since @Model.CreatedOn.ToString("d/M/yyyy")</p>
 
+                <!-- Member Since -->
+                <p class="lead mb-3">Mapping since @Model.CreatedOn.ToString("MMMM yyyy")</p>
+
+                <!-- Bio -->
                 @if (!string.IsNullOrEmpty(Model.Bio))
                 {
-                    <p class="mt-3 mb-0 col-md-8 mx-auto">@Model.Bio</p>
+                    <div class="bio-container mt-3 col-md-8 mx-auto">
+                        <p class="mb-0">@Model.Bio</p>
+                    </div>
                 }
             </div>
         </div>
@@ -50,47 +58,11 @@
     <!-- Decorative shapes -->
     <div class="shape shape-1 position-absolute bg-white opacity-10"></div>
     <div class="shape shape-2 position-absolute bg-white opacity-10"></div>
-</div>
+</section>
 
-<!-- Stats Section -->
-<div class="container mb-5">
-    <div class="row g-4 justify-content-center">
-        <div class="col-md-4">
-            <div class="card bg-dark h-100 border-0 shadow-sm rounded-4 text-center p-4">
-                <div class="display-4 text-primary mb-2">
-                    <i class="bi bi-map"></i>
-                </div>
-                <h3 class="fw-bold mb-1">13</h3>
-                @* <h3 class="fw-bold mb-1">@Model.MapsCount</h3> *@
-                <p class="text-muted mb-0">Maps Created</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4">
-                <div class="display-4 text-primary mb-2">
-                    <i class="bi bi-star"></i>
-                </div>
-                <h3 class="fw-bold mb-1">@* @Model.FavoritesCount *@4</h3>
-                <p class="text-muted mb-0">Favorite Maps</p>
-            </div>
-        </div>
-
-        <div class="col-md-4">
-            <div class="card h-100 border-0 shadow-sm rounded-4 text-center p-4">
-                <div class="display-4 text-primary mb-2">
-                    <i class="bi bi-layout-wtf"></i>
-                </div>
-                <h3 class="fw-bold mb-1">@* @Model.TemplatesCount *@2</h3>
-                <p class="text-muted mb-0">Templates Created</p>
-            </div>
-        </div>
-    </div>
-</div>
-
-<!-- Maps Section -->
-<div class="container mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+@* <!-- Maps Section -->
+<section class="maps-section container mb-5">
+    <div class="section-header d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0">
             <i class="bi bi-map-fill text-primary me-2"></i>
             Maps
@@ -110,16 +82,33 @@
         <div class="row g-4">
             @foreach (var map in Model.Maps.Take(3))
             {
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="card map-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                        <img src="@(map.ThumbnailFilePath)"
-                             class="card-img-top"
-                             alt="@map.Name"
-                             style="height: 180px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">@map.Name</h5>
-                            <p class="card-text small text-muted">@map.CreatedOn.ToString("MMM dd, yyyy")</p>
-                            <a asp-controller="Maps" asp-action="Details" asp-route-id="@map.Id" class="stretched-link"></a>
+                        <div class="position-relative">
+                            <img src="@map.ThumbnailFilePath"
+                                 class="card-img-top"
+                                 alt="@map.Name"
+                                 style="height: 180px; object-fit: cover;">
+                            <div class="map-stats position-absolute bottom-0 end-0 m-2 d-flex gap-2">
+                                <span class="badge bg-light text-dark d-flex align-items-center shadow-sm">
+                                    <i class="bi bi-eye-fill me-1"></i> @map.ViewCount
+                                </span>
+                                <span class="badge bg-light text-dark d-flex align-items-center shadow-sm">
+                                    <i class="bi bi-heart-fill text-danger me-1"></i> @map.LikeCount
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-truncate">@map.Name</h5>
+                            <p class="card-text small text-muted mb-3">Created @map.CreatedOn.ToString("MMM dd, yyyy")</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary-subtle text-primary">
+                                    @map.CategoryName
+                                </span>
+                                <a asp-controller="Maps" asp-action="Details" asp-route-id="@map.Id" class="btn btn-sm btn-outline-primary rounded-pill">
+                                    View <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -135,20 +124,20 @@
     }
     else
     {
-        <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
-            <div class="text-muted">
-                <i class="bi bi-map-fill fs-1 mb-3 text-light"></i>
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-light">
+            <div class="text-muted py-4">
+                <i class="bi bi-map-fill fs-1 mb-3 text-secondary"></i>
                 <p class="mb-0">No maps created yet.</p>
             </div>
         </div>
     }
-</div>
+</section>
 
 <!-- Templates Section -->
-<div class="container mb-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
+<section class="templates-section container mb-5">
+    <div class="section-header d-flex justify-content-between align-items-center mb-4">
         <h2 class="fw-bold mb-0">
-            <i class="bi bi-grid-fill text-primary me-2"></i>
+            <i class="bi bi-grid-3x3-gap-fill text-primary me-2"></i>
             Templates
         </h2>
 
@@ -161,21 +150,38 @@
         }
     </div>
 
-    @* @if (Model.Templates != null && Model.Templates.Any())
+    @if (Model.MapTemplates != null && Model.MapTemplates.Any())
     {
         <div class="row g-4">
-            @foreach (var template in Model.Templates.Take(3))
+            @foreach (var template in Model.MapTemplates.Take(3))
             {
-                <div class="col-md-4">
+                <div class="col-md-6 col-lg-4">
                     <div class="card template-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
-                        <img src="@(template.ThumbnailFilePath ?? StaticFilePaths.DefaultTemplateThumbnail)"
-                             class="card-img-top"
-                             alt="@template.Title"
-                             style="height: 180px; object-fit: cover;">
-                        <div class="card-body">
-                            <h5 class="card-title fw-bold">@template.Title</h5>
-                            <p class="card-text small text-muted">@template.CreatedOn.ToString("MMM dd, yyyy")</p>
-                            <a asp-controller="Templates" asp-action="Details" asp-route-id="@template.Id" class="stretched-link"></a>
+                        <div class="position-relative">
+                            <img src="@(template.ThumbnailFilePath ?? StaticFilePaths.DefaultMapThumbnail)"
+                                 class="card-img-top"
+                                 alt="@template.Name"
+                                 style="height: 180px; object-fit: cover;">
+                            <div class="template-stats position-absolute bottom-0 end-0 m-2 d-flex gap-2">
+                                <span class="badge bg-light text-dark d-flex align-items-center shadow-sm">
+                                    <i class="bi bi-eye-fill me-1"></i> @template
+                                </span>
+                                <span class="badge bg-light text-dark d-flex align-items-center shadow-sm">
+                                    <i class="bi bi-heart-fill text-danger me-1"></i> @template.LikesCount
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-body d-flex flex-column">
+                            <h5 class="card-title fw-bold text-truncate">@template.Title</h5>
+                            <p class="card-text small text-muted mb-3">Created @template.CreatedOn.ToString("MMM dd, yyyy")</p>
+                            <div class="mt-auto d-flex justify-content-between align-items-center">
+                                <span class="badge bg-primary-subtle text-primary">
+                                    @template.CategoryName
+                                </span>
+                                <a asp-controller="Templates" asp-action="Details" asp-route-id="@template.Id" class="btn btn-sm btn-outline-primary rounded-pill">
+                                    View <i class="bi bi-arrow-right ms-1"></i>
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -191,27 +197,156 @@
     }
     else
     {
-        <div class="card border-0 shadow-sm rounded-4 p-5 text-center">
-            <div class="text-muted">
-                <i class="bi bi-grid-fill fs-1 mb-3 text-light"></i>
+        <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-light">
+            <div class="text-muted py-4">
+                <i class="bi bi-grid-3x3-gap-fill fs-1 mb-3 text-secondary"></i>
                 <p class="mb-0">No templates created yet.</p>
             </div>
         </div>
     }
-</div> *@
+</section>
+
+<!-- Favorites Section -->
+<section class="favorites-section container mb-5">
+    <ul class="nav nav-tabs mb-4" id="favoritesTab" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active fw-medium" id="favorite-maps-tab" data-bs-toggle="tab" data-bs-target="#favorite-maps" type="button" role="tab" aria-controls="favorite-maps" aria-selected="true">
+                <i class="bi bi-heart-fill text-danger me-2"></i>Favorite Maps
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link fw-medium" id="favorite-templates-tab" data-bs-toggle="tab" data-bs-target="#favorite-templates" type="button" role="tab" aria-controls="favorite-templates" aria-selected="false">
+                <i class="bi bi-bookmark-star-fill text-primary me-2"></i>Favorite Templates
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content" id="favoritesTabContent">
+        <!-- Favorite Maps Tab -->
+        <div class="tab-pane fade show active" id="favorite-maps" role="tabpanel" aria-labelledby="favorite-maps-tab">
+            @if (Model.FavoriteMaps != null && Model.FavoriteMaps.Any())
+            {
+                <div class="row g-4">
+                    @foreach (var map in Model.FavoriteMaps.Take(3))
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card map-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                                <div class="position-relative">
+                                    <img src="@map.ThumbnailFilePath"
+                                         class="card-img-top"
+                                         alt="@map.Name"
+                                         style="height: 180px; object-fit: cover;">
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <span class="badge bg-danger">
+                                            <i class="bi bi-heart-fill"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <img src="@map.CreatorProfilePicture" class="rounded-circle me-2" width="24" height="24" alt="">
+                                        <small class="text-muted">@map.CreatorName</small>
+                                    </div>
+                                    <h5 class="card-title fw-bold text-truncate">@map.Name</h5>
+                                    <div class="mt-auto">
+                                        <a asp-controller="Maps" asp-action="Details" asp-route-id="@map.Id" class="btn btn-sm btn-outline-primary rounded-pill">
+                                            View <i class="bi bi-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="text-center mt-4">
+                    <a asp-controller="Maps" asp-action="FavoriteMaps" asp-route-username="@Model.UserName" class="btn btn-outline-primary rounded-pill">
+                        View All Favorite Maps <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-light">
+                    <div class="text-muted py-4">
+                        <i class="bi bi-heart fs-1 mb-3 text-secondary"></i>
+                        <p class="mb-0">No favorite maps yet.</p>
+                    </div>
+                </div>
+            }
+        </div>
+
+        <!-- Favorite Templates Tab -->
+        <div class="tab-pane fade" id="favorite-templates" role="tabpanel" aria-labelledby="favorite-templates-tab">
+            @if (Model.FavoriteTemplates != null && Model.FavoriteTemplates.Any())
+            {
+                <div class="row g-4">
+                    @foreach (var template in Model.FavoriteTemplates.Take(3))
+                    {
+                        <div class="col-md-6 col-lg-4">
+                            <div class="card template-card h-100 border-0 shadow-sm rounded-4 overflow-hidden">
+                                <div class="position-relative">
+                                    <img src="@template.ThumbnailFilePath"
+                                         class="card-img-top"
+                                         alt="@template.Title"
+                                         style="height: 180px; object-fit: cover;">
+                                    <div class="position-absolute top-0 end-0 m-2">
+                                        <span class="badge bg-primary">
+                                            <i class="bi bi-bookmark-star-fill"></i>
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="card-body d-flex flex-column">
+                                    <div class="d-flex align-items-center mb-2">
+                                        <img src="@template.CreatorProfilePicture" class="rounded-circle me-2" width="24" height="24" alt="">
+                                        <small class="text-muted">@template.CreatorName</small>
+                                    </div>
+                                    <h5 class="card-title fw-bold text-truncate">@template.Title</h5>
+                                    <div class="mt-auto">
+                                        <a asp-controller="Templates" asp-action="Details" asp-route-id="@template.Id" class="btn btn-sm btn-outline-primary rounded-pill">
+                                            View <i class="bi bi-arrow-right ms-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <div class="text-center mt-4">
+                    <a asp-controller="Templates" asp-action="FavoriteTemplates" asp-route-username="@Model.UserName" class="btn btn-outline-primary rounded-pill">
+                        View All Favorite Templates <i class="bi bi-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            }
+            else
+            {
+                <div class="card border-0 shadow-sm rounded-4 p-5 text-center bg-light">
+                    <div class="text-muted py-4">
+                        <i class="bi bi-bookmark-star fs-1 mb-3 text-secondary"></i>
+                        <p class="mb-0">No favorite templates yet.</p>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>*@
+</section>
 
 @section Scripts {
     <script>
         // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
+        document.addEventListener('DOMContentLoaded', function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
     </script>
 }
 
 <style>
-    .profile-hero {
+    /* Profile Header */
+    .profile-header {
         background: linear-gradient(135deg, var(--bs-primary) 0%, #1e88e5 100%);
     }
 
@@ -234,4 +369,45 @@
         left: -50px;
         transform: rotate(25deg);
     }
+
+    /* Stats Cards */
+    .stat-card {
+        transition: transform 0.2s ease;
+    }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+
+    .stat-icon {
+        line-height: 1;
+    }
+
+    /* Cards */
+    .map-card, .template-card {
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+        .map-card:hover, .template-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 .5rem 1rem rgba(0,0,0,.15) !important;
+        }
+
+    /* Tabs */
+    .nav-tabs .nav-link {
+        border: none;
+        color: var(--bs-secondary);
+        border-bottom: 2px solid transparent;
+        padding: 0.75rem 1.25rem;
+    }
+
+        .nav-tabs .nav-link.active {
+            color: var(--bs-primary);
+            border-bottom: 2px solid var(--bs-primary);
+            background-color: transparent;
+        }
+
+        .nav-tabs .nav-link:hover:not(.active) {
+            border-bottom: 2px solid var(--bs-gray-300);
+        }
 </style>

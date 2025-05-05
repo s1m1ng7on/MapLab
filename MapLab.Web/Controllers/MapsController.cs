@@ -28,7 +28,7 @@ namespace MapLab.Web.Controllers
         }
 
         [Route("[controller]/{profileUserName?}")]
-        public async Task<IActionResult> Index(string profileUserName)
+        public async Task<IActionResult> Index(string profileUserName, MapFiltersModel? filters)
         {
             if (string.IsNullOrEmpty(profileUserName) && !User.Identity.IsAuthenticated)
             {
@@ -41,13 +41,13 @@ namespace MapLab.Web.Controllers
                     ? (profile?.Id, profile?.Id == _profileService.GetProfileId())
                     : throw new Exception("Profile not found"));
 
-            var maps = _mapsService.GetMapsForProfile(profileId!, isCurrentProfile);
+            var maps = _mapsService.GetMapsForProfile(profileId!, isCurrentProfile, filters);
 
             var mapsIndexViewModel = new MapsIndexViewModel()
             {
                 Maps = maps?.Select(map =>
                 {
-                    var mapCardViewModel = _mapper.Map<MapDto, MapViewModel>(map);
+                    var mapCardViewModel = _mapper.Map<MapViewModel>(map);
                     mapCardViewModel.IsByCurrentProfile = isCurrentProfile;
                     return mapCardViewModel;
                 }),
@@ -56,9 +56,9 @@ namespace MapLab.Web.Controllers
                 MapCreateViewModel = isCurrentProfile
                     ? new MapCreateViewModel()
                     {
-                        RecentMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetRecentMapTemplates()),
-                        MapLabMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetMapTemplates(new MapTemplateFiltersModel() { ByMapLab = true })),
-                        FeaturedMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetFeaturedMapTemplates())
+                        RecentMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetRecentMapTemplates().Items),
+                        MapLabMapTemplates = _mapper.Map<List<MapTemplateViewModel>>(_mapTemplatesService.GetMapTemplates(new MapTemplateFiltersModel() { ByMapLab = true }).Items),
+                        FeaturedMapTemplates = _mapper.Map<List<MapTemplateViewModel>>((await _mapTemplatesService.GetFeaturedMapTemplates()).Items)
                     }
                     : null
             };
