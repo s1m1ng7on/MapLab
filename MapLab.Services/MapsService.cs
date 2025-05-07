@@ -118,6 +118,22 @@ namespace MapLab.Services
             await _mapRepository.SaveChangesAsync();
         }
 
+        public async Task EditMapAsync(MapDto mapDto)
+        {
+            var map = await _mapRepository.FindAsync(mapDto.Id!);
+
+            if (map == null)
+                throw new InvalidOperationException("Map not found.");
+
+            if (map.ProfileId != _profileService.GetProfileId())
+                throw new UnauthorizedAccessException("You are not authorized to edit this map.");
+
+            _mapper.Map(mapDto, map);
+
+            _mapRepository.Update(map);
+            await _mapRepository.SaveChangesAsync();
+        }
+
         public async Task DeleteMapAsync(string id)
         {
             var map = await _mapRepository.All()

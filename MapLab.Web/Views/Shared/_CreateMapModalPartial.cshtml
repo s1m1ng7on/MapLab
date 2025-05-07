@@ -2,20 +2,17 @@
 @model MapCreateViewModel
 
 <div id="createMapModal" class="modal fade" tabindex="-1" aria-labelledby="createMapModalLabel" aria-hidden="true" data-multistep>
-    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
-        <div class="modal-content bg-dark text-white border-0 rounded-4 shadow-lg">
-            <form id="createMapForm"
-                  method="post"
-                  asp-controller="Maps"
-                  asp-action="Create">
-                @Html.AntiForgeryToken()
+    <div class="modal-lg modal-dialog modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-content h-100 bg-dark text-white border-0 rounded-4 shadow-lg">
+            <div class="modal-header border-0 pb-2">
+                <h2 class="modal-title fs-3 fw-bold" id="createMapModalLabel">Create Map</h2>
+                <button type="button" class="btn-close btn-close-white rounded-pill" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
 
-                <div class="modal-header border-0 pb-2">
-                    <h2 class="modal-title fs-3 fw-bold" id="createMapModalLabel">Create Map</h2>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
+            <div class="modal-body px-4 overflow-auto">
+                <form id="createMapForm" method="post" asp-controller="Maps" asp-action="Create">
+                    @Html.AntiForgeryToken()
 
-                <div class="modal-body px-4">
                     <div id="step1" class="step active">
                         <div class="step-icon-circle mx-auto mb-4">
                             <i class="bi bi-grid text-primary step-icon"></i>
@@ -30,9 +27,7 @@
                                     <span class="position-absolute icon-container">
                                         <i class="bi bi-search"></i>
                                     </span>
-                                    <button type="button" class="clear-button position-absolute">
-                                        ×
-                                    </button>
+                                    <button type="button" class="clear-button position-absolute rounded-pill">×</button>
                                 </div>
 
                                 <div class="col-12 col-md-3">
@@ -50,7 +45,7 @@
 
                                 <div class="col-12 col-md-3 d-flex align-items-center">
                                     <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="byMapLabSwitch">
+                                        <input class="form-check-input rounded-pill" type="checkbox" id="byMapLabSwitch">
                                         <label class="form-check-label text-white-50" for="byMapLabSwitch">By MapLab</label>
                                     </div>
                                 </div>
@@ -112,9 +107,11 @@
                                     </div>
                                 }
                             </div>
+
                             <div class="search-results"></div>
                         </div>
-                        <input type="hidden" name="MapTemplateId" id="SelectedMapTemplateId" value="@Model.MapTemplateId" />
+
+                        <input type="text" class="d-none" asp-for="MapTemplateId" id="SelectedMapTemplateId" />
                     </div>
 
                     <div id="step2" class="step" style="display:none;">
@@ -139,11 +136,12 @@
                                             </div>
                                         </div>
                                     </div>
+                                    <span asp-validation-for="MapTemplateId" class="text-danger small d-block mt-2"></span>
                                 </div>
 
                                 <div class="col-md-7">
                                     <div class="form-floating mb-4">
-                                        <input asp-for="Name" class="form-control bg-dark text-white border-secondary" id="mapNameInput" placeholder="Map Name">
+                                        <input asp-for="Name" class="form-control bg-dark text-white border-secondary rounded-pill" id="mapNameInput" placeholder="Map Name">
                                         <label for="mapNameInput" class="text-white-50">Map Name</label>
                                     </div>
                                     <span asp-validation-for="Name" class="text-danger small d-block mt-2"></span>
@@ -156,7 +154,7 @@
                                             </p>
                                         </div>
                                         <div class="form-check form-switch">
-                                            <input class="form-check-input" asp-for="IsPublic" type="checkbox" id="publicSwitch">
+                                            <input class="form-check-input rounded-pill" asp-for="IsPublic" type="checkbox" id="publicSwitch">
                                             <label class="form-check-label" for="publicSwitch">
                                                 <i class="bi bi-info-circle ms-2" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Public maps are visible to other profiles and may be featured on the MapLab Community page. Private maps are accessible only via a shared link."></i>
                                             </label>
@@ -173,28 +171,28 @@
                                     </div>
                                 </div>
                             </div>
-                            <span asp-validation-for="MapTemplateId" class="text-danger small d-block mt-2"></span>
                         </div>
                     </div>
+                </form>
+            </div>
+
+            <div class="modal-footer border-0 justify-content-center py-4">
+                <div class="progress w-50 position-relative mb-3" style="height: 4px;">
+                    <div class="progress-bar bg-primary" role="progressbar" id="step-progress" style="width: 50%"></div>
                 </div>
 
-                <div class="modal-footer border-0 justify-content-center py-4">
-                    <div class="progress w-50 position-relative mb-3" style="height: 4px;">
-                        <div class="progress-bar bg-primary" role="progressbar" id="step-progress" style="width: 50%"></div>
-                    </div>
-                    <div class="d-flex gap-3">
-                        <button type="button" class="btn btn-outline-light px-4" id="prevBtn" style="display: none;">
-                            <i class="bi bi-arrow-left me-2"></i>Previous
-                        </button>
-                        <button type="button" class="btn btn-primary px-4" id="nextBtn">
-                            Next<i class="bi bi-arrow-right ms-2"></i>
-                        </button>
-                        <button type="submit" class="btn btn-primary px-4" id="finishBtn" style="display: none;">
-                            <i class="bi bi-check2 me-2"></i>Create Map
-                        </button>
-                    </div>
+                <div class="d-flex gap-3">
+                    <button type="button" class="btn btn-outline-light px-4 rounded-pill" id="prevBtn" style="display: none;">
+                        <i class="bi bi-arrow-left me-2"></i>Previous
+                    </button>
+                    <button type="button" class="btn btn-primary px-4 rounded-pill" id="nextBtn">
+                        Next<i class="bi bi-arrow-right ms-2"></i>
+                    </button>
+                    <button type="submit" class="btn btn-primary px-4 rounded-pill" id="finishBtn" style="display: none;">
+                        <i class="bi bi-check2 me-2"></i>Create Map
+                    </button>
                 </div>
-            </form>
+            </div>
         </div>
     </div>
 </div>
@@ -248,18 +246,15 @@
     }
 
     @@keyframes fadeIn {
-        from
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
 
-    {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
     }
 
     .step {

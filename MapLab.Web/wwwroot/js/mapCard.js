@@ -43,6 +43,78 @@
         });
     });
 
+    $('.btn-edit-map').on('click', function () {
+        var mapId = $(this).data('id');
+
+        $.ajax({
+            url: '/map/get/' + mapId,
+            method: 'GET',
+            success: function (data) {
+                console.log("AJAX data:", data); // Confirm you're getting data
+                console.log(data.id, data.name, data.isPublic);
+
+                $('#editMapModal #editMapId').val(data.id); // Populate the hidden input for map ID
+                $('#editMapModal #mapNameInput').val(data.name); // Populate the map name input
+                $('#editMapModal #publicSwitch').prop('checked', data.isPublic);
+
+                // Now show the modal
+                $('#editMapModal').modal('show');
+            },
+            error: function () {
+                alert('Failed to load map data.');
+            }
+        });
+    });
+
+    $('#editMapForm').on('submit', function (e) {
+        e.preventDefault();
+
+        // Scoped selectors inside the modal
+        var mapId = $('#editMapModal #editMapId').val();  // Scoped to modal
+        var name = $('#editMapModal #mapNameInput').val();  // Scoped to modal
+        var isPublic = $('#editMapModal #publicSwitch').is(':checked');  // Scoped to modal
+        var token = $('input[name="__RequestVerificationToken"]').val();
+        var $saveBtn = $('#finishBtn');
+
+        // Disable the save button and show the loading spinner
+        $saveBtn.prop('disabled', true).html('<span class="spinner-border spinner-border-sm me-2" role="status"></span>Saving...');
+
+        $.ajax({
+            url: '/map/edit',
+            method: 'POST',
+            data: {
+                __RequestVerificationToken: token,
+                Id: mapId,
+                Name: name,
+                IsPublic: isPublic
+            },
+            success: function () {
+                // Hide the modal upon successful save
+                var modal = bootstrap.Modal.getInstance(document.getElementById('editMapModal'));
+                modal.hide();
+                location.reload(); // You can replace this with a custom success action
+            },
+            error: function (xhr) {
+                // Handle any errors
+                alert('Error: ' + xhr.responseText || 'Could not save.');
+            },
+            complete: function () {
+                // Re-enable the save button
+                $saveBtn.prop('disabled', false).html('<i class="bi bi-floppy-fill me-2"></i>Save');
+            }
+        });
+    });
+
+    $('.btn-delete-map').on('click', function () {
+        const mapId = $(this).data('id');
+        const mapName = $(this).data('name');
+
+        $('#modal-entity-name').text(mapName);
+        $('#deleteMapForm').attr('action', '/map/delete/' + mapId);
+
+        $('#deleteMapModal').modal('show');
+    });
+
     function createParticles(mapId) {
         const particlesContainer = document.getElementById(`particles-${mapId}`);
         const numberOfParticles = 8;

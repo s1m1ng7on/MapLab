@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using MapLab.Data.Managers;
+using MapLab.Services;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
 using MapLab.Shared.Models.FilterModels;
@@ -96,6 +97,61 @@ namespace MapLab.Web.Controllers
             await _mapsService.CreateMapAsync(mapDto);
 
             return RedirectToAction("Index");
+        }
+
+        [Route("map/[action]/{id}")]
+        [Authorize]
+        public async Task<IActionResult> Get([FromRoute] string id)
+        {
+            try
+            {
+                var map = await _mapsService.GetMapAsync(id);
+
+                if (map == null)
+                    throw new InvalidOperationException();
+
+                if (map.Profile?.Id != _profileService.GetProfileId())
+                    throw new UnauthorizedAccessException();
+
+                var viewModel = new EditMapViewModel
+                {
+                    Id = map.Id,
+                    Name = map.Name,
+                    IsPublic = map.IsPublic
+                };
+
+                return Json(viewModel);
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("map/[action]")]
+        [Authorize]
+        public async Task<IActionResult> Edit(EditMapViewModel editMapViewModel)
+        {
+            try
+            {
+                var mapDto = _mapper.Map<MapDto>(editMapViewModel);
+                await _mapsService.EditMapAsync(mapDto);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
+            catch (UnauthorizedAccessException)
+            {
+                return Unauthorized();
+            }
         }
 
         [HttpPost]

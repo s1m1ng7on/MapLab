@@ -51,7 +51,7 @@ function setupSearchAndFilters() {
             },
             success: function (html) {
                 searchResultsContainer.html(html);
-                initializeSelectableCards(); // Rebind click events for new content
+                initializeSelectableCards();
             },
             error: function () {
                 searchResultsContainer.html('<p class="text-danger">Failed to load results.</p>');
@@ -151,5 +151,27 @@ $(document).ready(function () {
     setupInfiniteScroll('.by-maplab-map-templates', 'by-maplab');
     setupInfiniteScroll('.featured-map-templates', 'featured');
 
-    initializeSelectableCards(); // Initial cards
+    initializeSelectableCards();
+
+    const $form = $('#createMapForm');
+
+    if ($form.length) {
+        $.validator.unobtrusive.parse($form);
+    }
+
+    $('#finishBtn').on('click', function (e) {
+        e.preventDefault();
+
+        if (!$form.valid()) {
+            const firstError = $form.find(".input-validation-error").first();
+            if (firstError.length) {
+                $('html, body').animate({
+                    scrollTop: firstError.offset().top - 100
+                }, 500);
+            }
+            return;
+        }
+
+        $form.submit();
+    });
 });

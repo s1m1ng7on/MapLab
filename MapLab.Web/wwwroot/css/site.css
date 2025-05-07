@@ -972,39 +972,6 @@ div p:last-child {
         transform: rotate(90deg);
     }
 
-.modal-dialog {
-    height: 80vh;
-    max-height: 80vh;
-    max-width: 80vw;
-}
-
-.modal-content {
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    height: auto;
-    max-height: 80vh;
-    height: 80vh;
-}
-
-.modal-header {
-    position: relative;
-    flex: 0 0 auto;
-}
-
-.modal-body {
-    position: relative;
-    flex: 1 1 auto;
-    overflow-y: auto;
-    max-height: calc(80vh - 140px);  Adjust as needed 
-    min-height: 0;
-}
-
-.modal-footer {
-    position: relative;
-    flex: 0 0 auto;
-}
-
 .card img.profile-picture {
     max-height: 20.5px;
     max-width: 20.5px;
@@ -1015,24 +982,11 @@ div p:last-child {
     display: none;
 }
 
-/*.modal-dialog {
-    max-width: 80vw;
-    width: auto;
-    height: 80vh;
+.modal-lg {
+    max-width: 80%;
 }
 
-.modal-content {
-    display: flex;
-    height: inherit;
-    flex-direction: column;
-}
-
-.modal-body {
-    overflow-y: auto;
-    flex-grow: 1;
-}*/
-
-/*.modal.fade .modal-dialog {
+.modal.fade .modal-dialog {
     transform: translateY(8px) scale(0.98);
     transition: transform 0.2s ease, opacity 0.2s ease;
     opacity: 0;
@@ -1042,4 +996,3 @@ div p:last-child {
     transform: translateY(0) scale(1);
     opacity: 1;
 }
-*/

@@ -30,8 +30,18 @@
             }
         });
 
-        this.$finishBtn.on('click', () => {
-            this.$modal.find('form').submit();
+        this.$finishBtn.on('click', (e) => {
+            e.preventDefault();
+
+            const $form = this.$modal.find('form');
+
+            // Listen once for modal hidden event, then submit form
+            this.$modal.one('hidden.bs.modal', () => {
+                $form.submit();
+            });
+
+            // Hide the modal first
+            this.$modal.modal('hide');
         });
     }
 

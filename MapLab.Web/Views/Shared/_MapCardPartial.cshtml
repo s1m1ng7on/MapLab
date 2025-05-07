@@ -70,19 +70,16 @@
                                 <hr class="dropdown-divider border-secondary my-1">
                             </li>
                             <li>
-                                <a asp-controller="Maps"
-                                   asp-action="Edit"
-                                   asp-route-id="@Model.Id"
-                                   class="dropdown-item text-warning py-2 hover-warning">
+                                <button class="btn-edit-map dropdown-item text-warning py-2 hover-warning"
+                                        data-id="@Model.Id"
+                                        type="button">
                                     <i class="bi bi-pencil-fill me-2"></i>Edit
-                                </a>
+                                </button>
                             </li>
                             <li>
-                                <button class="dropdown-item text-danger py-2 hover-danger"
+                                <button class="dropdown-item text-danger py-2 hover-danger btn-delete-map"
                                         data-id="@Model.Id"
-                                        data-name="@Model.Name"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteMapModal">
+                                        data-name="@Model.Name">
                                     <i class="bi bi-trash-fill me-2"></i>Delete
                                 </button>
                             </li>

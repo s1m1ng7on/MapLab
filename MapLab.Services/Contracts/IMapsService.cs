@@ -12,6 +12,7 @@ namespace MapLab.Services.Contracts
         public IEnumerable<MapDto>? GetMapsForProfile(string profileId, bool isCurrentProfile, MapFiltersModel? filters);
         public Task CreateMapAsync(MapDto mapDto);
         public Task<(int likesCount, bool isLiked)> ToggleLikeDislikeMapAsync(string profileId, string mapId);
+        public Task EditMapAsync(MapDto mapDto);
         public Task DeleteMapAsync(string id);
         public Task SaveMapAsync(string Id, string updatedMapJson);
         public Task UploadMapTemplateAsync(MapTemplate mapTemplate, IFormFile file);
