@@ -38,18 +38,18 @@ namespace MapLab.Services
         public IEnumerable<MapDto>? GetMapsForProfile(string profileId, bool isCurrentProfile, MapFiltersModel? filters = null)
         {
             var maps = _mapRepository.All()
-                    .Where(m => m.ProfileId == profileId && (isCurrentProfile || m.IsPublic))
-                    .Include(m => m.Profile)
-                    .Include(m => m.MapTemplate)
-                    .Include(m => m.Views)
-                    .Include(m => m.Likes)
-                    .OrderByDescending(m => m.Views!
-                        .OrderByDescending(mv => mv.CreatedOn)
-                        .Select(mv => mv.CreatedOn)
-                        .FirstOrDefault())
-                    .AsQueryable();
+                .Where(m => m.ProfileId == profileId && (isCurrentProfile || m.IsPublic))
+                .Include(m => m.Profile)
+                .Include(m => m.MapTemplate)
+                .Include(m => m.Views)
+                .Include(m => m.Likes)
+                .OrderByDescending(m => m.Views!
+                    .OrderByDescending(mv => mv.CreatedOn)
+                    .Select(mv => (DateTime?)mv.CreatedOn)
+                    .FirstOrDefault() ?? m.CreatedOn)
+                .AsQueryable();
 
-            if (filters?.Region != null)
+            if (filters != null)
             {
                 maps = maps.Where(m => m.MapTemplate!.Region == filters.Region);
             }

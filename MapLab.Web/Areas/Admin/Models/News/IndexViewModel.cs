@@ -1,14 +1,14 @@
 ﻿using MapLab.Services.Mapping;
 using MapLab.Services.Models;
+using MapLab.Shared.Areas.Admin.Models;
 
 namespace MapLab.Web.Areas.Admin.Models.News
 {
-    public class IndexViewModel : IMapFrom<PaginationDto<NewsArticleDto>>
+    public class IndexViewModel : IMapFrom<PaginationDto<NewsArticleDto>>, IHasFilters<NewsFilterModel>
     {
-        public List<NewsArticleTableRowViewModel>? Articles { get; set; }
-        public int TotalCount { get; set; }
+        public List<NewsArticleTableRowViewModel>? Items { get; set; }
+        public NewsFilterModel? Filters { get; set; }
         public int PageNumber { get; set; }
-        public int PageSize { get; set; }
-        public int TotalPages { get; }
+        public int TotalPages { get; set; }
     }
 }

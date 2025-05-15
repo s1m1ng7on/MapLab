@@ -8,6 +8,8 @@ using MapLab.Seeding;
 using MapLab.Services;
 using MapLab.Services.Contracts;
 using MapLab.Services.Mapping;
+using MapLab.Web.Infrastructure.Filters;
+using MapLab.Web.Infrastructure.ModelBinding;
 using MapLab.Web.Resources;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -58,7 +60,11 @@ namespace MapLab
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ApplicationDbContext>();
 
-            builder.Services.AddControllersWithViews(options => options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute()))
+            builder.Services.AddControllersWithViews(options =>
+            {
+                options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
+                options.Filters.Add(new RemoveEmptyQueryParametersFilter());
+            })
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization(options =>
                 {

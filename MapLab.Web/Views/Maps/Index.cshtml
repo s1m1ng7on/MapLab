@@ -22,14 +22,11 @@
                     }
 
                     <div class="input-group">
-                        <span class="input-group-text bg-dark text-light border-secondary">
-                            <i class="bi bi-globe-americas"></i>
-                        </span>
-                        <select class="form-select bg-dark text-light border-secondary" name="region" id="regionFilter" aria-label="Filter by region">
-                            <option value="">All Regions</option>
+                        <select class="form-select rounded-pill" name="region" id="regionFilter" aria-label="Filter by region">
+                            <option value="" selected="@(Model.Filters?.Region == null)">All Regions</option>
                             @foreach (var region in Enum.GetValues<Region>())
                             {
-                                <option value="@region">@region.ToString()</option>
+                                <option value="@region" selected="@(Model.Filters?.Region == region)">@region.ToString()</option>
                             }
                         </select>
                     </div>
@@ -40,12 +37,19 @@
 
     @if (Model.Maps == null || !Model.Maps.Any())
     {
-        <div class="row">
-            <div class="col-12">
-                <div class="alert alert-secondary text-center animate__animated animate__fadeIn" role="alert">
-                    @(Model.IsCurrentProfile
-                        ? "You haven't created any maps yet. Click 'Create New Map' to get started!"
-                        : "This profile hasn't created any maps yet.")
+        <div class="row h-100">
+            <div class="col-12 d-flex align-items-center justify-content-center">
+                <div class="text-center animate__animated animate__fadeIn">
+                    <div class="mb-4">
+                        <i class="bi bi-map-fill" style="font-size: 4rem; color: #6c757d;"></i>
+                    </div>
+                    <p class="lead">
+                        @(Model.Filters != null
+                            ? "No results match your selected filters. Try adjusting them or clearing all filters."
+                            : Model.IsCurrentProfile
+                                ? "You haven't created any maps yet. Click the + button to get started."
+                                : "This profile hasn't created any maps yet.")
+                    </p>
                 </div>
             </div>
         </div>
@@ -111,12 +115,4 @@
     <script src="~/js/mapCard.js" asp-append-version="true"></script>
     <script type="module" src="~/js/views/shared/_createMapModalPartial.js" asp-append-version="true"></script>
     <script src="~/js/components/search-bar.js" asp-append-version="true"></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const filterForm = document.getElementById('filterForm');
-            filterForm.querySelectorAll('select').forEach(select => {
-                select.addEventListener('change', () => filterForm.submit());
-            });
-        });
-    </script>
 }

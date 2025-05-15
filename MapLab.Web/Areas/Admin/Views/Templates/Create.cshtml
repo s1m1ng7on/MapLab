@@ -1,0 +1,100 @@
+﻿@using MapLab.Common.Extensions
+@using MapLab.Data.Models.Enums
+@model MapTemplateViewModel
+@{
+    ViewData["Title"] = "Create Map Template";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-10">
+            <div class="card bg-dark text-white border-0 shadow">
+                <div class="card-header bg-primary text-white text-center py-3">
+                    <div class="d-flex align-items-center justify-content-center">
+                        <i class="bi bi-geo-alt-fill me-2 fs-4"></i>
+                        <h3 class="mb-0">@ViewData["Title"]</h3>
+                    </div>
+                </div>
+                <div class="card-body p-4">
+                    <form method="post" enctype="multipart/form-data">
+                        <div class="row g-4">
+                            <div class="col-md-5">
+                                <div class="p-3 rounded-4 bg-dark bg-opacity-50 border border-secondary h-100">
+                                    <h4 class="fs-5 mb-3 border-bottom border-secondary pb-2">Map File Instructions</h4>
+                                    <div class="template-instructions text-white-50 mb-3">
+                                        <p><i class="bi bi-info-circle me-2"></i>Upload a GeoJSON file with these requirements:</p>
+                                        <ul class="small">
+                                            <li>Valid GeoJSON format with feature collection</li>
+                                            <li>Each feature must have geometry and properties</li>
+                                            <li>Supported geometry types: Polygon, MultiPolygon</li>
+                                            <li>Max file size: 5MB</li>
+                                        </ul>
+                                        <div class="alert alert-primary bg-primary bg-opacity-10 border-0 mt-3">
+                                            <div class="d-flex">
+                                                <i class="bi bi-lightbulb-fill text-primary me-2"></i>
+                                                <p class="mb-0 small">Need help? Check our <a href="#" class="text-primary">documentation</a> for sample files and formatting guidelines.</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-7">
+                                <div class="form-floating mb-4">
+                                    <input type="text" class="form-control bg-dark text-white border-secondary rounded-pill" id="mapName" asp-for="Name" placeholder="Enter map name" value="@Model.Name">
+                                    <label for="mapName" class="text-white-50">Map Name</label>
+                                    <span class="text-danger small d-block mt-2" asp-validation-for="Name"></span>
+                                </div>
+
+                                <div class="form-floating mb-4">
+                                    <select class="form-select bg-dark text-white border-secondary rounded-pill" asp-for="Region" id="regionSelect">
+                                        <option value="" class="text-muted" selected>Select Region</option>
+                                        @foreach (var region in Enum.GetValues<Region>())
+                                        {
+                                            <option value="@region">@region.GetDisplayName()</option>
+                                        }
+                                    </select>
+                                    <label for="regionSelect" class="text-white-50">Region</label>
+                                    <span class="text-danger small d-block mt-2" asp-validation-for="Region"></span>
+                                </div>
+
+                                <div class="p-3 rounded-4 bg-dark bg-opacity-50 border border-secondary mb-4">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <h4 class="fs-5 mb-0">Upload Map File</h4>
+                                        <i class="bi bi-question-circle text-primary" data-bs-toggle="tooltip" data-bs-placement="top" title="Upload a GeoJSON file with map boundaries"></i>
+                                    </div>
+                                    <div class="custom-file-upload">
+                                        <input type="file" class="form-control bg-dark text-white border-secondary" asp-for="File" accept=".geojson,.json" id="fileUpload">
+                                        <div class="file-upload-preview mt-3 d-none" id="filePreview">
+                                            <div class="d-flex align-items-center bg-dark bg-opacity-75 p-2 rounded-3">
+                                                <i class="bi bi-file-earmark-code text-primary fs-4 me-2"></i>
+                                                <div class="file-info">
+                                                    <p class="file-name mb-0 text-truncate" id="fileName">No file selected</p>
+                                                    <small class="text-white-50" id="fileSize"></small>
+                                                </div>
+                                                <button type="button" class="btn btn-sm btn-outline-danger ms-auto" id="removeFile">
+                                                    <i class="bi bi-x"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <span class="text-danger small d-block mt-2" asp-validation-for="File"></span>
+                                    </div>
+                                </div>
+
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary btn-lg rounded-pill">
+                                        <i class="bi bi-cloud-upload me-2"></i>Create Template
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/areas/admin/views/templates/create.js" asp-append-version="true"></script>
+    <script src="~/js/components/tooltip.js"></script>
+}

@@ -3,15 +3,17 @@
     ViewData["UseViewportContainer"] = true;
 }
 
-<div class="row">
-    <div class="col-md-3">
-        <partial name="_SidebarPartial.cshtml" />
-    </div>
-    <div class="col-md-9">
+<div class="d-flex">
+    <partial name="_SidebarPartial.cshtml" />
+    <div>
         @RenderBody()
     </div>
 </div>
 
+@section Styles {
+    @RenderSection("Styles", false)
+}
+
 @section Scripts {
-    @RenderSection("Scripts", required: false)
+    @RenderSection("Scripts", false)
 }

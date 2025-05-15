@@ -1,0 +1,72 @@
+﻿.note-editor.note-frame {
+    background-color: var(--bs-dark-alt);
+    border-color: var(--bs-dark-surface);
+}
+
+.note-editor.note-frame .note-editing-area .note-editable {
+    background-color: var(--bs-dark-surface);
+    color: var(--bs-light-muted);
+    border-color: var(--bs-dark-surface);
+}
+
+.note-toolbar {
+    background-color: var(--bs-dark-alt) !important;
+    border-color: var(--bs-dark-surface) !important;
+}
+
+.note-btn {
+    background-color: var(--bs-dark-surface);
+    color: var(--bs-light-muted);
+    border-color: var(--bs-secondary-color);
+}
+
+.note-btn:hover {
+    background-color: var(--bs-secondary-color);
+    color: #fff;
+}
+
+.note-dropdown-menu {
+    background-color: var(--bs-dark-alt);
+    border-color: var(--bs-dark-surface);
+}
+
+.note-dropdown-item {
+    color: var(--bs-light-muted);
+}
+
+.note-dropdown-item:hover {
+    background-color: var(--bs-dark-surface) !important;
+    color: #fff !important;
+}
+
+.note-modal-content {
+    background-color: var(--bs-dark-alt);
+    color: var(--bs-light-muted);
+    border-color: var(--bs-dark-surface);
+}
+
+.note-modal-header {
+    border-color: var(--bs-dark-surface);
+}
+
+.note-modal-footer {
+    border-color: var(--bs-dark-surface);
+}
+
+.note-form-label {
+    color: var(--bs-light-muted);
+}
+
+.note-form-control {
+    background-color: var(--bs-dark-surface);
+    color: var(--bs-light-muted);
+    border-color: var(--bs-dark-surface);
+}
+
+.note-modal-title {
+    color: var(--bs-light-muted);
+}
+
+.close {
+    color: var(--bs-light-muted);
+}

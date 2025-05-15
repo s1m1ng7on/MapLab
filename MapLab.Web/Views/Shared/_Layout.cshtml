@@ -6,7 +6,7 @@
     @await RenderSectionAsync("Styles", false)
 }
 
-<content-wrapper wrap="@(((bool?)ViewData["UseViewportContainer"] ?? false) || ((bool?)ViewData["UseViewportCenteredContainer"] ?? false))">
+<content-wrapper wrap="@((bool?)ViewData["UseViewportContainer"] ?? false)">
     <header>
         <nav class="navbar navbar-expand-sm navbar-dark border-bottom border-dark box-shadow">
             <div class="container">
@@ -54,7 +54,7 @@
             </div>
         </nav>
     </header>
-    <main role="main" class="@(((bool?)ViewData["UseViewportCenteredContainer"] ?? false) ? "viewport-container-main" : string.Empty)">
+    <main role="main">
         @RenderBody()
     </main>
 </content-wrapper>

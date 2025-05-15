@@ -26,107 +26,12 @@
     </form>
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/summernote/0.9.1/summernote-bs5.min.js"></script>
-<style>
-    /* Dark theme for Summernote */
-    .note-editor.note-frame {
-        background-color: #212529;
-        border-color: #495057;
-    }
+@section Styles {
+    <link rel="stylesheet" href="~/lib/summernote/summernote-bs5.min.css" />
+    <link rel="stylesheet" href="~/css/areas/admin/views/news/upsert.css" asp-append-version="true" />
+}
 
-        .note-editor.note-frame .note-editing-area .note-editable {
-            background-color: #2c3034;
-            color: #e9ecef;
-            border-color: #495057;
-        }
-
-    .note-toolbar {
-        background-color: #343a40 !important;
-        border-color: #495057 !important;
-    }
-
-    .note-btn {
-        background-color: #495057;
-        color: #e9ecef;
-        border-color: #6c757d;
-    }
-
-        .note-btn:hover {
-            background-color: #6c757d;
-            color: #fff;
-        }
-
-    .note-dropdown-menu {
-        background-color: #343a40;
-        border-color: #495057;
-    }
-
-    .note-dropdown-item {
-        color: #e9ecef;
-    }
-
-        .note-dropdown-item:hover {
-            background-color: #495057 !important;
-            color: #fff !important;
-        }
-
-    .note-modal-content {
-        background-color: #343a40;
-        color: #e9ecef;
-        border-color: #495057;
-    }
-
-    .note-modal-header {
-        border-color: #495057;
-    }
-
-    .note-modal-footer {
-        border-color: #495057;
-    }
-
-    .note-form-label {
-        color: #e9ecef;
-    }
-
-    .note-form-control {
-        background-color: #2c3034;
-        color: #e9ecef;
-        border-color: #495057;
-    }
-
-    .note-modal-title {
-        color: #e9ecef;
-    }
-
-    .close {
-        color: #e9ecef;
-    }
-</style>
-<script>
-    $(document).ready(function() {
-        $('#editor').summernote({
-            height: 300,
-            disableResizeEditor: true,
-            toolbar: [
-                ['style', ['bold', 'italic', 'underline', 'strikethrough']], // Text formatting
-                ['para', ['style', 'ul', 'ol', 'paragraph']], // H1, H2, lists and alignment
-                ['table', ['table']], // Tables
-                ['insert', ['link', 'picture']], // Links and images
-                ['misc', ['undo', 'redo']] // Undo & Redo
-            ],
-            styleTags: [
-                { title: 'Heading 1', tag: 'h1', value: 'h1' },
-                { title: 'Heading 2', tag: 'h2', value: 'h2' },
-                { title: 'Paragraph', tag: 'p', value: 'p' }
-            ],
-            fontNames: ['Exo 2'],
-            fontNamesIgnoreCheck: ['Exo 2'],
-            callbacks: {
-                onInit: function() {
-                    // Force dark theme on initialization
-                    $('.note-editor').addClass('dark-theme');
-                }
-            }
-        });
-    });
-</script>
+@section Scripts {
+    <script src="~/lib/summernote/summernote-bs5.min.js"></script>
+    <script src="~/js/areas/admin/views/news/upsert.js" asp-append-version="true"></script>
+}

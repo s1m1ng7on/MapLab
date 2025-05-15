@@ -1,4 +1,5 @@
 ﻿@using MapLab.Web.Areas.Admin.Models.News
+@using MapLab.Web.Utilities
 @model IndexViewModel
 @{
     ViewData["Title"] = "Manage News";
@@ -7,79 +8,273 @@
 <div class="container py-5">
     <div class="row">
         <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
                 <h2>Manage News</h2>
-                <a class="btn btn-primary rounded-pill"
-                   asp-controller="News"
-                   asp-action="Create">
-                    <i class="bi bi-plus-lg me-2"></i>Create Article
-                </a>
-            </div>
-            @if (Model.Articles!.Any())
-            {
-                <div class="table-responsive">
-                    <table class="table table-dark table-hover" style="table-layout: fixed;">
-                        <thead>
-                            <tr>
-                                <th class="w-50">Title</th>
-                                <th>Author</th>
-                                <th class="d-none d-md-table-cell">Created On</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @foreach (var newsArticle in Model.Articles!)
-                            {
-                                <tr>
-                                    <td class="text-truncate">
-                                        <a class="text-white"
-                                           asp-area=""
-                                           asp-controller="News"
-                                           asp-action="Article"
-                                           asp-route-Id="@newsArticle.Id">
-                                            @newsArticle.Title
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <a class="text-white"
-                                           asp-area=""
-                                           asp-controller="Profile"
-                                           asp-action="Index"
-                                           asp-route-username="@newsArticle.ProfileUserName">
-                                            <img src="@(newsArticle.ProfileProfilePictureFilePath ?? "https://static.vecteezy.com/system/resources/thumbnails/009/292/244/small/default-avatar-icon-of-social-media-user-vector.jpg")"
-                                                 class="rounded-pill me-1"
-                                                 width="16"
-                                                 height="16" />@newsArticle.ProfileUserName
-                                        </a>
-                                    </td>
-                                    <td class="d-none d-md-table-cell">
-                                        <small class="text-muted">
-                                            @newsArticle.CreatedOn.ToString("dd/MM/yyyy")
-                                        </small>
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-sm btn-primary"
-                                           asp-area=""
-                                           asp-controller="News"
-                                           asp-action="Article"
-                                           asp-route-Id="@newsArticle.Id">
-                                            <i class="bi bi-eye-fill"></i>
-                                        </a>
-                                        <a class="btn btn-sm btn-warning"
-                                           asp-controller="News"
-                                           asp-action="Edit"
-                                           asp-route-Id="@newsArticle.Id">
-                                            <i class="bi bi-pencil-fill"></i>
-                                        </a>
-                                        <button class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal" data-id="@newsArticle.Id">
-                                            <i class="bi bi-trash-fill"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                            }
-                        </tbody>
-                    </table>
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <!-- Date Filter Dropdown -->
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle rounded-pill" type="button" id="dateFilterDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-calendar-range me-1"></i> Date
+                        </button>
+                        <div class="dropdown-menu p-3 bg-dark text-light" style="min-width: 300px;">
+                            <h6 class="dropdown-header">Quick Filters</h6>
+                            <a class="dropdown-item text-light" href="#" data-filter="today">Today</a>
+                            <a class="dropdown-item text-light" href="#" data-filter="last7days">Last 7 Days</a>
+                            <a class="dropdown-item text-light" href="#" data-filter="thismonth">This Month</a>
+                            <div class="dropdown-divider"></div>
+                            <h6 class="dropdown-header">Custom Range</h6>
+                            <form id="dateRangeForm" class="px-2">
+                                <div class="mb-2">
+                                    <label for="startDate" class="form-label small">From</label>
+                                    <input type="date" class="form-control form-control-sm bg-dark text-light" id="startDate" name="startDate">
+                                </div>
+                                <div class="mb-2">
+                                    <label for="endDate" class="form-label small">To</label>
+                                    <input type="date" class="form-control form-control-sm bg-dark text-light" id="endDate" name="endDate">
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-sm w-100 mt-2">Apply Filter</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Search Bar -->
+                    <div class="d-flex">
+                        <form id="searchForm" class="d-flex" method="get">
+                            <div class="input-group">
+                                <input type="text" class="form-control rounded-pill"
+                                       placeholder="Search articles..."
+                                       name="search"
+                                       value="@Model.Filters?.Search">
+                                <button class="btn btn-outline-secondary rounded-pill-end" type="submit">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Create Article Button -->
+                    <a class="btn btn-primary rounded-pill"
+                       asp-controller="News"
+                       asp-action="Create">
+                        <i class="bi bi-plus-lg me-2"></i>Create Article
+                    </a>
                 </div>
+            </div>
+            @if (Model.Items!.Any())
+            {
+                <div class="d-flex flex-column">
+                    <div class="table-responsive flex-grow-1" style="overflow-y: auto;">
+                        <table class="table table-dark table-hover" style="table-layout: fixed;">
+                            <thead class="sticky-top bg-dark">
+                                <tr>
+                                    <th style="width: 40%">Title</th>
+                                    <th style="width: 20%">Author</th>
+                                    <th style="width: 20%" class="d-none d-md-table-cell">Created On</th>
+                                    <th style="width: 20%">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var newsArticle in Model.Items!)
+                                {
+                                    <tr>
+                                        <td class="text-truncate">
+                                            <a class="text-white"
+                                               asp-area=""
+                                               asp-controller="News"
+                                               asp-action="Article"
+                                               asp-route-Id="@newsArticle.Id">
+                                                @newsArticle.Title
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <a class="text-white"
+                                               asp-area=""
+                                               asp-controller="Profile"
+                                               asp-action="Index"
+                                               asp-route-username="@newsArticle.ProfileUserName">
+                                                <img class="profile-picture rounded-circle shadow-sm me-1"
+                                                     src="@(newsArticle.ProfileProfilePictureFilePath ?? StaticFilePaths.DefaultProfilePicture)"
+                                                     alt="@newsArticle.ProfileUserName" />@newsArticle.ProfileUserName
+                                            </a>
+                                        </td>
+                                        <td class="d-none d-md-table-cell">
+                                            <small class="text-muted">
+                                                @newsArticle.CreatedOn.ToString("dd/MM/yyyy")
+                                            </small>
+                                        </td>
+                                        <td>
+                                            <div class="action-btn-container">
+                                                <a class="btn btn-primary btn-icon"
+                                                   asp-area=""
+                                                   asp-controller="News"
+                                                   asp-action="Article"
+                                                   asp-route-Id="@newsArticle.Id"
+                                                   data-bs-toggle="tooltip"
+                                                   title="View">
+                                                    <i class="bi bi-eye-fill"></i>
+                                                </a>
+                                                <a class="btn btn-warning btn-icon"
+                                                   asp-controller="News"
+                                                   asp-action="Edit"
+                                                   asp-route-Id="@newsArticle.Id"
+                                                   data-bs-toggle="tooltip"
+                                                   title="Edit">
+                                                    <i class="bi bi-pencil-fill"></i>
+                                                </a>
+                                                <button class="btn btn-danger btn-icon"
+                                                        data-bs-toggle="modal"
+                                                        data-bs-target="#deleteModal"
+                                                        data-id="@newsArticle.Id"
+                                                        data-bs-toggle="tooltip"
+                                                        title="Delete">
+                                                    <i class="bi bi-trash-fill"></i>
+                                                </button>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                    @if (Model.TotalPages > 1)
+                    {
+                        <nav aria-label="News pagination" class="mt-3">
+                            <ul class="pagination justify-content-center rounded-pill">
+                                @if (Model.PageNumber > 3)
+                                {
+                                    <li class="page-item"><a class="page-link" asp-route-page="1">1</a></li>
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                }
+
+                                @if (Model.PageNumber > 1)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-route-page="@(Model.PageNumber - 1)">
+                                            @(Model.PageNumber - 1)
+                                        </a>
+                                    </li>
+                                }
+
+                                <li class="page-item active">
+                                    <span class="page-link">
+                                        @Model.PageNumber
+                                    </span>
+                                </li>
+
+                                @if (Model.PageNumber < Model.TotalPages)
+                                {
+                                    <li class="page-item">
+                                        <a class="page-link" asp-route-page="@(Model.PageNumber + 1)">
+                                            @(Model.PageNumber + 1)
+                                        </a>
+                                    </li>
+                                }
+
+                                @if (Model.PageNumber < Model.TotalPages - 2)
+                                {
+                                    <li class="page-item disabled"><span class="page-link">...</span></li>
+                                    <li class="page-item">
+                                        <a class="page-link" asp-route-page="@Model.TotalPages">@Model.TotalPages</a>
+                                    </li>
+                                }
+                            </ul>
+                        </nav>
+                    }
+                </div>
+
+                <!-- Pagination Styles -->
+                <style>
+                    .pagination {
+                        border-radius: 50rem; /* Make the whole pagination container rounded-pill */
+                    }
+
+                        .pagination .page-link {
+                            background-color: var(--bs-dark);
+                            border-color: var(--bs-dark-alt);
+                            color: var(--bs-light-muted);
+                            margin: 0 2px;
+                            border-radius: 50rem; /* Make individual buttons rounded */
+                            transition: all 0.2s;
+                        }
+
+                            .pagination .page-link:hover:not(.disabled .page-link) {
+                                background-color: var(--bs-primary);
+                                border-color: var(--bs-primary-dark);
+                                color: #fff;
+                            }
+
+                        .pagination .page-item.active .page-link {
+                            background-color: var(--bs-primary);
+                            border-color: var(--bs-primary-dark);
+                            color: #fff;
+                            font-weight: bold;
+                            z-index: 3;
+                        }
+
+                        .pagination .page-item.disabled .page-link {
+                            background-color: var(--bs-dark-surface);
+                            border-color: var(--bs-dark-surface);
+                            color: var(--bs-secondary-color);
+                            pointer-events: none;
+                            opacity: 0.5;
+                        }
+
+                        .pagination .page-link:focus {
+                            box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+                            z-index: 3;
+                        }
+
+                    /* Table styling for better viewport fit */
+                    .table-responsive {
+                        min-height: 200px;
+                        border-radius: 0.5rem;
+                        overflow: hidden;
+                    }
+
+                    .sticky-top {
+                        position: sticky;
+                        top: 0;
+                        z-index: 100;
+                    }
+
+                    /* Custom scrollbar for table */
+                    .table-responsive::-webkit-scrollbar {
+                        width: 8px;
+                    }
+
+                    .table-responsive::-webkit-scrollbar-track {
+                        background: var(--bs-dark-alt, #343a40);
+                    }
+
+                    .table-responsive::-webkit-scrollbar-thumb {
+                        background: var(--bs-primary, #0d6efd);
+                        border-radius: 4px;
+                    }
+
+                        .table-responsive::-webkit-scrollbar-thumb:hover {
+                            background: var(--bs-primary-dark, #0a58ca);
+                        }
+
+                    /* Style for action buttons */
+                    .action-btn-container {
+                        display: flex;
+                        gap: 0.25rem;
+                    }
+
+                    .btn-icon {
+                        padding: 0.25rem 0.5rem;
+                        line-height: 1;
+                    }
+
+                    /* Make profile pictures consistent size */
+                    .profile-picture {
+                        width: 24px;
+                        height: 24px;
+                        object-fit: cover;
+                    }
+                </style>
+
 
                 <!-- Delete Confirmation Modal -->
                 <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
@@ -103,13 +298,22 @@
                     </div>
                 </div>
 
-                <!-- Script to handle delete confirmation -->
+                <!-- Script to handle delete confirmation and initialize tooltips -->
                 <script>
-                    var deleteModal = document.getElementById('deleteModal');
-                    deleteModal.addEventListener('show.bs.modal', function (event) {
-                        var button = event.relatedTarget;
-                        var articleId = button.getAttribute('data-id');
-                        document.getElementById('deleteArticleId').value = articleId;
+                    document.addEventListener('DOMContentLoaded', function () {
+                        // Handle delete modal
+                        var deleteModal = document.getElementById('deleteModal');
+                        deleteModal.addEventListener('show.bs.modal', function (event) {
+                            var button = event.relatedTarget;
+                            var articleId = button.getAttribute('data-id');
+                            document.getElementById('deleteArticleId').value = articleId;
+                        });
+
+                        // Initialize tooltips
+                        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+                        tooltipTriggerList.forEach(function (tooltipTriggerEl) {
+                            new bootstrap.Tooltip(tooltipTriggerEl);
+                        });
                     });
                 </script>
             }

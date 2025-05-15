@@ -16,5 +16,7 @@ namespace MapLab.Services.Models
         public string? ProfileProfilePictureFilePath { get; set; }
         public DateTime CreatedOn { get; set; }
         public DateTime UpdatedOn { get; set; }
+        public ICollection<MapDto>? Maps { get; set; }
+        public ICollection<Like<MapTemplate>>? Likes { get; set; }
     }
 }

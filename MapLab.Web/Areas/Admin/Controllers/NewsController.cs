@@ -2,6 +2,7 @@
 using MapLab.Common.Enums;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
+using MapLab.Shared.Areas.Admin.Models;
 using MapLab.Web.Areas.Admin.Models.News;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,9 +23,9 @@ namespace MapLab.Web.Areas.Admin.Controllers
             _mapper = mapper;
         }
 
-        public async Task<IActionResult> Index(int page = 1, int pageSize = 10)
+        public async Task<IActionResult> Index(NewsFilterModel filters, int page = 1)
         {
-            var newsArticles = _mapper.Map<PaginationDto<NewsArticleDto>, IndexViewModel>(await _newsService.GetNewsAsync(page, pageSize));
+            var newsArticles = _mapper.Map<IndexViewModel>(await _newsService.GetNewsAsync(page, 10));
             return View(newsArticles);
         }
 

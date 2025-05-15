@@ -5,6 +5,7 @@ using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
 using MapLab.Services.Extensions;
 using MapLab.Services.Models;
+using MapLab.Shared.Areas.Admin.Models;
 using MapLab.Shared.Models.FilterModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -46,6 +47,8 @@ namespace MapLab.Services
         {
             var mapTemplates = _mapTemplateRepository.All()
                 .Include(mt => mt.Profile)
+                .Include(mt => mt.Maps)
+                .Include(mt => mt.Likes)
                 .AsQueryable();
 
             if (filters != null)
@@ -55,6 +58,15 @@ namespace MapLab.Services
                     (!filters.Region.HasValue || mt.Region == filters.Region) &&
                     (!filters.ByMapLab || mt.Profile!.UserName == "MapLab")
                 );
+
+                if (filters is AdminTemplateFiltersModel adminFilters)
+                {
+                    if (adminFilters.From.HasValue)
+                        mapTemplates = mapTemplates.Where(mt => mt.CreatedOn >= adminFilters.From.Value);
+
+                    if (adminFilters.To.HasValue)
+                        mapTemplates = mapTemplates.Where(mt => mt.CreatedOn <= adminFilters.To.Value);
+                }
             }
 
             return mapTemplates.ToPaginationDto<MapTemplate, MapTemplateDto>(_mapper, page, pageSize);

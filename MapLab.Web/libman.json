@@ -118,6 +118,10 @@
     {
       "library": "aos@2.3.4",
       "destination": "wwwroot/lib/aos/"
+    },
+    {
+      "library": "summernote@0.9.1",
+      "destination": "wwwroot/lib/summernote/"
     }
   ]
 }

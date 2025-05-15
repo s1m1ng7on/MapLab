@@ -4,6 +4,7 @@ using MapLab.Services;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
 using MapLab.Shared.Models.FilterModels;
+using MapLab.Web.Infrastructure.ModelBinding;
 using MapLab.Web.Models.Maps;
 using MapLab.Web.Models.Templates;
 using Microsoft.AspNetCore.Authorization;
@@ -29,7 +30,7 @@ namespace MapLab.Web.Controllers
         }
 
         [Route("[controller]/{profileUserName?}")]
-        public async Task<IActionResult> Index(string profileUserName, MapFiltersModel? filters)
+        public async Task<IActionResult> Index(string profileUserName, [NullIfEmptyBinder] MapFiltersModel? filters)
         {
             if (string.IsNullOrEmpty(profileUserName) && !User.Identity.IsAuthenticated)
             {
@@ -54,6 +55,7 @@ namespace MapLab.Web.Controllers
                 }),
                 ProfileUserName = profileUserName,
                 IsCurrentProfile = isCurrentProfile,
+                Filters = filters,
                 MapCreateViewModel = isCurrentProfile
                     ? new MapCreateViewModel()
                     {
