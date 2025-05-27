@@ -109,8 +109,8 @@
         const mapId = $(this).data('id');
         const mapName = $(this).data('name');
 
+        $('#modal-entity-id').val(mapId);
         $('#modal-entity-name').text(mapName);
-        $('#deleteMapForm').attr('action', '/map/delete/' + mapId);
 
         $('#deleteMapModal').modal('show');
     });

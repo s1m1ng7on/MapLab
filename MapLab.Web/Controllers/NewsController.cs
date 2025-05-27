@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace MapLab.Web.Controllers
 {
-    [Route("[controller]")]
     public class NewsController : Controller
     {
         private readonly INewsService _newsService;
@@ -20,13 +19,20 @@ namespace MapLab.Web.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var newsArticles = await _newsService.GetNewsAsync(1, 7 * 3);
+            var newsArticles = await _newsService.GetNewsAsync(1, 5 * 3);
             var newsIndexViewModel = _mapper.Map<PaginationDto<NewsArticleDto>, NewsSectionViewModel>(newsArticles);
 
             return View(newsIndexViewModel);
         }
 
-        [Route("[action]/{id}")]
+        public async Task<IActionResult> Load(int page = 1)
+        {
+            var newsArticles = await _newsService.GetNewsAsync(page, 5 * 3);
+            var newsArticlesViewModel = _mapper.Map<PaginationDto<NewsArticleDto>, NewsSectionViewModel>(newsArticles);
+
+            return PartialView("_NewsArticleCardsPartial", newsArticlesViewModel);
+        }
+
         public async Task<IActionResult> Article(string id)
             {
             var newsArticle = await _newsService.GetNewsArticleAsync(id);

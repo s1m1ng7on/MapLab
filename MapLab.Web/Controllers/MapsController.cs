@@ -176,8 +176,8 @@ namespace MapLab.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        [Route("map/[action]/{id}")]
-        public async Task<IActionResult> Delete([FromRoute] string id)
+        [Route("map/[action]")]
+        public async Task<IActionResult> Delete(string id)
         {
             try
             {

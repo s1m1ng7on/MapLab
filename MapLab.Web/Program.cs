@@ -10,6 +10,7 @@ using MapLab.Services.Contracts;
 using MapLab.Services.Mapping;
 using MapLab.Web.Infrastructure.Filters;
 using MapLab.Web.Infrastructure.ModelBinding;
+using MapLab.Web.Models.Maps;
 using MapLab.Web.Resources;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -132,6 +133,7 @@ namespace MapLab
 
             // Application services
             builder.Services.AddTransient<IProfileService, ProfileService>();
+            //builder.Services.AddTransient<IProfilesService, ProfilesService>();
             builder.Services.AddTransient<IMapsService, MapsService>();
             builder.Services.AddTransient<ITemplatesService, TemplatesService>();
             builder.Services.AddTransient<IMapAnalyticsService, MapAnalyticsService>();

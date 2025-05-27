@@ -1,4 +1,4 @@
-﻿$(document).ready(function () {
+﻿$(document).ready(() => {
     const $searchInput = $('.search-bar input');
     const $clearButton = $('.search-bar .clear-button');
 
@@ -21,7 +21,7 @@
     });
 
     $searchInput.on('keydown', function (e) {
-        if (e.key === 'Enter' || e.keyCode === 13) {
+        if ((e.key === 'Enter' || e.keyCode === 13) && $(this).is('[data-prevent-submit]')) {
             e.preventDefault();
         }
     });

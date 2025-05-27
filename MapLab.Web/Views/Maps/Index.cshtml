@@ -77,7 +77,7 @@
     </button>
     <partial name="_CreateMapModalPartial" model="@Model.MapCreateViewModel" />
     <partial name="_EditMapModalPartial" model="new EditMapViewModel()"/>
-    <partial name="_DeleteMapModalPartial" />
+    <partial name="_DeleteMapModalPartial" model="new DeleteMapModalPartialViewModel()" />
 }
 
 @section Styles {

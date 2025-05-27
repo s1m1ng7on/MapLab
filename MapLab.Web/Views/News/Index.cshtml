@@ -6,7 +6,7 @@
 
 <div class="container py-5">
     <h2 class="mb-5">News</h2>
-    <div class="row g-4">
+    <div id="newsList" class="row g-4">
         @foreach (var newsArticle in Model.Articles)
         {
             <div class="col-md-4">
@@ -14,12 +14,64 @@
             </div>
         }
     </div>
-    <div class="text-center mt-5">
-        <a asp-controller="News"
-           asp-action="Index"
-           class="btn btn-outline-primary btn-lg">
-            View All News
-            <i class="bi bi-newspaper ms-2"></i>
-        </a>
-    </div>
 </div>
+
+@section Scripts {
+    <script>
+        let newsPage = 1;
+        let isLoading = false;
+        let noMoreNews = false;
+
+        const $newsList = $('#newsList');
+
+        function showLoader() {
+            const loaderHtml = `
+                <div id="newsLoader" class="col-12 text-center py-4">
+                    <div class="spinner-border text-primary" role="status"></div>
+                    <p class="mt-2">Loading more news...</p>
+                </div>
+            `;
+            $newsList.append(loaderHtml);
+        }
+
+        function hideLoader() {
+            $('#newsLoader').remove();
+        }
+
+        function loadMoreNews() {
+            if (isLoading || noMoreNews) return;
+
+            isLoading = true;
+            newsPage++;
+
+            showLoader();
+
+            $.ajax({
+                url: '/news/load',
+                type: 'GET',
+                data: { page: newsPage },
+                success: function (html) {
+                    if (html.trim().length === 0) {
+                        noMoreNews = true;
+                    } else {
+                        $newsList.append(html);
+                    }
+                },
+                error: function () {
+                    console.error('Failed to load more news');
+                },
+                complete: function () {
+                    hideLoader();
+                    isLoading = false;
+                }
+            });
+        }
+
+        $(window).on('scroll', function () {
+            const nearBottom = $(window).scrollTop() + $(window).height() > $(document).height() - 200;
+            if (nearBottom) {
+                loadMoreNews();
+            }
+        });
+    </script>
+}

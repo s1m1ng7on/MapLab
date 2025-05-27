@@ -1,6 +1,7 @@
 ﻿using MapLab.Services.Mapping;
 using MapLab.Services.Models;
 using MapLab.Shared.Areas.Admin.Models;
+using MapLab.Web.Models;
 
 namespace MapLab.Web.Areas.Admin.Models.Templates
 {

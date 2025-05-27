@@ -3,7 +3,9 @@ using MapLab.Data.Entities;
 using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
+using MapLab.Services.Extensions;
 using MapLab.Services.Models;
+using MapLab.Shared.Areas.Admin.Models;
 using MapLab.Shared.Models.FilterModels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -33,6 +35,52 @@ namespace MapLab.Services
             _mapTemplatesService = mapTemplatesService;
             _profileService = profileService;
             _mapper = mapper;
+        }
+
+        public PaginationDto<MapDto> GetMaps(MapFiltersModel? filters = null, int page = 1, int pageSize = 10)
+        {
+            var maps = _mapRepository.All()
+                .Include(m => m.Profile)
+                .Include(m => m.MapTemplate)
+                .Include(m => m.Views)
+                .Include(m => m.Likes)
+                .AsQueryable();
+
+            if (filters != null)
+            {
+                maps = maps.Where(m => m.MapTemplate!.Region == filters.Region);
+
+                if (filters is AdminMapFiltersModel adminFilters)
+                {
+                    if (!string.IsNullOrWhiteSpace(adminFilters.Search))
+                    {
+                        var s = adminFilters.Search.ToLower();
+                        maps = maps.Where(m =>
+                            m.Name.ToLower().Contains(s) ||
+                            (m.MapTemplate != null && m.MapTemplate.Name.ToLower().Contains(s)) ||
+                            (m.Profile != null && m.Profile.UserName.ToLower().Contains(s))
+                        );
+                    }
+
+                    if (adminFilters.From != default)
+                        maps = maps.Where(m => m.CreatedOn >= adminFilters.From);
+
+                    if (adminFilters.To != default)
+                    {
+                        var toDate = adminFilters.To.Date.AddDays(1).AddTicks(-1);
+                        maps = maps.Where(m => m.CreatedOn <= toDate);
+                    }
+
+                    maps = maps.Where(m =>
+                        m.Views.Count >= adminFilters.ViewsMin &&
+                        m.Views.Count <= adminFilters.ViewsMax &&
+                        m.Likes.Count >= adminFilters.LikesMin &&
+                        m.Likes.Count <= adminFilters.LikesMax
+                    );
+                }
+            }
+
+            return maps.ToPaginationDto<Map, MapDto>(_mapper, page, pageSize);
         }
 
         public IEnumerable<MapDto>? GetMapsForProfile(string profileId, bool isCurrentProfile, MapFiltersModel? filters = null)
@@ -143,7 +191,7 @@ namespace MapLab.Services
             if (map == null)
                 throw new InvalidOperationException("Map not found.");
 
-            if (map.ProfileId != _profileService.GetProfileId())
+            if (map.ProfileId != _profileService.GetProfileId() && !_profileService.IsAdmin())
                 throw new UnauthorizedAccessException("You are not authorized to delete this map.");
 
             _mapRepository.Delete(map);

@@ -12,6 +12,8 @@ namespace MapLab.Services.Models
         public string? MapTemplateId { get; set; }
         public bool IsPublic { get; set; }
         public string? ProfileId { get; set; }
+        public DateTime CreatedOn { get; set; }
+        public DateTime UpdatedOn { get; set; }
         public virtual MapTemplateDto? MapTemplate { get; set; }
         public virtual Profile? Profile { get; set; }
         public virtual ICollection<MapView>? Views { get; set; }

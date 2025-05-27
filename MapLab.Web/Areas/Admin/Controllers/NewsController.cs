@@ -25,7 +25,9 @@ namespace MapLab.Web.Areas.Admin.Controllers
 
         public async Task<IActionResult> Index(NewsFilterModel filters, int page = 1)
         {
-            var newsArticles = _mapper.Map<IndexViewModel>(await _newsService.GetNewsAsync(page, 10));
+            var newsArticles = _mapper.Map<IndexViewModel>(await _newsService.GetNewsAsync(page, 10, filters));
+            newsArticles.Filters = filters;
+
             return View(newsArticles);
         }
 

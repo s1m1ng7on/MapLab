@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MapLab.Shared", "MapLab.Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapLab.Seeding", "MapLab.Seeding\MapLab.Seeding.csproj", "{829F8D4D-D125-4960-8B83-A0D235BA4042}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MapLab.Testing", "MapLab.Testing\MapLab.Testing.csproj", "{86EB0FA2-D7FA-4A4B-92A2-2673A7179CAB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{829F8D4D-D125-4960-8B83-A0D235BA4042}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{829F8D4D-D125-4960-8B83-A0D235BA4042}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{829F8D4D-D125-4960-8B83-A0D235BA4042}.Release|Any CPU.Build.0 = Release|Any CPU
+		{86EB0FA2-D7FA-4A4B-92A2-2673A7179CAB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{86EB0FA2-D7FA-4A4B-92A2-2673A7179CAB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{86EB0FA2-D7FA-4A4B-92A2-2673A7179CAB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{86EB0FA2-D7FA-4A4B-92A2-2673A7179CAB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

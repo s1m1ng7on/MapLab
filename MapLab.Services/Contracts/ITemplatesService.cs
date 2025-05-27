@@ -12,5 +12,6 @@ namespace MapLab.Services.Contracts
         public Task<PaginationDto<MapTemplateDto>> GetFeaturedMapTemplates(int page = 1, int pageSize = 10);
         public Task<string> GetMapTemplateJsonAsync(MapTemplateDto mapTemplate);
         public Task UploadMapTemplateAsync(MapTemplateDto mapTemplateDto, IFormFile file);
+        public Task DeleteMapTemplateAsync(string id);
     }
 }

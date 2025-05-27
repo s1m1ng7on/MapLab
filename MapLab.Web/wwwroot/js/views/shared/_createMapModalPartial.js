@@ -114,7 +114,7 @@ function setupInfiniteScroll(containerSelector, type) {
                     $spinner.remove();
                     $ul.append(html);
                     loading = false;
-                    initializeSelectableCards(); // Rebind for new cards
+                    initializeSelectableCards();
                 },
                 error: function () {
                     $spinner.remove();

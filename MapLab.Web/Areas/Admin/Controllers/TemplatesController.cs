@@ -1,11 +1,11 @@
 ﻿using AutoMapper;
 using MapLab.Data.Entities;
+using MapLab.Services;
 using MapLab.Services.Contracts;
-using MapLab.Services.Models;
 using MapLab.Shared.Areas.Admin.Models;
-using MapLab.Shared.Models.FilterModels;
 using MapLab.Web.Areas.Admin.Models;
 using MapLab.Web.Areas.Admin.Models.Templates;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -28,7 +28,9 @@ namespace MapLab.Web.Areas.Admin.Controllers
 
         public IActionResult Index(AdminTemplateFiltersModel filters, int page = 1)
         {
-            var mapTemplates = _mapper.Map<TemplatesIndexViewModel>(_mapTemplatesService.GetMapTemplates(filters));
+            var mapTemplates = _mapper.Map<TemplatesIndexViewModel>(_mapTemplatesService.GetMapTemplates(filters, page));
+            mapTemplates.Filters = filters;
+
             return View(mapTemplates);
         }
 
@@ -50,6 +52,21 @@ namespace MapLab.Web.Areas.Admin.Controllers
             }
 
             return View(mapTemplateViewModel);
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Delete(string id)
+        {
+            try
+            {
+                await _mapTemplatesService.DeleteMapTemplateAsync(id);
+                return RedirectToAction("Index");
+            }
+            catch (InvalidOperationException)
+            {
+                return NotFound();
+            }
         }
     }
 }

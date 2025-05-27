@@ -9,6 +9,7 @@ namespace MapLab.Services.Contracts
     {
         public Task<MapDto> GetMapAsync(string id);
         public Task<(string, string)> GetMapJsonAsync(MapDto map);
+        public PaginationDto<MapDto> GetMaps(MapFiltersModel? filters = null, int page = 1, int pageSize = 10);
         public IEnumerable<MapDto>? GetMapsForProfile(string profileId, bool isCurrentProfile, MapFiltersModel? filters);
         public Task CreateMapAsync(MapDto mapDto);
         public Task<(int likesCount, bool isLiked)> ToggleLikeDislikeMapAsync(string profileId, string mapId);

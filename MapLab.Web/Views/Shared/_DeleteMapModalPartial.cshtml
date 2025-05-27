@@ -1,8 +1,12 @@
-﻿<div class="modal fade" id="deleteMapModal" tabindex="-1" aria-hidden="true">
+﻿@using MapLab.Web.Models.Shared
+@model DeleteMapModalPartialViewModel
+
+<div class="modal fade" id="deleteMapModal" tabindex="-1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content bg-dark text-white border-0 rounded-4 shadow-lg">
             <form id="deleteMapForm"
                   method="post"
+                  asp-area="@(Model.IsAdmin ? "Admin" : string.Empty)"
                   asp-controller="Maps"
                   asp-action="Delete">
                 @Html.AntiForgeryToken()

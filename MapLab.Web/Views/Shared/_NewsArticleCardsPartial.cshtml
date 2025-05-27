@@ -1,0 +1,9 @@
+﻿@using MapLab.Web.Models.News
+@model NewsSectionViewModel
+
+@foreach (var newsArticle in Model.Articles!)
+{
+    <div class="col-md-4">
+        <partial name="_NewsArticleCardPartial" model="newsArticle" />
+    </div>
+}

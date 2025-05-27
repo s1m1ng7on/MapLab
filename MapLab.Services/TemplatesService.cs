@@ -128,5 +128,16 @@ namespace MapLab.Services
             await _mapTemplateRepository.AddAsync(mapTemplate);
             await _mapTemplateRepository.SaveChangesAsync();
         }
+
+        public async Task DeleteMapTemplateAsync(string id)
+        {
+            var mapTemplate = await _mapTemplateRepository.FindAsync(id);
+
+            if (mapTemplate == null)
+                throw new InvalidOperationException("Template not found.");
+
+            _mapTemplateRepository.Delete(mapTemplate);
+            await _mapTemplateRepository.SaveChangesAsync();
+        }
     }
 }

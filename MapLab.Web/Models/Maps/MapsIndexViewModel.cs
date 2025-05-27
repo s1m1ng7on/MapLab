@@ -2,7 +2,7 @@
 
 namespace MapLab.Web.Models.Maps
 {
-    public class MapsIndexViewModel
+    public class MapsIndexViewModel : IHasFilters<MapFiltersModel>
     {
         public IEnumerable<MapViewModel>? Maps { get; set; }
         public string? ProfileUserName { get; set; }

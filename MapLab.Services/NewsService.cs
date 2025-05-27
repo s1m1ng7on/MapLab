@@ -5,6 +5,7 @@ using MapLab.Data.Managers.Contracts;
 using MapLab.Data.Repositories;
 using MapLab.Services.Contracts;
 using MapLab.Services.Models;
+using MapLab.Shared.Areas.Admin.Models;
 using Microsoft.EntityFrameworkCore;
 using System.Text.RegularExpressions;
 
@@ -25,11 +26,23 @@ namespace MapLab.Services
             _fileStorageManager = fileStorageManager;
         }
 
-        public async Task<PaginationDto<NewsArticleDto>> GetNewsAsync(int page, int pageSize)
+        public async Task<PaginationDto<NewsArticleDto>> GetNewsAsync(int page, int pageSize, NewsFilterModel? filters = null)
         {
             var query = _newsArticleRepository.All()
                 .Include(x => x.Profile)
-                .OrderByDescending(x => x.CreatedOn);
+                .OrderByDescending(x => x.CreatedOn)
+                .AsQueryable();
+
+            if (filters != null)
+            {
+                query = query.Where(x =>
+                    (string.IsNullOrEmpty(filters.Search) ||
+                        EF.Functions.Like(x.Title, $"%{filters.Search}%") ||
+                        EF.Functions.Like(x.Profile!.UserName, $"%{filters.Search}%")) &&
+                    (!filters.From.HasValue || x.CreatedOn >= filters.From.Value.Date) &&
+                    (!filters.To.HasValue || x.CreatedOn <= filters.To.Value.Date.AddDays(1).AddTicks(-1))
+                );
+            }
 
             var totalCount = await query.CountAsync();
 
@@ -50,11 +63,11 @@ namespace MapLab.Services
 
         public async Task<NewsArticleDto> GetNewsArticleAsync(string id)
         {
-            var newsArticle = await _newsArticleRepository.All()
+            var newsArticles = await _newsArticleRepository.All()
                 .Include(x => x.Profile)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
-            return _mapper.Map<NewsArticleDto>(newsArticle);
+            return _mapper.Map<NewsArticleDto>(newsArticles);
         }
 
         public async Task CreateNewsArticleAsync(NewsArticleDto newsArticleDto)

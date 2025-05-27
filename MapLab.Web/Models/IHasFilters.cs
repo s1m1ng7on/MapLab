@@ -1,4 +1,4 @@
-﻿namespace MapLab.Web.Areas.Admin.Models
+﻿namespace MapLab.Web.Models
 {
     public interface IHasFilters<TFiltersModel>
     {
